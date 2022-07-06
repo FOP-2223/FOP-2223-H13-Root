@@ -5,12 +5,18 @@ plugins {
     application
     id("org.sourcegrade.style") version "1.3.0"
     id("org.sourcegrade.submitter") version "0.4.0"
+    id("org.openjfx.javafxplugin") version "0.0.13"
 }
 
 version = "0.1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+}
+
+javafx {
+    version = "17.0.1"
+    modules("javafx.controls", "javafx.fxml")
 }
 
 submit {
@@ -36,7 +42,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("h13.Main")
+    mainClass.set("h13.SpaceInvaders")
 }
 
 tasks {

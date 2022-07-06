@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="h13.FXMLController">
+   <children>
+      <BorderPane prefHeight="200.0" prefWidth="200.0">
+         <center>
+            <Label fx:id="label" text="Main Menu" BorderPane.alignment="CENTER">
+               <font>
+                  <Font size="50.0" />
+               </font></Label>
+         </center>
+         <bottom>
+            <Button mnemonicParsing="false" onAction="#showGameScene" prefHeight="72.0" prefWidth="600.0" text="Start game" wrapText="true" BorderPane.alignment="CENTER" maxWidth="Infinity">
+               <font>
+                  <Font size="27.0" />
+               </font></Button>
+         </bottom>
+      </BorderPane>
+   </children>
+</StackPane>
