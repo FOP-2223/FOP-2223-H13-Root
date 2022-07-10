@@ -1,6 +1,7 @@
 package h13;
 
 import javafx.animation.AnimationTimer;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
 import javafx.geometry.Dimension2D;
@@ -36,20 +37,34 @@ public class GameScene extends Scene {
     private Dimension2D getGameBounds() {
         var curASR = getWidth() / getHeight();
         return new Dimension2D(
-            curASR > aspectRatio ? getWidth() : getHeight() * aspectRatio,
-            curASR > aspectRatio ? getWidth() / aspectRatio : getHeight()
+            curASR < aspectRatio ? getWidth() : getHeight() * aspectRatio,
+            curASR < aspectRatio ? getWidth() / aspectRatio : getHeight()
         );
     }
 
     private void init() {
-        Dimension2D gameBounds = getGameBounds();
-
+        // Game Board
         gameBoard = new Pane();
-        gameBoard.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(10))));
-        gameBoard.setPrefSize(gameBounds.getWidth(), gameBounds.getHeight());
+        gameBoard.setBorder(
+            new Border(
+                new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(10))
+            )
+        );
+        gameBoard.prefWidthProperty().bind(
+            Bindings
+                .when(widthProperty().divide(heightProperty()).lessThanOrEqualTo(aspectRatio))
+                .then(widthProperty())
+                .otherwise(heightProperty().multiply(aspectRatio))
+        );
+        gameBoard.prefHeightProperty().bind(
+            Bindings
+                .when(widthProperty().divide(heightProperty()).lessThanOrEqualTo(aspectRatio))
+                .then(widthProperty().divide(aspectRatio))
+                .otherwise(heightProperty())
+        );
+        gameBoard.translateXProperty().bind(widthProperty().subtract(gameBoard.widthProperty()).divide(2));
+        gameBoard.translateYProperty().bind(heightProperty().subtract(gameBoard.heightProperty()).divide(2));
         root.getChildren().add(gameBoard);
-        gameBoard.setTranslateX(getWidth() / 2 - gameBounds.getWidth() / 2);
-        gameBoard.setTranslateY(getHeight() / 2 - gameBounds.getHeight() / 2);
 
 
         player = new Sprite(100, 100, 0.1, 0.1, Color.BLUE, SpriteType.PLAYER, 1.5, gameBoard);
@@ -91,18 +106,15 @@ public class GameScene extends Scene {
                         newCurASR < aspectRatio ? getWidth() : getHeight() * aspectRatio,
                         newCurASR < aspectRatio ? getWidth() / aspectRatio : getHeight()
                     );
-                    gameBoard.setPrefSize(newGameBounds.getWidth(), newGameBounds.getHeight());
-                    gameBoard.setTranslateX(getWidth() / 2 - newGameBounds.getWidth() / 2);
-                    gameBoard.setTranslateY(getHeight() / 2 - newGameBounds.getHeight() / 2);
 
                     var factor = gameBoard.getBoundsInParent().getWidth() / lastGameboardSize.getWidth();
                     System.out.println("Factor: " + factor);
                     player.setX(factor * oldX);
 //                    player.setY(factor * oldY);
 //                    player.setY(factor * player.getY());
-                    player.setWidth(player.getRelativeWidth() * newGameBounds.getHeight());
-                    player.setHeight(player.getRelativeWidth() * newGameBounds.getHeight());
-                    player.setY(newGameBounds.getHeight() - player.getHeight());
+//                    player.setWidth(player.getRelativeWidth() * newGameBounds.getHeight());
+//                    player.setHeight(player.getRelativeWidth() * newGameBounds.getHeight());
+//                    player.setY(newGameBounds.getHeight() - player.getHeight());
                 }
             }
             lastGameboardSize = gameBoard.getBoundsInParent();
@@ -124,7 +136,7 @@ public class GameScene extends Scene {
         gameBoard.getChildren().stream().filter(Sprite.class::isInstance).map(Sprite.class::cast).forEach(s -> {
             switch (s.getType()) {
                 case BULLET -> {
-                    s.setVelocityY(-0.3 * gameBoard.getHeight());
+                    s.setVelocityY(-s.getVelocity() * gameBoard.getHeight());
                 }
             }
         });

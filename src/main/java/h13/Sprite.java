@@ -32,13 +32,15 @@ public class Sprite extends Rectangle {
     }
 
     public Sprite(double x, double y, double relativeWidth, double relativeHeight, Color color, SpriteType type, double velocity, Pane gameBoard) {
-        super(x, y, relativeWidth * gameBoard.getWidth(), relativeHeight * gameBoard.getHeight());
+        super(x, y, relativeWidth * gameBoard.getWidth(), relativeHeight * gameBoard.getWidth());
         this.type = type;
         this.velocity = velocity;
         this.setFill(color);
         this.gameBoard = gameBoard;
         this.relativeWidth = relativeWidth;
         this.relativeHeight = relativeHeight;
+        this.widthProperty().bind(gameBoard.widthProperty().multiply(relativeWidth));
+        this.heightProperty().bind(gameBoard.widthProperty().multiply(relativeHeight));
 
         // Smooth movement
         AnimationTimer movementTimer = new AnimationTimer() {
@@ -105,12 +107,16 @@ public class Sprite extends Rectangle {
     }
 
     void shoot() {
-        Sprite bullet = new Sprite(getX() + getWidth() / 2, getY() + getHeight() / 2, 0.007, 0.05, Color.RED, SpriteType.BULLET, 3, gameBoard);
-        gameBoard.getChildren().add(bullet);
+        Sprite bullet = new Sprite(getX() + getWidth() / 2, getY(), 0.007, 0.05, Color.RED, SpriteType.BULLET, 2, gameBoard);
+        gameBoard.getChildren().add(gameBoard.getChildren().indexOf(this), bullet);
     }
 
     public void setVelocity(int velocity) {
         this.velocity = velocity;
+    }
+
+    public double getVelocity() {
+        return velocity;
     }
 
     public double getRelativeWidth() {
