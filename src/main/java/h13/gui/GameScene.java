@@ -1,5 +1,9 @@
-package h13;
+package h13.gui;
 
+import h13.Sprites.Bullet;
+import h13.Sprites.Enemy;
+import h13.Sprites.Player;
+import h13.Sprites.Sprite;
 import javafx.animation.AnimationTimer;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
@@ -15,17 +19,20 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.List;
 
+import static h13.GameConstants.ASPECT_RATIO;
+import static h13.GameConstants.ORIGINAL_GAME_BOUNDS;
+
 public class GameScene extends Scene {
 
     private Group root;
 
-    private Sprite player;
+    private Player player;
     private Pane gameBoard;
 
     private List<KeyCode> keysPressed = new ArrayList<>();
 
 
-    private double aspectRatio = 256d / 224d; // original aspect ratio of the game
+
     private Bounds lastGameboardSize;
 
     public GameScene() {
@@ -37,12 +44,14 @@ public class GameScene extends Scene {
     private Dimension2D getGameBounds() {
         var curASR = getWidth() / getHeight();
         return new Dimension2D(
-            curASR < aspectRatio ? getWidth() : getHeight() * aspectRatio,
-            curASR < aspectRatio ? getWidth() / aspectRatio : getHeight()
+            curASR < ASPECT_RATIO ? getWidth() : getHeight() * ASPECT_RATIO,
+            curASR < ASPECT_RATIO ? getWidth() / ASPECT_RATIO : getHeight()
         );
     }
 
     private void init() {
+        root.prefHeight(ORIGINAL_GAME_BOUNDS.getHeight());
+        root.prefWidth(ORIGINAL_GAME_BOUNDS.getWidth());
         // Game Board
         gameBoard = new Pane();
         gameBoard.setBorder(
@@ -52,14 +61,14 @@ public class GameScene extends Scene {
         );
         gameBoard.prefWidthProperty().bind(
             Bindings
-                .when(widthProperty().divide(heightProperty()).lessThanOrEqualTo(aspectRatio))
+                .when(widthProperty().divide(heightProperty()).lessThanOrEqualTo(ASPECT_RATIO))
                 .then(widthProperty())
-                .otherwise(heightProperty().multiply(aspectRatio))
+                .otherwise(heightProperty().multiply(ASPECT_RATIO))
         );
         gameBoard.prefHeightProperty().bind(
             Bindings
-                .when(widthProperty().divide(heightProperty()).lessThanOrEqualTo(aspectRatio))
-                .then(widthProperty().divide(aspectRatio))
+                .when(widthProperty().divide(heightProperty()).lessThanOrEqualTo(ASPECT_RATIO))
+                .then(widthProperty().divide(ASPECT_RATIO))
                 .otherwise(heightProperty())
         );
         gameBoard.translateXProperty().bind(widthProperty().subtract(gameBoard.widthProperty()).divide(2));
@@ -67,8 +76,22 @@ public class GameScene extends Scene {
         root.getChildren().add(gameBoard);
 
 
-        player = new Sprite(100, 100, 0.1, 0.1, Color.BLUE, SpriteType.PLAYER, 1.5, gameBoard);
+        player = new Player(100, 100, 1.5, gameBoard);
         gameBoard.getChildren().add(player);
+
+        // enemies
+        int enemyLimit = 5;
+        for (int i = 0; i < enemyLimit; i++) {
+            Enemy enemy = new Enemy(
+                gameBoard.getWidth() / enemyLimit * i,
+                0,
+                1.5,
+                gameBoard
+            );
+            enemy.layoutXProperty().bind(gameBoard.widthProperty().divide(enemyLimit).multiply(i));
+            enemy.layoutYProperty().bind(gameBoard.heightProperty().multiply(0));
+            gameBoard.getChildren().add(enemy);
+        }
 
         // Keyboard input
         setOnKeyPressed(e -> {
@@ -103,8 +126,8 @@ public class GameScene extends Scene {
                     var oldY = player.getY();
                     var newCurASR = getWidth() / getHeight();
                     Dimension2D newGameBounds = new Dimension2D(
-                        newCurASR < aspectRatio ? getWidth() : getHeight() * aspectRatio,
-                        newCurASR < aspectRatio ? getWidth() / aspectRatio : getHeight()
+                        newCurASR < ASPECT_RATIO ? getWidth() : getHeight() * ASPECT_RATIO,
+                        newCurASR < ASPECT_RATIO ? getWidth() / ASPECT_RATIO : getHeight()
                     );
 
                     var factor = gameBoard.getBoundsInParent().getWidth() / lastGameboardSize.getWidth();
@@ -114,7 +137,7 @@ public class GameScene extends Scene {
 //                    player.setY(factor * player.getY());
 //                    player.setWidth(player.getRelativeWidth() * newGameBounds.getHeight());
 //                    player.setHeight(player.getRelativeWidth() * newGameBounds.getHeight());
-//                    player.setY(newGameBounds.getHeight() - player.getHeight());
+                    player.setY(newGameBounds.getHeight() - player.getHeight());
                 }
             }
             lastGameboardSize = gameBoard.getBoundsInParent();
@@ -134,12 +157,12 @@ public class GameScene extends Scene {
 
     public void update() {
         gameBoard.getChildren().stream().filter(Sprite.class::isInstance).map(Sprite.class::cast).forEach(s -> {
-            switch (s.getType()) {
-                case BULLET -> {
-                    s.setVelocityY(-s.getVelocity() * gameBoard.getHeight());
-                }
+            if (s instanceof Bullet) {
+                s.setVelocityY(-s.getVelocity() * gameBoard.getHeight());
             }
         });
+
+
     }
 
     public void apply(Stage stage) {

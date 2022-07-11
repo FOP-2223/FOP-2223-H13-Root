@@ -1,4 +1,4 @@
-package h13;
+package h13.Sprites;
 
 public enum SpriteType {
     PLAYER,
