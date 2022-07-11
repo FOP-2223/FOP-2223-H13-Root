@@ -1,5 +1,6 @@
 package h13.Sprites;
 
+import javafx.geometry.VerticalDirection;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
@@ -16,5 +17,9 @@ public class Player extends BattleShip {
     @Override
     public void moveUp() {
 
+    }
+
+    public void shoot() {
+        shoot(VerticalDirection.UP);
     }
 }

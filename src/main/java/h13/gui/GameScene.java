@@ -19,8 +19,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.List;
 
-import static h13.GameConstants.ASPECT_RATIO;
-import static h13.GameConstants.ORIGINAL_GAME_BOUNDS;
+import static h13.GameConstants.*;
 
 public class GameScene extends Scene {
 
@@ -30,7 +29,6 @@ public class GameScene extends Scene {
     private Pane gameBoard;
 
     private List<KeyCode> keysPressed = new ArrayList<>();
-
 
 
     private Bounds lastGameboardSize;
@@ -52,7 +50,47 @@ public class GameScene extends Scene {
     private void init() {
         root.prefHeight(ORIGINAL_GAME_BOUNDS.getHeight());
         root.prefWidth(ORIGINAL_GAME_BOUNDS.getWidth());
+
         // Game Board
+        initGameboard();
+
+        // Player + Enemies
+        initSprites();
+
+        // Keyboard input
+        handleKeyboardInputs();
+
+        handleResize();
+
+        AnimationTimer gameLoop = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                update();
+            }
+        };
+        gameLoop.start();
+    }
+
+    private void initSprites() {
+        // Player
+        player = new Player(100, 100, 1.5, gameBoard);
+        gameBoard.getChildren().add(player);
+
+        // enemies
+        for (int i = 0; i < ENEMY_COLS; i++) {
+            for (int j = 0; j < ENEMY_ROWS; j++) {
+                Enemy enemy = new Enemy(
+                    i,
+                    j,
+                    1.5,
+                    gameBoard
+                );
+                gameBoard.getChildren().add(enemy);
+            }
+        }
+    }
+
+    private void initGameboard() {
         gameBoard = new Pane();
         gameBoard.setBorder(
             new Border(
@@ -74,26 +112,9 @@ public class GameScene extends Scene {
         gameBoard.translateXProperty().bind(widthProperty().subtract(gameBoard.widthProperty()).divide(2));
         gameBoard.translateYProperty().bind(heightProperty().subtract(gameBoard.heightProperty()).divide(2));
         root.getChildren().add(gameBoard);
+    }
 
-
-        player = new Player(100, 100, 1.5, gameBoard);
-        gameBoard.getChildren().add(player);
-
-        // enemies
-        int enemyLimit = 5;
-        for (int i = 0; i < enemyLimit; i++) {
-            Enemy enemy = new Enemy(
-                gameBoard.getWidth() / enemyLimit * i,
-                0,
-                1.5,
-                gameBoard
-            );
-            enemy.layoutXProperty().bind(gameBoard.widthProperty().divide(enemyLimit).multiply(i));
-            enemy.layoutYProperty().bind(gameBoard.heightProperty().multiply(0));
-            gameBoard.getChildren().add(enemy);
-        }
-
-        // Keyboard input
+    private void handleKeyboardInputs() {
         setOnKeyPressed(e -> {
             if (keysPressed.contains(e.getCode())) return;
             keysPressed.add(e.getCode());
@@ -117,7 +138,9 @@ public class GameScene extends Scene {
                 player.stop();
             }
         });
+    }
 
+    private void handleResize() {
         ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
             if (getHeight() > 0 && getWidth() > 0) {
                 System.out.println("Height: " + getHeight() + " Width: " + getWidth());
@@ -145,21 +168,13 @@ public class GameScene extends Scene {
 //
         widthProperty().addListener(stageSizeListener);
         heightProperty().addListener(stageSizeListener);
-
-        AnimationTimer gameLoop = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                update();
-            }
-        };
-        gameLoop.start();
     }
 
     public void update() {
         gameBoard.getChildren().stream().filter(Sprite.class::isInstance).map(Sprite.class::cast).forEach(s -> {
-            if (s instanceof Bullet) {
-                s.setVelocityY(-s.getVelocity() * gameBoard.getHeight());
-            }
+//            if (s instanceof Bullet) {
+//                s.setVelocityY(-s.getVelocity() * gameBoard.getHeight());
+//            }
         });
 
 

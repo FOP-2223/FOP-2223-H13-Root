@@ -1,7 +1,6 @@
 package h13.Sprites;
 
-import h13.Sprites.Bullet;
-import h13.Sprites.Sprite;
+import javafx.geometry.VerticalDirection;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
@@ -12,8 +11,21 @@ public class BattleShip extends Sprite {
         super(x, y, RELATIVE_SHIP_WIDTH, RELATIVE_SHIP_WIDTH, color, velocity, health, gameBoard);
     }
 
-    public void shoot() {
-        Sprite bullet = new Bullet(getX() + getWidth() / 2, getY(), gameBoard, this);
+    protected void shoot(VerticalDirection direction) {
+        Sprite bullet = new Bullet(
+            getX() + getWidth() / 2,
+            getY(),
+            gameBoard,
+            this,
+            direction);
         gameBoard.getChildren().add(gameBoard.getChildren().indexOf(this), bullet);
+    }
+
+    public boolean isFriend(BattleShip other) {
+        return this.getClass().isInstance(other);
+    }
+
+    public boolean isEnemy(BattleShip other) {
+        return !this.isFriend(other);
     }
 }
