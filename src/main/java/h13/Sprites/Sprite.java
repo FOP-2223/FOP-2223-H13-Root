@@ -1,5 +1,7 @@
 package h13.Sprites;
 
+import h13.GameConstants;
+import h13.Playable;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.LongProperty;
@@ -10,7 +12,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class Sprite extends Rectangle {
+import static h13.GameConstants.ORIGINAL_GAME_BOUNDS;
+
+public class Sprite extends Rectangle implements Playable {
 
     // --Variables--//
     protected final Pane gameBoard;
@@ -27,7 +31,7 @@ public class Sprite extends Rectangle {
     private AnimationTimer movementTimer;
 
     public Sprite(double x, double y, double relativeWidth, double relativeHeight, Color color, double velocity, int health, Pane gameBoard) {
-        super(x, y, relativeWidth * gameBoard.getWidth(), relativeHeight * gameBoard.getWidth());
+        super(x, y, relativeWidth * gameBoard.getMaxWidth(), relativeHeight * gameBoard.getMaxWidth());
         this.velocity = velocity;
         this.color = color;
         this.gameBoard = gameBoard;
@@ -68,7 +72,7 @@ public class Sprite extends Rectangle {
         if (health <= 0) {
             setVisible(false);
             gameBoard.getChildren().remove(this);
-            tick.movementTimer.stop();
+//            tick.movementTimer.stop();
         }
     }
 
@@ -119,40 +123,15 @@ public class Sprite extends Rectangle {
         this.setFill(color);
         this.widthProperty().bind(gameBoard.widthProperty().multiply(relativeWidth));
         this.heightProperty().bind(gameBoard.widthProperty().multiply(relativeHeight));
-        // Smooth movement
-        movementTimer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                if (lastUpdate.get() > 0) {
-                    final double elapsedTime = (now - lastUpdate.get()) / 1_000_000_000.0;
-                    final double deltaX = velocityX.get() * elapsedTime;
-                    final double deltaY = velocityY.get() * elapsedTime;
-                    final double oldX = getX();
-                    final double oldY = getY();
-                    final double newX = oldX + deltaX;
-                    final double newY = oldY + deltaY;
-                    gameTick(
-                        new GameTickParameters(
-                            this,
-                            now,
-                            elapsedTime,
-                            deltaX,
-                            deltaY,
-                            oldX,
-                            oldY,
-                            newX,
-                            newY
-                        )
-                    );
-                }
-                lastUpdate.set(now);
-            }
-        };
-        movementTimer.start();
+//        setHeight(5);
     }
 
     public boolean isDead() {
         return dead;
+    }
+
+    public boolean isAlive() {
+        return !isDead();
     }
 
     public void moveDown() {
@@ -182,6 +161,34 @@ public class Sprite extends Rectangle {
     public void stop() {
         velocityX.set(0);
         velocityY.set(0);
+    }
+
+    @Override
+    public void update(long now) {
+        // Smooth movement
+        if (lastUpdate.get() > 0) {
+            final double elapsedTime = (now - lastUpdate.get()) / 1_000_000_000.0;
+            final double deltaX = velocityX.get() * elapsedTime;
+            final double deltaY = velocityY.get() * elapsedTime;
+            final double oldX = getX();
+            final double oldY = getY();
+            final double newX = oldX + deltaX;
+            final double newY = oldY + deltaY;
+            gameTick(
+                new GameTickParameters(
+                    getMovementTimer(),
+                    now,
+                    elapsedTime,
+                    deltaX,
+                    deltaY,
+                    oldX,
+                    oldY,
+                    newX,
+                    newY
+                )
+            );
+        }
+        lastUpdate.set(now);
     }
 
     public DoubleProperty velocityXProperty() {

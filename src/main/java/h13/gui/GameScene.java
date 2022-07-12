@@ -1,14 +1,16 @@
 package h13.gui;
 
+import h13.Playable;
 import h13.Sprites.Bullet;
-import h13.Sprites.Enemy;
 import h13.Sprites.Player;
 import h13.Sprites.Sprite;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
 import javafx.geometry.Dimension2D;
+import javafx.geometry.HorizontalDirection;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -26,6 +28,7 @@ public class GameScene extends Scene {
     private Group root;
 
     private Player player;
+    private EnemyController enemyController;
     private Pane gameBoard;
 
     private List<KeyCode> keysPressed = new ArrayList<>();
@@ -60,12 +63,12 @@ public class GameScene extends Scene {
         // Keyboard input
         handleKeyboardInputs();
 
-        handleResize();
+//        handleResize();
 
         AnimationTimer gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                update();
+                update(now);
             }
         };
         gameLoop.start();
@@ -74,41 +77,30 @@ public class GameScene extends Scene {
     private void initSprites() {
         // Player
         player = new Player(100, 100, 1.5, gameBoard);
+        player.setY(gameBoard.getMaxHeight() - player.getHeight());
         gameBoard.getChildren().add(player);
 
-        // enemies
-        for (int i = 0; i < ENEMY_COLS; i++) {
-            for (int j = 0; j < ENEMY_ROWS; j++) {
-                Enemy enemy = new Enemy(
-                    i,
-                    j,
-                    1.5,
-                    gameBoard
-                );
-                gameBoard.getChildren().add(enemy);
-            }
-        }
+        // Enemies
+        enemyController = new EnemyController(gameBoard, HorizontalDirection.RIGHT);
     }
 
     private void initGameboard() {
         gameBoard = new Pane();
         gameBoard.setBorder(
             new Border(
-                new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(10))
+                new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))
             )
         );
-        gameBoard.prefWidthProperty().bind(
+        gameBoard.setMaxSize(ORIGINAL_GAME_BOUNDS.getWidth(), ORIGINAL_GAME_BOUNDS.getHeight());
+        gameBoard.setMinSize(ORIGINAL_GAME_BOUNDS.getWidth(), ORIGINAL_GAME_BOUNDS.getHeight());
+        gameBoard.scaleXProperty().bind(
             Bindings
                 .when(widthProperty().divide(heightProperty()).lessThanOrEqualTo(ASPECT_RATIO))
-                .then(widthProperty())
-                .otherwise(heightProperty().multiply(ASPECT_RATIO))
+                .then(widthProperty().divide(gameBoard.widthProperty()))
+                .otherwise(heightProperty().multiply(ASPECT_RATIO).divide(gameBoard.widthProperty()))
         );
-        gameBoard.prefHeightProperty().bind(
-            Bindings
-                .when(widthProperty().divide(heightProperty()).lessThanOrEqualTo(ASPECT_RATIO))
-                .then(widthProperty().divide(ASPECT_RATIO))
-                .otherwise(heightProperty())
-        );
+        gameBoard.scaleYProperty().bind(gameBoard.scaleXProperty());
+
         gameBoard.translateXProperty().bind(widthProperty().subtract(gameBoard.widthProperty()).divide(2));
         gameBoard.translateYProperty().bind(heightProperty().subtract(gameBoard.heightProperty()).divide(2));
         root.getChildren().add(gameBoard);
@@ -155,12 +147,12 @@ public class GameScene extends Scene {
 
                     var factor = gameBoard.getBoundsInParent().getWidth() / lastGameboardSize.getWidth();
                     System.out.println("Factor: " + factor);
-                    player.setX(factor * oldX);
+//                    player.setX(factor * oldX);
 //                    player.setY(factor * oldY);
 //                    player.setY(factor * player.getY());
 //                    player.setWidth(player.getRelativeWidth() * newGameBounds.getHeight());
 //                    player.setHeight(player.getRelativeWidth() * newGameBounds.getHeight());
-                    player.setY(newGameBounds.getHeight() - player.getHeight());
+//                    player.setY(newGameBounds.getHeight() - player.getHeight());
                 }
             }
             lastGameboardSize = gameBoard.getBoundsInParent();
@@ -170,14 +162,19 @@ public class GameScene extends Scene {
         heightProperty().addListener(stageSizeListener);
     }
 
-    public void update() {
-        gameBoard.getChildren().stream().filter(Sprite.class::isInstance).map(Sprite.class::cast).forEach(s -> {
-//            if (s instanceof Bullet) {
-//                s.setVelocityY(-s.getVelocity() * gameBoard.getHeight());
-//            }
+    public void update(long now) {
+//        gameBoard.getChildren().stream().filter(Sprite.class::isInstance).map(Sprite.class::cast).forEach(s -> {
+////            if (s instanceof Bullet) {
+////                s.setVelocityY(-s.getVelocity() * gameBoard.getHeight());
+////            }
+//        });
+
+        gameBoard.getChildren().stream().filter(Playable.class::isInstance).map(Playable.class::cast).forEach(s -> {
+            Platform.runLater(() -> s.update(now));
         });
-
-
+        Platform.runLater(() -> {
+            if (enemyController != null) enemyController.update(now);
+        });
     }
 
     public void apply(Stage stage) {
