@@ -1,22 +1,22 @@
-package h13.Sprites;
+package h13.model.sprites;
 
+import h13.controller.GameController;
 import javafx.geometry.VerticalDirection;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 public class Player extends BattleShip {
-    public Player(double x, double y, double velocity, Pane gameBoard) {
-        super(x, y, velocity, Color.BLUE, 5, gameBoard);
+    public Player(double x, double y, double velocity, GameController gameController) {
+        super(x, y, velocity, Color.BLUE, 5, gameController);
     }
 
     @Override
     public void moveDown() {
-
+        // Do nothing
     }
 
     @Override
     public void moveUp() {
-
+        // Do nothing
     }
 
     public void shoot() {

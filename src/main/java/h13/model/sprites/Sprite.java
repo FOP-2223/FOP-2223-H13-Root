@@ -1,7 +1,7 @@
-package h13.Sprites;
+package h13.model.sprites;
 
-import h13.GameConstants;
-import h13.Playable;
+import h13.model.Playable;
+import h13.controller.GameController;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.LongProperty;
@@ -12,12 +12,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import static h13.GameConstants.ORIGINAL_GAME_BOUNDS;
-
-public class Sprite extends Rectangle implements Playable {
+public abstract class Sprite extends Rectangle implements Playable {
 
     // --Variables--//
-    protected final Pane gameBoard;
+    protected final GameController gameController;
     private final Color color;
     private final LongProperty lastUpdate = new SimpleLongProperty(0);
     private final double relativeHeight;
@@ -30,11 +28,11 @@ public class Sprite extends Rectangle implements Playable {
 
     private AnimationTimer movementTimer;
 
-    public Sprite(double x, double y, double relativeWidth, double relativeHeight, Color color, double velocity, int health, Pane gameBoard) {
-        super(x, y, relativeWidth * gameBoard.getMaxWidth(), relativeHeight * gameBoard.getMaxWidth());
+    public Sprite(double x, double y, double relativeWidth, double relativeHeight, Color color, double velocity, int health, GameController gameController) {
+        super(x, y, relativeWidth * gameController.getGameBoard().getMaxWidth(), relativeHeight * gameController.getGameBoard().getMaxWidth());
         this.velocity = velocity;
         this.color = color;
-        this.gameBoard = gameBoard;
+        this.gameController = gameController;
         this.relativeWidth = relativeWidth;
         this.relativeHeight = relativeHeight;
         this.health = health;
@@ -42,8 +40,8 @@ public class Sprite extends Rectangle implements Playable {
     }
 
     protected boolean coordinatesInBounds(double x, double y, double padding) {
-        return x >= padding && x <= gameBoard.getWidth() - getWidth() - padding
-            && y >= padding && y <= gameBoard.getHeight() - getHeight() - padding;
+        return x >= padding && x <= getGameBoard().getMaxWidth() - getWidth() - padding
+            && y >= padding && y <= getGameBoard().getMaxHeight() - getHeight() - padding;
     }
 
     // --Getters and Setters--//
@@ -53,7 +51,7 @@ public class Sprite extends Rectangle implements Playable {
     }
 
     public void damage(int damage) {
-        System.out.printf("%s damaged: previous health %d, new health %d\n", this.hashCode(), health, health - damage);
+//        System.out.printf("%s damaged: previous health %d, new health %d\n", this.hashCode(), health, health - damage);
         health -= damage;
         if (health <= 0) {
             die();
@@ -66,18 +64,22 @@ public class Sprite extends Rectangle implements Playable {
     }
 
     protected void gameTick(GameTickParameters tick) {
-        var newPos = getPaddedPosition(tick.newX(), tick.newY(), gameBoard.getBorder().getInsets().getLeft());
+        var newPos = getPaddedPosition(tick.newX(), tick.newY(), getGameBoard().getBorder().getInsets().getLeft());
         setX(newPos.getX());
         setY(newPos.getY());
         if (health <= 0) {
             setVisible(false);
-            gameBoard.getChildren().remove(this);
+            getGameBoard().getChildren().remove(this);
 //            tick.movementTimer.stop();
         }
     }
 
     public Pane getGameBoard() {
-        return gameBoard;
+        return gameController.getGameBoard();
+    }
+
+    public GameController getGameController() {
+        return gameController;
     }
 
     public int getHealth() {
@@ -90,8 +92,8 @@ public class Sprite extends Rectangle implements Playable {
 
     protected Point2D getPaddedPosition(double x, double y, double padding) {
         return new Point2D(
-            Math.max(padding, Math.min(gameBoard.getWidth() - getWidth() - padding, x)),
-            Math.max(padding, Math.min(gameBoard.getHeight() - getHeight() - padding, y))
+            Math.max(padding, Math.min(getGameBoard().getWidth() - getWidth() - padding, x)),
+            Math.max(padding, Math.min(getGameBoard().getHeight() - getHeight() - padding, y))
         );
     }
 
@@ -121,9 +123,17 @@ public class Sprite extends Rectangle implements Playable {
 
     private void init() {
         this.setFill(color);
-        this.widthProperty().bind(gameBoard.widthProperty().multiply(relativeWidth));
-        this.heightProperty().bind(gameBoard.widthProperty().multiply(relativeHeight));
+        this.widthProperty().bind(getGameBoard().widthProperty().multiply(relativeWidth));
+        this.heightProperty().bind(getGameBoard().widthProperty().multiply(relativeHeight));
 //        setHeight(5);
+    }
+
+    protected double getGameboardWidth() {
+        return getGameBoard().getMaxWidth() - getGameBoard().getInsets().getLeft() - getGameBoard().getInsets().getRight();
+    }
+
+    protected double getGameboardHeight() {
+        return getGameBoard().getMaxHeight() - getGameBoard().getInsets().getTop() - getGameBoard().getInsets().getBottom();
     }
 
     public boolean isDead() {
@@ -135,19 +145,19 @@ public class Sprite extends Rectangle implements Playable {
     }
 
     public void moveDown() {
-        velocityY.set(velocityY.get() + velocity * gameBoard.getHeight());
+        velocityY.set(velocityY.get() + velocity * getGameboardHeight());
     }
 
     public void moveLeft() {
-        velocityX.set(velocityX.get() - velocity * gameBoard.getWidth());
+        velocityX.set(velocityX.get() - velocity * getGameboardWidth());
     }
 
     public void moveRight() {
-        velocityX.set(velocityX.get() + velocity * gameBoard.getWidth());
+        velocityX.set(velocityX.get() + velocity * getGameboardWidth());
     }
 
     public void moveUp() {
-        velocityY.set(velocityY.get() - velocity * gameBoard.getHeight());
+        velocityY.set(velocityY.get() - velocity * getGameboardHeight());
     }
 
     public void pause() {

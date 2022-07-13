@@ -1,4 +1,4 @@
-package h13;
+package h13.model;
 
 /**
  * An interface that defines the methods that a playable object must implement.

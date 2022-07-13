@@ -1,5 +1,6 @@
-package h13.gui;
+package h13.controller;
 
+import h13.view.gui.GameScene;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

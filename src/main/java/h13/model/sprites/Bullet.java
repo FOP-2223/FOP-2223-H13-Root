@@ -1,7 +1,7 @@
-package h13.Sprites;
+package h13.model.sprites;
 
+import h13.controller.GameController;
 import javafx.geometry.VerticalDirection;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import java.util.HashSet;
@@ -13,23 +13,23 @@ public class Bullet extends Sprite {
     VerticalDirection direction;
 
 
-    public Bullet(double x, double y, Pane gameBoard, BattleShip owner, VerticalDirection direction) {
-        super(x, y, 0.003, 0.02, Color.RED, 1, 1, gameBoard);
+    public Bullet(double x, double y, GameController gameController, BattleShip owner, VerticalDirection direction) {
+        super(x, y, 0.003, 0.02, Color.WHITE, 1, 3, gameController);
         this.owner = owner;
         this.direction = direction;
-        velocityYProperty().bind(gameBoard.heightProperty().multiply(direction.equals(VerticalDirection.UP) ? -getVelocity() : getVelocity()));
+        velocityYProperty().bind(getGameBoard().heightProperty().multiply(direction.equals(VerticalDirection.UP) ? -getVelocity() : getVelocity()));
     }
 
     @Override
     protected void gameTick(GameTickParameters tick) {
         super.gameTick(tick);
-        if (!coordinatesInBounds(tick.newX(), tick.newY(), gameBoard.getBorder().getInsets().getLeft())) {
+        if (!coordinatesInBounds(tick.newX(), tick.newY(), getGameBoard().getBorder().getInsets().getLeft())) {
             die();
-            System.out.println("Bullet out of bounds");
+//            System.out.println("Bullet out of bounds");
         }
 
         // Hit Detection
-        var damaged = gameBoard.getChildren().stream()
+        var damaged = getGameBoard().getChildren().stream()
             .filter(BattleShip.class::isInstance)
             .map(BattleShip.class::cast)
             .filter(sprite -> sprite != owner)

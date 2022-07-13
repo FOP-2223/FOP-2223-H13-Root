@@ -1,4 +1,4 @@
-package h13;
+package h13.model;
 
 
 import javafx.geometry.BoundingBox;
