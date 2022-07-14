@@ -11,9 +11,9 @@ import javafx.stage.Stage;
 public class SpaceInvaders extends Application {
 
     @Override
-    public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("mainMenuScene.fxml"));
-        Scene scene = new Scene(root);
+    public void start(final Stage stage) throws Exception {
+        final Parent root = FXMLLoader.load(getClass().getResource("mainMenuScene.fxml"));
+        final Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
 
         stage.setTitle("JavaFX and Gradle");
@@ -21,7 +21,7 @@ public class SpaceInvaders extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         launch(args);
     }
 

@@ -17,7 +17,7 @@ public class Enemy extends BattleShip {
     private final int points;
 
 
-    public Enemy(int xIndex, int yIndex, double velocity, final int points, GameController gameController) {
+    public Enemy(final int xIndex, final int yIndex, final double velocity, final int points, final GameController gameController) {
         super(
             0,
             0,
@@ -29,13 +29,13 @@ public class Enemy extends BattleShip {
         this.yIndex = yIndex;
         this.points = points;
         // get available textures
-        var random = new java.util.Random().nextInt(1, 3);
+        final var random = new java.util.Random().nextInt(1, 3);
         // choose one randomly
         loadTexture("/h13/images/sprites/enemy" + random + ".png");
     }
 
     @Override
-    protected void gameTick(GameTickParameters tick) {
+    protected void gameTick(final GameTickParameters tick) {
         super.gameTick(tick);
 
         // Shoot with a certain probability

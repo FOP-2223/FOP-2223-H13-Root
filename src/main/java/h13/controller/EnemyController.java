@@ -14,13 +14,13 @@ import java.util.Set;
 import static h13.model.GameConstants.*;
 
 public class EnemyController {
-    private GameController gameController;
-    private EnemyMovement enemyMovement;
-    private Set<Enemy> enemies;
+    private final GameController gameController;
+    private final EnemyMovement enemyMovement;
+    private final Set<Enemy> enemies;
 
     public EnemyController(
-        GameController gameController,
-        HorizontalDirection initialMovementDirection) {
+        final GameController gameController,
+        final HorizontalDirection initialMovementDirection) {
         super();
         this.enemies = new HashSet<>();
         this.gameController = gameController;
@@ -36,7 +36,7 @@ public class EnemyController {
         // enemies
         for (int i = 0; i < ENEMY_COLS; i++) {
             for (int j = 0; j < ENEMY_ROWS; j++) {
-                var enemy = new Enemy(
+                final var enemy = new Enemy(
                     i,
                     j,
                     0,
@@ -45,10 +45,10 @@ public class EnemyController {
                 );
 //                var insets = getGameBoard().getBorder().getInsets();
 //                var horizontalSpace = getGameBoard().getMaxWidth() - insets.getLeft() - insets.getRight();
-                var horizontalSpace = getGameBoard().getWidth();
-                var horizontalEnemySpace = horizontalSpace * (1 - HORIZONTAL_ENEMY_MOVE_DISTANCE);
-                var chunkSize = horizontalEnemySpace / ENEMY_COLS;
-                var padding = chunkSize / 2 - GameConstants.RELATIVE_SHIP_WIDTH * horizontalSpace / 2;
+                final var horizontalSpace = getGameBoard().getWidth();
+                final var horizontalEnemySpace = horizontalSpace * (1 - HORIZONTAL_ENEMY_MOVE_DISTANCE);
+                final var chunkSize = horizontalEnemySpace / ENEMY_COLS;
+                final var padding = chunkSize / 2 - GameConstants.RELATIVE_SHIP_WIDTH * horizontalSpace / 2;
                 enemy.setX(chunkSize * i + padding);
                 enemy.setY(chunkSize * j + padding);
 

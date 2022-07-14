@@ -7,12 +7,12 @@ import javafx.scene.paint.Color;
 import static h13.model.GameConstants.RELATIVE_SHIP_WIDTH;
 
 public class BattleShip extends Sprite {
-    public BattleShip(double x, double y, double velocity, Color color, int health, GameController gameController) {
+    public BattleShip(final double x, final double y, final double velocity, final Color color, final int health, final GameController gameController) {
         super(x, y, RELATIVE_SHIP_WIDTH, RELATIVE_SHIP_WIDTH, color, velocity, health, gameController);
     }
 
-    protected void shoot(VerticalDirection direction) {
-        Sprite bullet = new Bullet(
+    protected void shoot(final VerticalDirection direction) {
+        final Sprite bullet = new Bullet(
             getX() + getWidth() / 2,
             getY(),
             getGameController(),
@@ -21,11 +21,11 @@ public class BattleShip extends Sprite {
         getGameBoard().addSprite(bullet);
     }
 
-    public boolean isFriend(BattleShip other) {
+    public boolean isFriend(final BattleShip other) {
         return this.getClass().isInstance(other);
     }
 
-    public boolean isEnemy(BattleShip other) {
+    public boolean isEnemy(final BattleShip other) {
         return !this.isFriend(other);
     }
 }

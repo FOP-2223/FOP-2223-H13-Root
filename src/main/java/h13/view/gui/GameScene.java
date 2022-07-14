@@ -18,7 +18,7 @@ import static h13.model.GameConstants.ORIGINAL_GAME_BOUNDS;
 
 public class GameScene extends Scene {
 
-    private Group root;
+    private final Group root;
     private EnemyController enemyController;
     private GameBoard gameBoard;
     private GameController gameController;
@@ -44,7 +44,7 @@ public class GameScene extends Scene {
     }
 
     private void initGameboard() {
-        var scaleFactor = 3;
+        final var scaleFactor = 3;
         this.gameBoard = new GameBoard(scaleFactor * ORIGINAL_GAME_BOUNDS.getWidth(), scaleFactor * ORIGINAL_GAME_BOUNDS.getHeight());
 
         // Border
@@ -79,14 +79,14 @@ public class GameScene extends Scene {
 //        root.getChildren().add(gameBoard);
         root.getChildren().add(gameBoard);
 
-        GraphicsContext gc = gameBoard.getGraphicsContext2D();
+        final GraphicsContext gc = gameBoard.getGraphicsContext2D();
 
         gc.setFill(Color.RED);
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
     }
 
-    public void apply(Stage stage) {
+    public void apply(final Stage stage) {
         stage.setTitle("Space Invaders");
         stage.setScene(this);
         stage.show();

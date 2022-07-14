@@ -18,18 +18,18 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 public class GameBoard extends Canvas implements Playable {
-    private Set<Sprite> sprites = new HashSet<>();
+    private final Set<Sprite> sprites = new HashSet<>();
     private Bounds previousBounds = getBoundsInParent();
 
     private Image backgroundImage;
 
-    public GameBoard(double width, double height) {
+    public GameBoard(final double width, final double height) {
         super(width, height);
         if (GameConstants.LOAD_TEXTURES) {
             try {
                 backgroundImage = new Image("/h13/images/wallpapers/Galaxy3.jpg");
 //            backgroundImage = ImageIO.read(getClass().getResourceAsStream("/h13/images/wallpapers/Galaxy1.jpg"));
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
             }
         }
@@ -39,19 +39,19 @@ public class GameBoard extends Canvas implements Playable {
         return sprites;
     }
 
-    public <T extends Sprite> Set<T> getSprites(Class<T> clazz) {
+    public <T extends Sprite> Set<T> getSprites(final Class<T> clazz) {
         return getSprites().stream().filter(clazz::isInstance).map(clazz::cast).collect(HashSet::new, Set::add, Set::addAll);
     }
 
-    public Set<Sprite> getSprites(Predicate<Sprite> predicate) {
+    public Set<Sprite> getSprites(final Predicate<Sprite> predicate) {
         return getSprites().stream().filter(predicate).collect(HashSet::new, Set::add, Set::addAll);
     }
 
-    public void addSprite(Sprite sprite) {
+    public void addSprite(final Sprite sprite) {
         sprites.add(sprite);
     }
 
-    public void removeSprite(Sprite sprite) {
+    public void removeSprite(final Sprite sprite) {
         sprites.remove(sprite);
     }
 
@@ -59,11 +59,11 @@ public class GameBoard extends Canvas implements Playable {
         sprites.clear();
     }
 
-    public void clearSprites(Class<? extends Sprite> clazz) {
+    public void clearSprites(final Class<? extends Sprite> clazz) {
         sprites.stream().filter(clazz::isInstance).forEach(sprite -> sprites.remove(sprite));
     }
 
-    public void clearSprites(Predicate<Sprite> predicate) {
+    public void clearSprites(final Predicate<Sprite> predicate) {
         sprites.stream().filter(predicate).forEach(sprites::remove);
     }
 
@@ -71,10 +71,10 @@ public class GameBoard extends Canvas implements Playable {
      * @param now The timestamp of the current frame given in nanoseconds. This value will be the same for all AnimationTimers called during one frame.
      */
     @Override
-    public void update(long now) {
+    public void update(final long now) {
         if (!getBoundsInParent().equals(previousBounds)) {
             if (previousBounds.getWidth() > 0 && previousBounds.getHeight() > 0 && getBoundsInParent().getWidth() > 0 && getBoundsInParent().getHeight() > 0) {
-                var scale = getWidth() / previousBounds.getWidth();
+                final var scale = getWidth() / previousBounds.getWidth();
                 System.out.println("scale: " + scale);
                 sprites.forEach(sprite -> {
                     sprite.setX(sprite.getX() * scale);
@@ -84,7 +84,7 @@ public class GameBoard extends Canvas implements Playable {
             previousBounds = getBoundsInParent();
         }
         getSprites(Player.class).forEach(player -> player.setY(getHeight() - player.getHeight()));
-        var gc = getGraphicsContext2D();
+        final var gc = getGraphicsContext2D();
         if (backgroundImage != null) {
             gc.drawImage(backgroundImage, 0, 0, getWidth(), getHeight());
         } else {

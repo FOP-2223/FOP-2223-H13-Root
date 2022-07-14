@@ -17,15 +17,15 @@ import java.util.List;
 import java.util.Objects;
 
 public class GameController implements Playable {
-    private GameScene gameScene;
+    private final GameScene gameScene;
     private GameState gameState;
     private GamePlay gamePlay;
     private EnemyController enemyController;
     private PlayerController playerController;
 
-    private AnimationTimer gameLoop = new AnimationTimer() {
+    private final AnimationTimer gameLoop = new AnimationTimer() {
         @Override
-        public void handle(long now) {
+        public void handle(final long now) {
             update(now);
         }
     };
@@ -59,7 +59,7 @@ public class GameController implements Playable {
     }
 
 
-    public GameController(GameScene gameScene) {
+    public GameController(final GameScene gameScene) {
         this.gameScene = gameScene;
         init();
     }
@@ -70,7 +70,7 @@ public class GameController implements Playable {
     }
 
     @Override
-    public void update(long now) {
+    public void update(final long now) {
         Platform.runLater(() -> {
             if (enemyController != null && enemyController.getEnemyMovement() != null)
                 enemyController.getEnemyMovement().update(now);
@@ -96,7 +96,7 @@ public class GameController implements Playable {
     private void lose() {
         Platform.runLater(() -> {
             gameLoop.stop();
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You Loose!!!\nContinue?", ButtonType.YES, ButtonType.NO);
+            final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You Loose!!!\nContinue?", ButtonType.YES, ButtonType.NO);
             alert.showAndWait();
 
             if (alert.getResult() == ButtonType.YES) {
@@ -118,7 +118,7 @@ public class GameController implements Playable {
     private void win() {
         Platform.runLater(() -> {
             gameLoop.stop();
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You Won!!!\nContinue?", ButtonType.YES, ButtonType.NO);
+            final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You Won!!!\nContinue?", ButtonType.YES, ButtonType.NO);
             alert.showAndWait();
 
             if (alert.getResult() == ButtonType.YES) {
@@ -134,11 +134,11 @@ public class GameController implements Playable {
         init();
     }
 
-    public void setEnemyController(EnemyController enemyController) {
+    public void setEnemyController(final EnemyController enemyController) {
         this.enemyController = enemyController;
     }
 
-    public void setPlayerController(PlayerController playerController) {
+    public void setPlayerController(final PlayerController playerController) {
         this.playerController = playerController;
     }
 }

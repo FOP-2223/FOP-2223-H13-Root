@@ -6,7 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class Player extends BattleShip {
-    public Player(double x, double y, double velocity, GameController gameController) {
+    public Player(final double x, final double y, final double velocity, final GameController gameController) {
         super(x, y, velocity, Color.BLUE, 5, gameController);
         loadTexture("/h13/images/sprites/player.png");
     }

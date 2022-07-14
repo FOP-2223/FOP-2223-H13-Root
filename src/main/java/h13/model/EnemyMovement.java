@@ -19,7 +19,7 @@ public class EnemyMovement implements Playable {
     private final SimpleObjectProperty<HorizontalDirection> horizontalMovementDirection;
 
 
-    public EnemyMovement(EnemyController enemyController, HorizontalDirection initialMovementDirection) {
+    public EnemyMovement(final EnemyController enemyController, final HorizontalDirection initialMovementDirection) {
         this.enemyController = enemyController;
         this.movementProgress = new SimpleDoubleProperty(0);
         this.horizontalMovementDirection = new SimpleObjectProperty<>(initialMovementDirection);
@@ -41,7 +41,7 @@ public class EnemyMovement implements Playable {
      * @param now The timestamp of the current frame given in nanoseconds. This value will be the same for all AnimationTimers called during one frame.
      */
     @Override
-    public void update(long now) {
+    public void update(final long now) {
         if (lastUpdate.get() > 0) {
             final double elapsedTime = (now - lastUpdate.get()) / 1_000_000_000.0;
             final double progress = movementProgress.get() + elapsedTime / (verticalMovement.get() ? VERTICAL_ENEMY_MOVEMENT_DURATION : HORIZONTAL_ENEMY_MOVEMENT_DURATION);
@@ -58,14 +58,14 @@ public class EnemyMovement implements Playable {
 //                var insets = getEnemyController().getGameBoard().getBorder().getInsets();
 //                var horizontalSpace = getEnemyController().getGameBoard().getMaxWidth() - insets.getLeft() - insets.getRight();
 //                var verticalSpace = getEnemyController().getGameBoard().getMaxHeight() - insets.getTop() - insets.getBottom();
-                var horizontalSpace = getEnemyController().getGameBoard().getWidth();
-                var verticalSpace = getEnemyController().getGameBoard().getHeight();
-                var horizontalEnemySpace = horizontalSpace * (1 - HORIZONTAL_ENEMY_MOVE_DISTANCE);
-                var chunkSize = horizontalEnemySpace / ENEMY_COLS;
-                var padding = chunkSize / 2 - GameConstants.RELATIVE_SHIP_WIDTH * horizontalSpace / 2;
-                for (Enemy enemy : getEnemyController().getAliveEnemies()) {
-                    var enemyXPos = chunkSize * enemy.getxIndex() + +padding;
-                    var enemyYPos = chunkSize * enemy.getyIndex() + +padding;
+                final var horizontalSpace = getEnemyController().getGameBoard().getWidth();
+                final var verticalSpace = getEnemyController().getGameBoard().getHeight();
+                final var horizontalEnemySpace = horizontalSpace * (1 - HORIZONTAL_ENEMY_MOVE_DISTANCE);
+                final var chunkSize = horizontalEnemySpace / ENEMY_COLS;
+                final var padding = chunkSize / 2 - GameConstants.RELATIVE_SHIP_WIDTH * horizontalSpace / 2;
+                for (final Enemy enemy : getEnemyController().getAliveEnemies()) {
+                    final var enemyXPos = chunkSize * enemy.getxIndex() + +padding;
+                    final var enemyYPos = chunkSize * enemy.getyIndex() + +padding;
                     if (verticalMovement.get()) {
                         enemy.setX(enemyXPos + (horizontalMovementDirection.get().equals(HorizontalDirection.LEFT) ? 0 : (HORIZONTAL_ENEMY_MOVE_DISTANCE * horizontalSpace)));
                         enemy.setY(enemyYPos + (VERTICAL_ENEMY_MOVE_DISTANCE * verticalSpace) * (verticalMovementIteration.get() - 1) + (VERTICAL_ENEMY_MOVE_DISTANCE * verticalSpace) * movementProgress.get());

@@ -13,9 +13,9 @@ import static h13.model.GameConstants.RELATIVE_SHIP_WIDTH;
 
 public class GamePlay {
 
-    private GameController gameController;
+    private final GameController gameController;
 
-    public GamePlay(GameController gameController) {
+    public GamePlay(final GameController gameController) {
         this.gameController = gameController;
         init();
     }

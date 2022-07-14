@@ -13,7 +13,7 @@ public class Bullet extends Sprite {
     VerticalDirection direction;
 
 
-    public Bullet(double x, double y, GameController gameController, BattleShip owner, VerticalDirection direction) {
+    public Bullet(final double x, final double y, final GameController gameController, final BattleShip owner, final VerticalDirection direction) {
         super(x, y, 0.003, 0.02, Color.WHITE, 1, 1, gameController);
         this.owner = owner;
         this.direction = direction;
@@ -21,7 +21,7 @@ public class Bullet extends Sprite {
     }
 
     @Override
-    protected void gameTick(GameTickParameters tick) {
+    protected void gameTick(final GameTickParameters tick) {
         super.gameTick(tick);
 
         // If the bullet reaches the edge of the game Board, remove it.
@@ -30,7 +30,7 @@ public class Bullet extends Sprite {
         }
 
         // Hit Detection
-        var damaged = getGameBoard().getSprites().stream()
+        final var damaged = getGameBoard().getSprites().stream()
             .filter(BattleShip.class::isInstance)
             .map(BattleShip.class::cast)
             .filter(sprite -> sprite != owner)

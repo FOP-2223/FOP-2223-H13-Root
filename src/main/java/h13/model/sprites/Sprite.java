@@ -37,7 +37,7 @@ public abstract class Sprite implements Playable {
 
     private AnimationTimer movementTimer;
 
-    public Sprite(double x, double y, double relativeWidth, double relativeHeight, Color color, double velocity, int health, GameController gameController) {
+    public Sprite(final double x, final double y, final double relativeWidth, final double relativeHeight, final Color color, final double velocity, final int health, final GameController gameController) {
         this.x = new SimpleDoubleProperty(x);
         this.y = new SimpleDoubleProperty(y);
         this.velocity = velocity;
@@ -48,7 +48,7 @@ public abstract class Sprite implements Playable {
         this.health = health;
     }
 
-    protected boolean coordinatesInBounds(double x, double y, double padding) {
+    protected boolean coordinatesInBounds(final double x, final double y, final double padding) {
         return x >= padding && x <= getGameBoard().getWidth() - getWidth() - padding
             && y >= padding && y <= getGameBoard().getHeight() - getHeight() - padding;
     }
@@ -59,7 +59,7 @@ public abstract class Sprite implements Playable {
         damage(1);
     }
 
-    public void damage(int damage) {
+    public void damage(final int damage) {
         health -= damage;
         if (health <= 0) {
             die();
@@ -72,8 +72,8 @@ public abstract class Sprite implements Playable {
         getGameBoard().removeSprite(this);
     }
 
-    protected void gameTick(GameTickParameters tick) {
-        var newPos = getPaddedPosition(tick.newX(), tick.newY(), 0);
+    protected void gameTick(final GameTickParameters tick) {
+        final var newPos = getPaddedPosition(tick.newX(), tick.newY(), 0);
         setX(newPos.getX());
         setY(newPos.getY());
         if (health <= 0) {
@@ -97,7 +97,7 @@ public abstract class Sprite implements Playable {
         return movementTimer;
     }
 
-    protected Point2D getPaddedPosition(double x, double y, double padding) {
+    protected Point2D getPaddedPosition(final double x, final double y, final double padding) {
         return new Point2D(
             Math.max(padding, Math.min(getGameBoard().getWidth() - getWidth() - padding, x)),
             Math.max(padding, Math.min(getGameBoard().getHeight() - getHeight() - padding, y))
@@ -124,7 +124,7 @@ public abstract class Sprite implements Playable {
         return velocity;
     }
 
-    public void setVelocity(int velocity) {
+    public void setVelocity(final int velocity) {
         this.velocity = velocity;
     }
 
@@ -132,7 +132,7 @@ public abstract class Sprite implements Playable {
         return velocityX.get();
     }
 
-    public void setVelocityX(double velocityX) {
+    public void setVelocityX(final double velocityX) {
         this.velocityX.set(velocityX);
     }
 
@@ -181,7 +181,7 @@ public abstract class Sprite implements Playable {
         velocityY.set(0);
     }
 
-    public void render(GraphicsContext gc) {
+    public void render(final GraphicsContext gc) {
         if (texture != null) {
             gc.drawImage(texture, x.get(), y.get(), getWidth(), getHeight());
         } else {
@@ -191,7 +191,7 @@ public abstract class Sprite implements Playable {
     }
 
     @Override
-    public void update(long now) {
+    public void update(final long now) {
         // Smooth movement
         if (lastUpdate.get() > 0) {
             final double elapsedTime = (now - lastUpdate.get()) / 1_000_000_000.0;
@@ -250,11 +250,11 @@ public abstract class Sprite implements Playable {
         return y.get();
     }
 
-    public void setX(double x) {
+    public void setX(final double x) {
         this.x.set(x);
     }
 
-    public void setY(double y) {
+    public void setY(final double y) {
         this.y.set(y);
     }
 
@@ -279,17 +279,17 @@ public abstract class Sprite implements Playable {
         return velocityY.get();
     }
 
-    public void setTexture(Image texture) {
+    public void setTexture(final Image texture) {
         this.texture = texture;
     }
 
-    protected void loadTexture(String path) {
+    protected void loadTexture(final String path) {
         if (!GameConstants.LOAD_TEXTURES) {
             return;
         }
         try {
             texture = new Image(path);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             System.out.println("Failed to load texture: " + path);
             e.printStackTrace();
         }

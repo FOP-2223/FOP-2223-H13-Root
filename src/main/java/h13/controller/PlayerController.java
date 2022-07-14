@@ -10,13 +10,13 @@ import static h13.model.GameConstants.ORIGINAL_GAME_BOUNDS;
 import static h13.model.GameConstants.RELATIVE_SHIP_WIDTH;
 
 public class PlayerController {
-    private GameController gameController;
+    private final GameController gameController;
     private final Player player;
 
-    private List<KeyCode> keysPressed = new ArrayList<>();
+    private final List<KeyCode> keysPressed = new ArrayList<>();
 
 
-    public PlayerController(GameController gameController) {
+    public PlayerController(final GameController gameController) {
         this.gameController = gameController;
         this.player = new Player(
             0,
