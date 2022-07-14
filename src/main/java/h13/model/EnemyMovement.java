@@ -80,11 +80,13 @@ public class EnemyMovement implements Playable {
     }
 
     public boolean bottomWasReached() {
-        if (verticalMovement.get()) {
-            return (verticalMovementIteration.get() - 1) * VERTICAL_ENEMY_MOVE_DISTANCE + VERTICAL_ENEMY_MOVE_DISTANCE * movementProgress.get() >= 1;
-        } else {
-            return verticalMovementIteration.get() * VERTICAL_ENEMY_MOVE_DISTANCE >= 1;
-        }
+//        for (Enemy enemy : getEnemyController().getAliveEnemies()) {
+//            if (enemy.getY() + enemy.getHeight() > getEnemyController().getGameBoard().getHeight()) {
+//                return true;
+//            }
+//        }
+//        return false;
+        return getEnemyController().getAliveEnemies().stream().anyMatch(enemy -> enemy.getY() + enemy.getHeight() > getEnemyController().getGameBoard().getHeight());
     }
 
     public EnemyController getEnemyController() {
