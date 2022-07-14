@@ -2,7 +2,9 @@ package h13.view.gui;
 
 import h13.model.GameConstants;
 import h13.model.Playable;
+import h13.model.sprites.Player;
 import h13.model.sprites.Sprite;
+import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 
@@ -12,6 +14,7 @@ import java.util.function.Predicate;
 
 public class GameBoard extends Canvas implements Playable {
     private Set<Sprite> sprites = new HashSet<>();
+    private Bounds previousBounds = getBoundsInParent();
 
     public GameBoard(double width, double height) {
         super(width, height);
@@ -50,6 +53,18 @@ public class GameBoard extends Canvas implements Playable {
      */
     @Override
     public void update(long now) {
+        if (!getBoundsInParent().equals(previousBounds)) {
+            if (previousBounds.getWidth() > 0 && previousBounds.getHeight() > 0 && getBoundsInParent().getWidth() > 0 && getBoundsInParent().getHeight() > 0) {
+                var scale = getWidth() / previousBounds.getWidth();
+                System.out.println("scale: " + scale);
+                sprites.forEach(sprite -> {
+                    sprite.setX(sprite.getX() * scale);
+                    sprite.setY(sprite.getY() * scale);
+                });
+            }
+            previousBounds = getBoundsInParent();
+        }
+        getSprites(Player.class).forEach(player -> player.setY(getHeight() - player.getHeight()));
         var gc = getGraphicsContext2D();
         gc.setFill(Color.BLACK);
         gc.setStroke(Color.PALEGREEN);

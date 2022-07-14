@@ -7,6 +7,9 @@ import h13.view.gui.GameScene;
 import javafx.geometry.HorizontalDirection;
 import javafx.scene.CacheHint;
 
+import static h13.model.GameConstants.ORIGINAL_GAME_BOUNDS;
+import static h13.model.GameConstants.RELATIVE_SHIP_WIDTH;
+
 public class GamePlay {
 
     private GameController gameController;
@@ -18,10 +21,10 @@ public class GamePlay {
 
     private void init() {
         // Player
-        var player = new Player(0, 0, 1.5, getGameController());
+        var player = new Player(0, ORIGINAL_GAME_BOUNDS.getHeight() - ORIGINAL_GAME_BOUNDS.getWidth() * RELATIVE_SHIP_WIDTH, 1.5, getGameController());
         getGameController().setPlayer(player);
-        player.setY(gameController.getGameBoard().getHeight() - player.getHeight());
-
+//        player.setY(gameController.getGameBoard().getHeight() - player.getHeight());
+//        player.yProperty().bind(gameController.getGameBoard().heightProperty().subtract(gameController.getGameBoard().widthProperty().multiply(player.getRelativeHeight())));
         getGameController().getGameBoard().addSprite(player);
 
         // Enemies

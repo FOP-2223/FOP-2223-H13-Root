@@ -113,6 +113,14 @@ public abstract class Sprite implements Playable {
         return relativeWidth * getGameboardWidth();
     }
 
+    public double getRelativeHeight() {
+        return relativeHeight;
+    }
+
+    public double getRelativeWidth() {
+        return relativeWidth;
+    }
+
     public double getVelocity() {
         return velocity;
     }

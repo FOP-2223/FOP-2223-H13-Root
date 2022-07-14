@@ -62,14 +62,15 @@ public class GameScene extends Scene {
 //                .otherwise(heightProperty().multiply(ASPECT_RATIO).divide(gameBoard.widthProperty()))
 //        );
 //        gameBoard.scaleYProperty().bind(gameBoard.scaleXProperty());
+
         // Size
-//        gameBoard.widthProperty().bind(
-//            Bindings
-//                .when(widthProperty().divide(heightProperty()).lessThanOrEqualTo(ASPECT_RATIO))
-//                .then(widthProperty())
-//                .otherwise(heightProperty().multiply(ASPECT_RATIO))
-//        );
-//        gameBoard.heightProperty().bind(gameBoard.widthProperty().divide(ASPECT_RATIO));
+        gameBoard.widthProperty().bind(
+            Bindings
+                .when(widthProperty().divide(heightProperty()).lessThanOrEqualTo(ASPECT_RATIO))
+                .then(widthProperty())
+                .otherwise(heightProperty().multiply(ASPECT_RATIO))
+        );
+        gameBoard.heightProperty().bind(gameBoard.widthProperty().divide(ASPECT_RATIO));
 //
 //        // Positioning
         gameBoard.translateXProperty().bind(widthProperty().subtract(gameBoard.widthProperty()).divide(2));
@@ -83,11 +84,6 @@ public class GameScene extends Scene {
         gc.setFill(Color.RED);
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
-//        Font theFont = Font.font("Times New Roman", FontWeight.BOLD, 48);
-//        gc.setFont(theFont);
-//        gc.fillText("Hello, World!", 60, 50);
-//        gc.strokeText("Hello, World!", 60, 50);
-//        gc.fillRect(0, 0, gameBoard.getWidth(), gameBoard.getHeight());
     }
 
     public void apply(Stage stage) {
