@@ -1,19 +1,27 @@
 package h13.controller;
 
+import h13.model.GamePlay;
 import h13.model.Playable;
+import h13.model.gameplay.GameState;
 import h13.view.gui.GameScene;
 import h13.model.sprites.Player;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
-import javafx.geometry.HorizontalDirection;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.stage.Popup;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameController {
+public class GameController implements Playable {
     private GameScene gameScene;
+    private GameState gameState;
+    private GamePlay gamePlay;
     private EnemyController enemyController;
     private Player player;
     private List<KeyCode> keysPressed = new ArrayList<>();
@@ -27,6 +35,10 @@ public class GameController {
 
     public GameScene getGameScene() {
         return gameScene;
+    }
+
+    public GamePlay getGamePlay() {
+        return gamePlay;
     }
 
     public EnemyController getEnemyController() {
@@ -56,14 +68,7 @@ public class GameController {
     }
 
     private void init() {
-        // Player
-        player = new Player(100, 100, 1.5, this);
-        player.setY(getGameBoard().getMaxHeight() - player.getHeight());
-        getGameBoard().getChildren().add(player);
-
-        // Enemies
-        enemyController = new EnemyController(this, HorizontalDirection.RIGHT);
-//        getGameBoard().getChildren().add(enemyController);
+        this.gamePlay = new GamePlay(this);
 
         handleKeyboardInputs();
 
@@ -96,10 +101,11 @@ public class GameController {
         });
     }
 
-
+    @Override
     public void update(long now) {
         Platform.runLater(() -> {
-            if (enemyController != null) enemyController.update(now);
+            if (enemyController != null && enemyController.getEnemyMovement() != null)
+                enemyController.getEnemyMovement().update(now);
         });
         getGameBoard()
             .getChildren()
@@ -110,11 +116,26 @@ public class GameController {
                 Platform.runLater(() -> s.update(now));
             });
 
-        if (getEnemyController().getAliveEnemyCount() == 0) {
+        if (getEnemyController().defeated()) {
             win();
-        } else {
-//            System.out.println("remaining enemies: " + getEnemyController().getAliveEnemyCount());
         }
+        if (getPlayer().isDead() || enemyController.getEnemyMovement().bottomWasReached()) {
+            lose();
+        }
+    }
+
+    private void lose() {
+        Platform.runLater(() -> {
+            gameLoop.stop();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You Loose!!!\nContinue?", ButtonType.YES, ButtonType.NO);
+            alert.showAndWait();
+
+            if (alert.getResult() == ButtonType.YES) {
+                reset();
+                gameLoop.start();
+                //do stuff
+            }
+        });
     }
 
     public void pause() {
@@ -126,12 +147,29 @@ public class GameController {
     }
 
     private void win() {
-        System.out.println("You win!");
-        reset();
+        Platform.runLater(() -> {
+            gameLoop.stop();
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You Won!!!\nContinue?", ButtonType.YES, ButtonType.NO);
+            alert.showAndWait();
+
+            if (alert.getResult() == ButtonType.YES) {
+                reset();
+                gameLoop.start();
+                //do stuff
+            }
+        });
     }
 
     public void reset() {
         getGameBoard().getChildren().clear();
         init();
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public void setEnemyController(EnemyController enemyController) {
+        this.enemyController = enemyController;
     }
 }

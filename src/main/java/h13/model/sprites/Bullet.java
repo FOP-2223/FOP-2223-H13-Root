@@ -14,7 +14,7 @@ public class Bullet extends Sprite {
 
 
     public Bullet(double x, double y, GameController gameController, BattleShip owner, VerticalDirection direction) {
-        super(x, y, 0.003, 0.02, Color.WHITE, 1, 3, gameController);
+            super(x, y, 0.003, 0.02, Color.WHITE, 1, 1, gameController);
         this.owner = owner;
         this.direction = direction;
         velocityYProperty().bind(getGameBoard().heightProperty().multiply(direction.equals(VerticalDirection.UP) ? -getVelocity() : getVelocity()));

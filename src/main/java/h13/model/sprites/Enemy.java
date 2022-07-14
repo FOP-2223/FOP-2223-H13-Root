@@ -2,12 +2,8 @@ package h13.model.sprites;
 
 import h13.controller.EnemyController;
 import h13.controller.GameController;
-import javafx.animation.TranslateTransition;
-import javafx.beans.binding.Bindings;
-import javafx.geometry.HorizontalDirection;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.paint.Color;
-import javafx.util.Duration;
 
 import static h13.model.GameConstants.*;
 
@@ -75,7 +71,7 @@ public class Enemy extends BattleShip {
 //        System.out.println(getEnemyController().getHorizontalMovementDirection());
         var insets = getGameBoard().getBorder().getInsets();
         var horizontalSpace = getGameBoard().getWidth() - insets.getLeft() - insets.getRight();
-        var horizontalEnemySpace = horizontalSpace * (1 - HORIZONTAL_ENEMY_MOVE_SPACE);
+        var horizontalEnemySpace = horizontalSpace * (1 - HORIZONTAL_ENEMY_MOVE_DISTANCE);
         var chunkSize = horizontalEnemySpace / ENEMY_COLS;
         var padding = chunkSize / 2 - getWidth() / 2;
 

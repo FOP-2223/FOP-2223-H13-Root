@@ -42,13 +42,19 @@ public class GameScene extends Scene {
 
     private void initGameboard() {
         gameBoard = new Pane();
+
+        // Border
         gameBoard.setBorder(
             new Border(
                 new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))
             )
         );
+
+        // Size
         gameBoard.setMaxSize(ORIGINAL_GAME_BOUNDS.getWidth(), ORIGINAL_GAME_BOUNDS.getHeight());
         gameBoard.setMinSize(ORIGINAL_GAME_BOUNDS.getWidth(), ORIGINAL_GAME_BOUNDS.getHeight());
+
+        // Scaling
         gameBoard.scaleXProperty().bind(
             Bindings
                 .when(widthProperty().divide(heightProperty()).lessThanOrEqualTo(ASPECT_RATIO))
@@ -57,8 +63,10 @@ public class GameScene extends Scene {
         );
         gameBoard.scaleYProperty().bind(gameBoard.scaleXProperty());
 
+        // Positioning
         gameBoard.translateXProperty().bind(widthProperty().subtract(gameBoard.widthProperty()).divide(2));
         gameBoard.translateYProperty().bind(heightProperty().subtract(gameBoard.heightProperty()).divide(2));
+
         root.getChildren().add(gameBoard);
     }
 
