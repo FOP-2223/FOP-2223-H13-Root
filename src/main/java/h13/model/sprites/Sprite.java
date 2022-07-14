@@ -8,6 +8,7 @@ import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.geometry.Point2D;
+import javafx.scene.CacheHint;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -36,6 +37,8 @@ public abstract class Sprite extends Rectangle implements Playable {
         this.relativeWidth = relativeWidth;
         this.relativeHeight = relativeHeight;
         this.health = health;
+        setCache(true);
+        setCacheHint(CacheHint.SPEED);
         init();
     }
 

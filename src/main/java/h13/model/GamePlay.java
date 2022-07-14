@@ -5,6 +5,7 @@ import h13.controller.GameController;
 import h13.model.sprites.Player;
 import h13.view.gui.GameScene;
 import javafx.geometry.HorizontalDirection;
+import javafx.scene.CacheHint;
 
 public class GamePlay {
 
@@ -20,6 +21,7 @@ public class GamePlay {
         var player = new Player(100, 100, 1.5, getGameController());
         getGameController().setPlayer(player);
         player.setY(gameController.getGameBoard().getMaxHeight() - player.getHeight());
+
         getGameController().getGameBoard().getChildren().add(player);
 
         // Enemies

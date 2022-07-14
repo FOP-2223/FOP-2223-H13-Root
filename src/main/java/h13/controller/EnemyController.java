@@ -4,6 +4,7 @@ import h13.model.EnemyMovement;
 import h13.model.GameConstants;
 import h13.model.sprites.Enemy;
 import javafx.geometry.HorizontalDirection;
+import javafx.scene.CacheHint;
 import javafx.scene.layout.Pane;
 
 import java.util.HashSet;
