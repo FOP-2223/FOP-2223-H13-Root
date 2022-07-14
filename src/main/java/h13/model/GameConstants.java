@@ -23,4 +23,5 @@ public final class GameConstants {
     public static final double ENEMY_SHOOTING_PROBABILITY = 0.0005;
     public static final double HORIZONTAL_ENEMY_MOVEMENT_DURATION = 2;
     public static final double VERTICAL_ENEMY_MOVEMENT_DURATION = .5;
+    public static final boolean LOAD_TEXTURES = false;
 }

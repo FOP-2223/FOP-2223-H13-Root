@@ -23,9 +23,10 @@ public class Bullet extends Sprite {
     @Override
     protected void gameTick(GameTickParameters tick) {
         super.gameTick(tick);
+
+        // If the bullet reaches the edge of the game Board, remove it.
         if (!coordinatesInBounds(tick.newX(), tick.newY(), 0)) {
             die();
-//            System.out.println("Bullet out of bounds");
         }
 
         // Hit Detection

@@ -8,8 +8,11 @@ import h13.model.sprites.Player;
 import h13.model.sprites.Sprite;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -18,8 +21,18 @@ public class GameBoard extends Canvas implements Playable {
     private Set<Sprite> sprites = new HashSet<>();
     private Bounds previousBounds = getBoundsInParent();
 
+    private Image backgroundImage;
+
     public GameBoard(double width, double height) {
         super(width, height);
+        if (GameConstants.LOAD_TEXTURES) {
+            try {
+                backgroundImage = new Image("/h13/images/wallpapers/Galaxy3.jpg");
+//            backgroundImage = ImageIO.read(getClass().getResourceAsStream("/h13/images/wallpapers/Galaxy1.jpg"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public Set<Sprite> getSprites() {
@@ -72,12 +85,11 @@ public class GameBoard extends Canvas implements Playable {
         }
         getSprites(Player.class).forEach(player -> player.setY(getHeight() - player.getHeight()));
         var gc = getGraphicsContext2D();
-        gc.setFill(Color.BLACK);
-        gc.setStroke(Color.PALEGREEN);
-        gc.setLineWidth(4);
-        gc.clearRect(0, 0, getWidth(), getHeight());
-        gc.strokeRect(0, 0, getWidth(), getHeight());
-
+        if (backgroundImage != null) {
+            gc.drawImage(backgroundImage, 0, 0, getWidth(), getHeight());
+        } else {
+            gc.clearRect(0, 0, getWidth(), getHeight());
+        }
         // Draw bullets first (behind the player)
         getSprites(Bullet.class).forEach(bullet -> bullet.render(gc));
 
@@ -89,6 +101,11 @@ public class GameBoard extends Canvas implements Playable {
 
         // Draw everything else
         getSprites(s -> !(s instanceof Player) && !(s instanceof Bullet) && !(s instanceof Enemy)).forEach(sprite -> sprite.render(gc));
+
+        // Draw borders
+        gc.setStroke(Color.PALEGREEN);
+        gc.setLineWidth(4);
+        gc.strokeRect(0, 0, getWidth(), getHeight());
     }
 
     public double getScale() {

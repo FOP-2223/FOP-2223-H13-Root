@@ -1,5 +1,6 @@
 package h13.model.sprites;
 
+import h13.model.GameConstants;
 import h13.model.Playable;
 import h13.controller.GameController;
 import h13.view.gui.GameBoard;
@@ -12,6 +13,7 @@ import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public abstract class Sprite implements Playable {
@@ -22,6 +24,8 @@ public abstract class Sprite implements Playable {
     private final LongProperty lastUpdate = new SimpleLongProperty(0);
     private final double relativeHeight;
     private final double relativeWidth;
+
+    protected Image texture;
 
     private final DoubleProperty x;
     private final DoubleProperty y;
@@ -34,7 +38,6 @@ public abstract class Sprite implements Playable {
     private AnimationTimer movementTimer;
 
     public Sprite(double x, double y, double relativeWidth, double relativeHeight, Color color, double velocity, int health, GameController gameController) {
-//        super(x, y, relativeWidth * gameController.getGameBoard().getMaxWidth(), relativeHeight * gameController.getGameBoard().getMaxWidth());
         this.x = new SimpleDoubleProperty(x);
         this.y = new SimpleDoubleProperty(y);
         this.velocity = velocity;
@@ -43,9 +46,6 @@ public abstract class Sprite implements Playable {
         this.relativeWidth = relativeWidth;
         this.relativeHeight = relativeHeight;
         this.health = health;
-//        setCache(true);
-//        setCacheHint(CacheHint.SPEED);
-        init();
     }
 
     protected boolean coordinatesInBounds(double x, double y, double padding) {
@@ -60,7 +60,6 @@ public abstract class Sprite implements Playable {
     }
 
     public void damage(int damage) {
-//        System.out.printf("%s damaged: previous health %d, new health %d\n", this.hashCode(), health, health - damage);
         health -= damage;
         if (health <= 0) {
             die();
@@ -137,13 +136,6 @@ public abstract class Sprite implements Playable {
         this.velocityX.set(velocityX);
     }
 
-    private void init() {
-//        this.setFill(color);
-//        this.widthProperty().bind(getGameBoard().widthProperty().multiply(width));
-//        this.heightProperty().bind(getGameBoard().widthProperty().multiply(height));
-//        setHeight(5);
-    }
-
     protected double getGameboardWidth() {
         return getGameBoard().getWidth();
     }
@@ -190,9 +182,12 @@ public abstract class Sprite implements Playable {
     }
 
     public void render(GraphicsContext gc) {
-        gc.setFill(color);
-        gc.fillRect(getX(), getY(), getWidth(), getHeight());
-//        gc.fillRect(getX(), getY(), getWidth() * getGameboardWidth(), getHeight() * getGameboardHeight());
+        if (texture != null) {
+            gc.drawImage(texture, x.get(), y.get(), getWidth(), getHeight());
+        } else {
+            gc.setFill(color);
+            gc.fillRect(getX(), getY(), getWidth(), getHeight());
+        }
     }
 
     @Override
@@ -274,5 +269,29 @@ public abstract class Sprite implements Playable {
     // getBounds
     public Bounds getBounds() {
         return new BoundingBox(getX(), getY(), getWidth(), getHeight());
+    }
+
+    public Image getTexture() {
+        return texture;
+    }
+
+    public double getVelocityY() {
+        return velocityY.get();
+    }
+
+    public void setTexture(Image texture) {
+        this.texture = texture;
+    }
+
+    protected void loadTexture(String path) {
+        if (!GameConstants.LOAD_TEXTURES) {
+            return;
+        }
+        try {
+            texture = new Image(path);
+        } catch (Exception e) {
+            System.out.println("Failed to load texture: " + path);
+            e.printStackTrace();
+        }
     }
 }
