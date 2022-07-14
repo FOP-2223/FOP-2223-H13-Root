@@ -47,9 +47,7 @@ public class Enemy extends BattleShip {
         setX(tick.newX());
         setY(tick.newY());
         if (health <= 0) {
-            setVisible(false);
-            getGameBoard().getChildren().remove(this);
-//            tick.movementTimer.stop();
+            die();
         }
 //        if (!coordinatesInBounds(tick.newX(), tick.newY(), getGameBoard().getBorder().getInsets().getLeft())) {
 //            System.out.println("Enemy out of bounds");
@@ -69,11 +67,11 @@ public class Enemy extends BattleShip {
 
 //        System.out.println(getVelocityX());
 //        System.out.println(getEnemyController().getHorizontalMovementDirection());
-        var insets = getGameBoard().getBorder().getInsets();
-        var horizontalSpace = getGameBoard().getWidth() - insets.getLeft() - insets.getRight();
-        var horizontalEnemySpace = horizontalSpace * (1 - HORIZONTAL_ENEMY_MOVE_DISTANCE);
-        var chunkSize = horizontalEnemySpace / ENEMY_COLS;
-        var padding = chunkSize / 2 - getWidth() / 2;
+//        var insets = getGameBoard().getBorder().getInsets();
+//        var horizontalSpace = getGameBoard().getWidth() - insets.getLeft() - insets.getRight();
+//        var horizontalEnemySpace = horizontalSpace * (1 - HORIZONTAL_ENEMY_MOVE_DISTANCE);
+//        var chunkSize = horizontalEnemySpace / ENEMY_COLS;
+//        var padding = chunkSize / 2 - getWidth() / 2;
 
         timeTillNextShot -= tick.elapsedTime();
         if (timeTillNextShot <= 0) {

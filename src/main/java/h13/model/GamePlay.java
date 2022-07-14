@@ -18,15 +18,14 @@ public class GamePlay {
 
     private void init() {
         // Player
-        var player = new Player(100, 100, 1.5, getGameController());
+        var player = new Player(0, 0, 1.5, getGameController());
         getGameController().setPlayer(player);
-        player.setY(gameController.getGameBoard().getMaxHeight() - player.getHeight());
+        player.setY(gameController.getGameBoard().getHeight() - player.getHeight());
 
-        getGameController().getGameBoard().getChildren().add(player);
+        getGameController().getGameBoard().addSprite(player);
 
         // Enemies
         getGameController().setEnemyController(new EnemyController(getGameController(), HorizontalDirection.RIGHT));
-//        getGameBoard().getChildren().add(enemyController);
     }
 
     public GameController getGameController() {

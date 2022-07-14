@@ -14,7 +14,7 @@ public class Bullet extends Sprite {
 
 
     public Bullet(double x, double y, GameController gameController, BattleShip owner, VerticalDirection direction) {
-            super(x, y, 0.003, 0.02, Color.WHITE, 1, 1, gameController);
+        super(x, y, 0.003, 0.02, Color.WHITE, 1, 1, gameController);
         this.owner = owner;
         this.direction = direction;
         velocityYProperty().bind(getGameBoard().heightProperty().multiply(direction.equals(VerticalDirection.UP) ? -getVelocity() : getVelocity()));
@@ -23,18 +23,18 @@ public class Bullet extends Sprite {
     @Override
     protected void gameTick(GameTickParameters tick) {
         super.gameTick(tick);
-        if (!coordinatesInBounds(tick.newX(), tick.newY(), getGameBoard().getBorder().getInsets().getLeft())) {
+        if (!coordinatesInBounds(tick.newX(), tick.newY(), 0)) {
             die();
 //            System.out.println("Bullet out of bounds");
         }
 
         // Hit Detection
-        var damaged = getGameBoard().getChildren().stream()
+        var damaged = getGameBoard().getSprites().stream()
             .filter(BattleShip.class::isInstance)
             .map(BattleShip.class::cast)
             .filter(sprite -> sprite != owner)
             .filter(owner::isEnemy)
-            .filter(sprite -> sprite.getBoundsInParent().intersects(getBoundsInParent()))
+            .filter(sprite -> sprite.getBounds().intersects(getBounds()))
             .filter(sprite -> !hits.contains(sprite))
             .findFirst().orElse(null);
         if (damaged != null) {

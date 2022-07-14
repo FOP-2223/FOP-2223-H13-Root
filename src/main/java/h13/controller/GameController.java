@@ -3,6 +3,7 @@ package h13.controller;
 import h13.model.GamePlay;
 import h13.model.Playable;
 import h13.model.gameplay.GameState;
+import h13.view.gui.GameBoard;
 import h13.view.gui.GameScene;
 import h13.model.sprites.Player;
 import javafx.animation.AnimationTimer;
@@ -17,6 +18,7 @@ import javafx.stage.Popup;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GameController implements Playable {
     private GameScene gameScene;
@@ -57,7 +59,7 @@ public class GameController implements Playable {
         return gameLoop;
     }
 
-    public Pane getGameBoard() {
+    public GameBoard getGameBoard() {
         return gameScene.getGameBoard();
     }
 
@@ -108,18 +110,19 @@ public class GameController implements Playable {
                 enemyController.getEnemyMovement().update(now);
         });
         getGameBoard()
-            .getChildren()
+            .getSprites()
             .stream()
-            .filter(Playable.class::isInstance)
+            .filter(Objects::nonNull)
             .map(Playable.class::cast)
             .forEach(s -> {
                 Platform.runLater(() -> s.update(now));
             });
-
-        if (getEnemyController().defeated()) {
+//        getGameBoard().getSprites().forEach(s -> s.update(now));
+        getGameBoard().update(now);
+        if (getEnemyController() != null && getEnemyController().defeated()) {
             win();
         }
-        if (getPlayer().isDead() || enemyController.getEnemyMovement().bottomWasReached()) {
+        if (getPlayer().isDead() || (getEnemyController() != null && getEnemyController().getEnemyMovement().bottomWasReached())) {
             lose();
         }
     }
@@ -161,7 +164,7 @@ public class GameController implements Playable {
     }
 
     public void reset() {
-        getGameBoard().getChildren().clear();
+        getGameBoard().clearSprites();
         init();
     }
 

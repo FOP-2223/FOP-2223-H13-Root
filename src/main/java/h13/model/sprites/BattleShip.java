@@ -13,12 +13,12 @@ public class BattleShip extends Sprite {
 
     protected void shoot(VerticalDirection direction) {
         Sprite bullet = new Bullet(
-            getBoundsInParent().getMinX() + getWidth() / 2,
-            getBoundsInParent().getMinY(),
+            getX() + getWidth() / 2,
+            getY(),
             getGameController(),
             this,
             direction);
-        getGameBoard().getChildren().add(getGameBoard().getChildren().indexOf(this), bullet);
+        getGameBoard().addSprite(bullet);
     }
 
     public boolean isFriend(BattleShip other) {

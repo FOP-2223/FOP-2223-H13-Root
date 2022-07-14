@@ -2,18 +2,19 @@ package h13.model.sprites;
 
 import h13.model.Playable;
 import h13.controller.GameController;
+import h13.view.gui.GameBoard;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.scene.CacheHint;
-import javafx.scene.layout.Pane;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
-public abstract class Sprite extends Rectangle implements Playable {
+public abstract class Sprite implements Playable {
 
     // --Variables--//
     protected final GameController gameController;
@@ -21,6 +22,9 @@ public abstract class Sprite extends Rectangle implements Playable {
     private final LongProperty lastUpdate = new SimpleLongProperty(0);
     private final double relativeHeight;
     private final double relativeWidth;
+
+    private final DoubleProperty x;
+    private final DoubleProperty y;
     private final DoubleProperty velocityX = new SimpleDoubleProperty(0);
     private final DoubleProperty velocityY = new SimpleDoubleProperty(0);
     protected int health;
@@ -30,21 +34,23 @@ public abstract class Sprite extends Rectangle implements Playable {
     private AnimationTimer movementTimer;
 
     public Sprite(double x, double y, double relativeWidth, double relativeHeight, Color color, double velocity, int health, GameController gameController) {
-        super(x, y, relativeWidth * gameController.getGameBoard().getMaxWidth(), relativeHeight * gameController.getGameBoard().getMaxWidth());
+//        super(x, y, relativeWidth * gameController.getGameBoard().getMaxWidth(), relativeHeight * gameController.getGameBoard().getMaxWidth());
+        this.x = new SimpleDoubleProperty(x);
+        this.y = new SimpleDoubleProperty(y);
         this.velocity = velocity;
         this.color = color;
         this.gameController = gameController;
         this.relativeWidth = relativeWidth;
         this.relativeHeight = relativeHeight;
         this.health = health;
-        setCache(true);
-        setCacheHint(CacheHint.SPEED);
+//        setCache(true);
+//        setCacheHint(CacheHint.SPEED);
         init();
     }
 
     protected boolean coordinatesInBounds(double x, double y, double padding) {
-        return x >= padding && x <= getGameBoard().getMaxWidth() - getWidth() - padding
-            && y >= padding && y <= getGameBoard().getMaxHeight() - getHeight() - padding;
+        return x >= padding && x <= getGameBoard().getWidth() - getWidth() - padding
+            && y >= padding && y <= getGameBoard().getHeight() - getHeight() - padding;
     }
 
     // --Getters and Setters--//
@@ -64,20 +70,19 @@ public abstract class Sprite extends Rectangle implements Playable {
     public void die() {
         health = 0;
         dead = true;
+        getGameBoard().removeSprite(this);
     }
 
     protected void gameTick(GameTickParameters tick) {
-        var newPos = getPaddedPosition(tick.newX(), tick.newY(), getGameBoard().getBorder().getInsets().getLeft());
+        var newPos = getPaddedPosition(tick.newX(), tick.newY(), 0);
         setX(newPos.getX());
         setY(newPos.getY());
         if (health <= 0) {
-            setVisible(false);
-            getGameBoard().getChildren().remove(this);
-//            tick.movementTimer.stop();
+            die();
         }
     }
 
-    public Pane getGameBoard() {
+    public GameBoard getGameBoard() {
         return gameController.getGameBoard();
     }
 
@@ -100,12 +105,12 @@ public abstract class Sprite extends Rectangle implements Playable {
         );
     }
 
-    public double getRelativeHeight() {
-        return relativeHeight;
+    public double getHeight() {
+        return relativeHeight * getGameboardWidth();
     }
 
-    public double getRelativeWidth() {
-        return relativeWidth;
+    public double getWidth() {
+        return relativeWidth * getGameboardWidth();
     }
 
     public double getVelocity() {
@@ -125,18 +130,18 @@ public abstract class Sprite extends Rectangle implements Playable {
     }
 
     private void init() {
-        this.setFill(color);
-        this.widthProperty().bind(getGameBoard().widthProperty().multiply(relativeWidth));
-        this.heightProperty().bind(getGameBoard().widthProperty().multiply(relativeHeight));
+//        this.setFill(color);
+//        this.widthProperty().bind(getGameBoard().widthProperty().multiply(width));
+//        this.heightProperty().bind(getGameBoard().widthProperty().multiply(height));
 //        setHeight(5);
     }
 
     protected double getGameboardWidth() {
-        return getGameBoard().getMaxWidth() - getGameBoard().getInsets().getLeft() - getGameBoard().getInsets().getRight();
+        return getGameBoard().getWidth();
     }
 
     protected double getGameboardHeight() {
-        return getGameBoard().getMaxHeight() - getGameBoard().getInsets().getTop() - getGameBoard().getInsets().getBottom();
+        return getGameBoard().getHeight();
     }
 
     public boolean isDead() {
@@ -174,6 +179,12 @@ public abstract class Sprite extends Rectangle implements Playable {
     public void stop() {
         velocityX.set(0);
         velocityY.set(0);
+    }
+
+    public void render(GraphicsContext gc) {
+        gc.setFill(color);
+        gc.fillRect(getX(), getY(), getWidth(), getHeight());
+//        gc.fillRect(getX(), getY(), getWidth() * getGameboardWidth(), getHeight() * getGameboardHeight());
     }
 
     @Override
@@ -226,5 +237,34 @@ public abstract class Sprite extends Rectangle implements Playable {
         double newX,
         double newY
     ) {
+    }
+
+    public double getX() {
+        return x.get();
+    }
+
+    public double getY() {
+        return y.get();
+    }
+
+    public void setX(double x) {
+        this.x.set(x);
+    }
+
+    public void setY(double y) {
+        this.y.set(y);
+    }
+
+    public DoubleProperty xProperty() {
+        return x;
+    }
+
+    public DoubleProperty yProperty() {
+        return y;
+    }
+
+    // getBounds
+    public Bounds getBounds() {
+        return new BoundingBox(getX(), getY(), getWidth(), getHeight());
     }
 }

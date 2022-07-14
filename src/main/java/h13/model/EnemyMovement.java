@@ -55,15 +55,17 @@ public class EnemyMovement implements Playable {
                 }
                 verticalMovement.set(!verticalMovement.get());
             } else {
-                var insets = getEnemyController().getGameBoard().getBorder().getInsets();
-                var horizontalSpace = getEnemyController().getGameBoard().getMaxWidth() - insets.getLeft() - insets.getRight();
-                var verticalSpace = getEnemyController().getGameBoard().getMaxHeight() - insets.getTop() - insets.getBottom();
+//                var insets = getEnemyController().getGameBoard().getBorder().getInsets();
+//                var horizontalSpace = getEnemyController().getGameBoard().getMaxWidth() - insets.getLeft() - insets.getRight();
+//                var verticalSpace = getEnemyController().getGameBoard().getMaxHeight() - insets.getTop() - insets.getBottom();
+                var horizontalSpace = getEnemyController().getGameBoard().getWidth();
+                var verticalSpace = getEnemyController().getGameBoard().getHeight();
                 var horizontalEnemySpace = horizontalSpace * (1 - HORIZONTAL_ENEMY_MOVE_DISTANCE);
                 var chunkSize = horizontalEnemySpace / ENEMY_COLS;
                 var padding = chunkSize / 2 - GameConstants.RELATIVE_SHIP_WIDTH * horizontalSpace / 2;
                 for (Enemy enemy : getEnemyController().getAliveEnemies()) {
-                    var enemyXPos = chunkSize * enemy.getxIndex() + insets.getLeft() + padding;
-                    var enemyYPos = chunkSize * enemy.getyIndex() + insets.getTop() + padding;
+                    var enemyXPos = chunkSize * enemy.getxIndex() + +padding;
+                    var enemyYPos = chunkSize * enemy.getyIndex() + +padding;
                     if (verticalMovement.get()) {
                         enemy.setX(enemyXPos + (horizontalMovementDirection.get().equals(HorizontalDirection.LEFT) ? 0 : (HORIZONTAL_ENEMY_MOVE_DISTANCE * horizontalSpace)));
                         enemy.setY(enemyYPos + (VERTICAL_ENEMY_MOVE_DISTANCE * verticalSpace) * (verticalMovementIteration.get() - 1) + (VERTICAL_ENEMY_MOVE_DISTANCE * verticalSpace) * movementProgress.get());
