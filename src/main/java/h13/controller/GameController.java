@@ -10,12 +10,8 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Pane;
-import javafx.stage.Popup;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -25,8 +21,7 @@ public class GameController implements Playable {
     private GameState gameState;
     private GamePlay gamePlay;
     private EnemyController enemyController;
-    private Player player;
-    private List<KeyCode> keysPressed = new ArrayList<>();
+    private PlayerController playerController;
 
     private AnimationTimer gameLoop = new AnimationTimer() {
         @Override
@@ -48,11 +43,11 @@ public class GameController implements Playable {
     }
 
     public Player getPlayer() {
-        return player;
+        return playerController.getPlayer();
     }
 
-    public List<KeyCode> getKeysPressed() {
-        return keysPressed;
+    public PlayerController getPlayerController() {
+        return playerController;
     }
 
     public AnimationTimer getGameLoop() {
@@ -71,36 +66,7 @@ public class GameController implements Playable {
 
     private void init() {
         this.gamePlay = new GamePlay(this);
-
-        handleKeyboardInputs();
-
         gameLoop.start();
-    }
-
-    private void handleKeyboardInputs() {
-        gameScene.setOnKeyPressed(e -> {
-            if (keysPressed.contains(e.getCode())) return;
-            keysPressed.add(e.getCode());
-            switch (e.getCode()) {
-                case LEFT, A -> player.moveLeft();
-                case RIGHT, D -> player.moveRight();
-                case UP, W -> player.moveUp();
-                case DOWN, S -> player.moveDown();
-                case SPACE -> player.shoot();
-            }
-        });
-        gameScene.setOnKeyReleased(e -> {
-            keysPressed.remove(e.getCode());    // remove the key from the list of pressed keys
-            switch (e.getCode()) {
-                case LEFT, A -> player.moveRight();
-                case RIGHT, D -> player.moveLeft();
-                case UP, W -> player.moveDown();
-                case DOWN, S -> player.moveUp();
-            }
-            if (keysPressed.isEmpty()) {
-                player.stop();
-            }
-        });
     }
 
     @Override
@@ -168,11 +134,11 @@ public class GameController implements Playable {
         init();
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
     public void setEnemyController(EnemyController enemyController) {
         this.enemyController = enemyController;
+    }
+
+    public void setPlayerController(PlayerController playerController) {
+        this.playerController = playerController;
     }
 }

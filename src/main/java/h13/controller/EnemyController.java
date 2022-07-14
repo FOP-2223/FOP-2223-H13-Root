@@ -40,6 +40,7 @@ public class EnemyController {
                     i,
                     j,
                     0,
+                    ENEMY_ROWS - j * 10,
                     getGameController()
                 );
 //                var insets = getGameBoard().getBorder().getInsets();

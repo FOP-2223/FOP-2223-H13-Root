@@ -14,8 +14,10 @@ public class Enemy extends BattleShip {
     private final int xIndex;
     private final int yIndex;
 
+    private final int points;
 
-    public Enemy(int xIndex, int yIndex, double velocity, GameController gameController) {
+
+    public Enemy(int xIndex, int yIndex, double velocity, final int points, GameController gameController) {
         super(
             0,
             0,
@@ -25,6 +27,7 @@ public class Enemy extends BattleShip {
             gameController);
         this.xIndex = xIndex;
         this.yIndex = yIndex;
+        this.points = points;
         // get available textures
         var random = new java.util.Random().nextInt(1, 3);
         // choose one randomly
@@ -60,5 +63,9 @@ public class Enemy extends BattleShip {
 
     public int getyIndex() {
         return yIndex;
+    }
+
+    public int getPoints() {
+        return points;
     }
 }

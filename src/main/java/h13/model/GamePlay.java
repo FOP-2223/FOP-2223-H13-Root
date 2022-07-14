@@ -2,6 +2,7 @@ package h13.model;
 
 import h13.controller.EnemyController;
 import h13.controller.GameController;
+import h13.controller.PlayerController;
 import h13.model.sprites.Player;
 import h13.view.gui.GameScene;
 import javafx.geometry.HorizontalDirection;
@@ -21,11 +22,7 @@ public class GamePlay {
 
     private void init() {
         // Player
-        var player = new Player(0, ORIGINAL_GAME_BOUNDS.getHeight() - ORIGINAL_GAME_BOUNDS.getWidth() * RELATIVE_SHIP_WIDTH, 1.5, getGameController());
-        getGameController().setPlayer(player);
-//        player.setY(gameController.getGameBoard().getHeight() - player.getHeight());
-//        player.yProperty().bind(gameController.getGameBoard().heightProperty().subtract(gameController.getGameBoard().widthProperty().multiply(player.getRelativeHeight())));
-        getGameController().getGameBoard().addSprite(player);
+        getGameController().setPlayerController(new PlayerController(getGameController()));
 
         // Enemies
         getGameController().setEnemyController(new EnemyController(getGameController(), HorizontalDirection.RIGHT));
