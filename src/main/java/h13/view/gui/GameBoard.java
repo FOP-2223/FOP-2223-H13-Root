@@ -2,6 +2,8 @@ package h13.view.gui;
 
 import h13.model.GameConstants;
 import h13.model.Playable;
+import h13.model.sprites.Bullet;
+import h13.model.sprites.Enemy;
 import h13.model.sprites.Player;
 import h13.model.sprites.Sprite;
 import javafx.geometry.Bounds;
@@ -26,6 +28,10 @@ public class GameBoard extends Canvas implements Playable {
 
     public <T extends Sprite> Set<T> getSprites(Class<T> clazz) {
         return getSprites().stream().filter(clazz::isInstance).map(clazz::cast).collect(HashSet::new, Set::add, Set::addAll);
+    }
+
+    public Set<Sprite> getSprites(Predicate<Sprite> predicate) {
+        return getSprites().stream().filter(predicate).collect(HashSet::new, Set::add, Set::addAll);
     }
 
     public void addSprite(Sprite sprite) {
@@ -71,7 +77,18 @@ public class GameBoard extends Canvas implements Playable {
         gc.setLineWidth(4);
         gc.clearRect(0, 0, getWidth(), getHeight());
         gc.strokeRect(0, 0, getWidth(), getHeight());
-        sprites.forEach(sprite -> sprite.render(gc));
+
+        // Draw bullets first (behind the player)
+        getSprites(Bullet.class).forEach(bullet -> bullet.render(gc));
+
+        // Draw the enemies
+        getSprites(Enemy.class).forEach(enemy -> enemy.render(gc));
+
+        // Draw the player last (on top of the enemies)
+        getSprites(Player.class).forEach(player -> player.render(gc));
+
+        // Draw everything else
+        getSprites(s -> !(s instanceof Player) && !(s instanceof Bullet) && !(s instanceof Enemy)).forEach(sprite -> sprite.render(gc));
     }
 
     public double getScale() {
