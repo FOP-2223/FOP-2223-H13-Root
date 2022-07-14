@@ -21,8 +21,8 @@ public class EnemyMovement implements Playable {
 
     public EnemyMovement(final EnemyController enemyController, final HorizontalDirection initialMovementDirection) {
         this.enemyController = enemyController;
-        this.movementProgress = new SimpleDoubleProperty(0);
-        this.horizontalMovementDirection = new SimpleObjectProperty<>(initialMovementDirection);
+        movementProgress = new SimpleDoubleProperty(0);
+        horizontalMovementDirection = new SimpleObjectProperty<>(initialMovementDirection);
     }
 
     public double getMovementProgress() {

@@ -65,7 +65,7 @@ public class GameController implements Playable {
     }
 
     private void init() {
-        this.gamePlay = new GamePlay(this);
+        gamePlay = new GamePlay(this);
         gameLoop.start();
     }
 

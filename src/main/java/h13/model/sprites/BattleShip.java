@@ -22,10 +22,10 @@ public class BattleShip extends Sprite {
     }
 
     public boolean isFriend(final BattleShip other) {
-        return this.getClass().isInstance(other);
+        return getClass().isInstance(other);
     }
 
     public boolean isEnemy(final BattleShip other) {
-        return !this.isFriend(other);
+        return !isFriend(other);
     }
 }

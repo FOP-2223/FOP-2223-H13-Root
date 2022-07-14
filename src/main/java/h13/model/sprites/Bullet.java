@@ -10,7 +10,7 @@ public class Bullet extends Sprite {
     private final BattleShip owner;
     private final HashSet<Sprite> hits = new HashSet<>();
 
-    VerticalDirection direction;
+    private final VerticalDirection direction;
 
 
     public Bullet(final double x, final double y, final GameController gameController, final BattleShip owner, final VerticalDirection direction) {
@@ -47,5 +47,9 @@ public class Bullet extends Sprite {
 
     public BattleShip getOwner() {
         return owner;
+    }
+
+    public VerticalDirection getDirection() {
+        return direction;
     }
 }

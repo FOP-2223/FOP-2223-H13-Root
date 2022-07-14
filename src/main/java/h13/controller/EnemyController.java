@@ -21,10 +21,9 @@ public class EnemyController {
     public EnemyController(
         final GameController gameController,
         final HorizontalDirection initialMovementDirection) {
-        super();
-        this.enemies = new HashSet<>();
+        enemies = new HashSet<>();
         this.gameController = gameController;
-        this.enemyMovement = new EnemyMovement(this, initialMovementDirection);
+        enemyMovement = new EnemyMovement(this, initialMovementDirection);
         init();
     }
 

@@ -47,4 +47,12 @@ public class FXMLController implements Initializable {
     public void showGameScene(final ActionEvent e) throws IOException {
         new GameScene().apply((Stage) ((Node)e.getSource()).getScene().getWindow());
     }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public Scene getScene() {
+        return scene;
+    }
 }

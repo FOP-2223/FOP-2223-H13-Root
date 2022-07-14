@@ -45,7 +45,7 @@ public class GameScene extends Scene {
 
     private void initGameboard() {
         final var scaleFactor = 3;
-        this.gameBoard = new GameBoard(scaleFactor * ORIGINAL_GAME_BOUNDS.getWidth(), scaleFactor * ORIGINAL_GAME_BOUNDS.getHeight());
+        gameBoard = new GameBoard(scaleFactor * ORIGINAL_GAME_BOUNDS.getWidth(), scaleFactor * ORIGINAL_GAME_BOUNDS.getHeight());
 
         // Border
 //        gameBoard.setBorder(
@@ -90,5 +90,9 @@ public class GameScene extends Scene {
         stage.setTitle("Space Invaders");
         stage.setScene(this);
         stage.show();
+    }
+
+    public GameController getGameController() {
+        return gameController;
     }
 }
