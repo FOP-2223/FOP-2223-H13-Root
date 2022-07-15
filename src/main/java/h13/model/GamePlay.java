@@ -1,15 +1,9 @@
 package h13.model;
 
-import h13.controller.EnemyController;
-import h13.controller.GameController;
-import h13.controller.PlayerController;
-import h13.model.sprites.Player;
-import h13.view.gui.GameScene;
+import h13.controller.game.EnemyController;
+import h13.controller.game.GameController;
+import h13.controller.game.PlayerController;
 import javafx.geometry.HorizontalDirection;
-import javafx.scene.CacheHint;
-
-import static h13.model.GameConstants.ORIGINAL_GAME_BOUNDS;
-import static h13.model.GameConstants.RELATIVE_SHIP_WIDTH;
 
 public class GamePlay {
 

@@ -1,16 +1,13 @@
 package h13.view.gui;
 
-import h13.controller.EnemyController;
-import h13.controller.GameController;
+import h13.controller.game.EnemyController;
+import h13.controller.game.GameController;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import static h13.model.GameConstants.ASPECT_RATIO;
@@ -68,12 +65,6 @@ public class GameScene extends Scene {
         gc.setFill(Color.RED);
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(2);
-    }
-
-    public void apply(final Stage stage) {
-        stage.setTitle("Space Invaders");
-        stage.setScene(this);
-        stage.show();
     }
 
     public GameController getGameController() {

@@ -1,6 +1,6 @@
 package h13.model;
 
-import h13.controller.EnemyController;
+import h13.controller.game.EnemyController;
 import h13.model.sprites.Enemy;
 import javafx.beans.property.*;
 import javafx.geometry.HorizontalDirection;

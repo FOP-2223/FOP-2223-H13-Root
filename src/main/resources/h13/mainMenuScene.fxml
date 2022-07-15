@@ -4,44 +4,55 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0" prefWidth="600.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="h13.controller.FXMLController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="460.0"
+           prefWidth="600.0" style="-fx-background-color: black;" stylesheets="@menuStyles.css"
+           xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="h13.controller.scene.menu.MainMenuController">
     <children>
         <BorderPane prefHeight="200.0" prefWidth="200.0">
             <top>
                 <Label fx:id="label" text="Space Invaders" textFill="WHITE" BorderPane.alignment="CENTER">
                     <font>
-                        <Font size="50.0" />
+                        <Font size="50.0"/>
                     </font>
                 </Label>
             </top>
             <center>
                 <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
                     <children>
-                        <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#showGameScene" prefHeight="72.0" prefWidth="600.0" text="Start game" wrapText="true">
+                        <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#loadGameScene" prefHeight="72.0"
+                                prefWidth="600.0" text="Start game" wrapText="true">
                             <font>
-                                <Font size="27.0" />
+                                <Font size="27.0"/>
                             </font>
                         </Button>
-                        <Button layoutX="10.0" layoutY="10.0" maxWidth="Infinity" mnemonicParsing="false" onAction="#showHighscoreScene" prefHeight="72.0" prefWidth="600.0" text="Highscores" wrapText="true">
+                        <Button layoutX="10.0" layoutY="10.0" maxWidth="Infinity" mnemonicParsing="false"
+                                onAction="#loadHighscoreScene" prefHeight="72.0" prefWidth="600.0" text="Highscores"
+                                wrapText="true">
                             <font>
-                                <Font size="27.0" />
+                                <Font size="27.0"/>
                             </font>
                         </Button>
-                        <Button layoutX="10.0" layoutY="82.0" maxWidth="Infinity" mnemonicParsing="false" onAction="#showSettingsScene" prefHeight="72.0" prefWidth="600.0" text="Settings" wrapText="true">
+                        <Button layoutX="10.0" layoutY="82.0" maxWidth="Infinity" mnemonicParsing="false"
+                                onAction="#loadSettingsScene" prefHeight="72.0" prefWidth="600.0" text="Settings"
+                                wrapText="true">
                             <font>
-                                <Font size="27.0" />
+                                <Font size="27.0"/>
                             </font>
                         </Button>
-                        <Button layoutX="10.0" layoutY="154.0" maxWidth="Infinity" mnemonicParsing="false" onAction="#showAboutScene" prefHeight="72.0" prefWidth="600.0" text="About" wrapText="true">
+                        <Button layoutX="10.0" layoutY="154.0" maxWidth="Infinity" mnemonicParsing="false"
+                                onAction="#loadAboutScene" prefHeight="72.0" prefWidth="600.0" text="About"
+                                wrapText="true">
                             <font>
-                                <Font size="27.0" />
+                                <Font size="27.0"/>
                             </font>
                         </Button>
-                  <Button layoutX="10.0" layoutY="276.0" maxWidth="Infinity" mnemonicParsing="false" onAction="#quit" prefHeight="72.0" prefWidth="600.0" text="Quit" wrapText="true">
-                     <font>
-                        <Font size="27.0" />
-                     </font>
-                  </Button>
+                        <Button layoutX="10.0" layoutY="276.0" maxWidth="Infinity" mnemonicParsing="false"
+                                onAction="#quit" prefHeight="72.0" prefWidth="600.0" text="Quit" wrapText="true">
+                            <font>
+                                <Font size="27.0"/>
+                            </font>
+                        </Button>
                     </children>
                 </VBox>
             </center>

@@ -87,11 +87,14 @@ public class GameBoard extends Canvas implements Playable {
         }
         getSprites(Player.class).forEach(player -> player.setY(getHeight() - player.getHeight()));
         final var gc = getGraphicsContext2D();
+
+        // Background
         if (backgroundImage != null) {
             gc.drawImage(backgroundImage, 0, 0, getWidth(), getHeight());
         } else {
             gc.clearRect(0, 0, getWidth(), getHeight());
         }
+
         // Draw bullets first (behind the player)
         getSprites(Bullet.class).forEach(bullet -> bullet.render(gc));
 

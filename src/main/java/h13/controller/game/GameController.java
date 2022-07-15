@@ -1,4 +1,4 @@
-package h13.controller;
+package h13.controller.game;
 
 import h13.model.GamePlay;
 import h13.model.Playable;
@@ -10,10 +10,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.input.KeyCode;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class GameController implements Playable {

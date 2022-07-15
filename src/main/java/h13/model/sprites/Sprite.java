@@ -2,7 +2,7 @@ package h13.model.sprites;
 
 import h13.model.GameConstants;
 import h13.model.Playable;
-import h13.controller.GameController;
+import h13.controller.game.GameController;
 import h13.view.gui.GameBoard;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.DoubleProperty;

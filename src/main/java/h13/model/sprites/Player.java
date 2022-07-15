@@ -1,6 +1,6 @@
 package h13.model.sprites;
 
-import h13.controller.GameController;
+import h13.controller.game.GameController;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.VerticalDirection;

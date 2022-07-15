@@ -1,4 +1,4 @@
-package h13.controller;
+package h13.controller.game;
 
 import h13.model.EnemyMovement;
 import h13.model.GameConstants;
