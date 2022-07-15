@@ -35,11 +35,7 @@ public abstract class SceneController {
         return SceneSwitcher.loadHighscoreScene(SceneSwitcher.getStage(e));
     }
 
-    public Scene loadGameScene(final Stage stage) throws IOException {
-        return loadScene(new GameScene(), stage);
-    }
-
     public Scene loadGameScene(final ActionEvent e) throws IOException {
-        return loadGameScene(SceneSwitcher.getStage(e));
+        return SceneSwitcher.loadGameScene(SceneSwitcher.getStage(e));
     }
 }

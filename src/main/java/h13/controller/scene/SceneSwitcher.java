@@ -1,5 +1,7 @@
 package h13.controller.scene;
 
+import h13.controller.ApplicationSettings;
+import h13.view.gui.GameScene;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -19,7 +21,10 @@ public final class SceneSwitcher {
     }
 
     public static Scene loadScene(final Scene scene, final Stage stage) {
+//        ApplicationSettings.setSwitchingScenes(true);
         stage.setScene(scene);
+//        ApplicationSettings.setSwitchingScenes(false);
+//        ApplicationSettings.applyStageSettings(stage);
         stage.show();
         return scene;
     }
@@ -53,5 +58,10 @@ public final class SceneSwitcher {
     public static Scene loadHighscoreScene(final Stage stage) throws IOException {
         stage.setTitle("Space Invaders - Highscore");
         return loadFXMLScene("/h13/view.gui/highscoreScene.fxml", stage);
+    }
+
+
+    public static Scene loadGameScene(final Stage stage) throws IOException {
+        return loadScene(new GameScene(), stage);
     }
 }

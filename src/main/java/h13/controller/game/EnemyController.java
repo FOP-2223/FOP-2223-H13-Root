@@ -1,7 +1,7 @@
 package h13.controller.game;
 
 import h13.model.EnemyMovement;
-import h13.model.GameConstants;
+import h13.controller.GameConstants;
 import h13.model.sprites.Enemy;
 import h13.view.gui.GameBoard;
 import javafx.beans.property.DoubleProperty;
@@ -11,7 +11,7 @@ import javafx.geometry.HorizontalDirection;
 import java.util.HashSet;
 import java.util.Set;
 
-import static h13.model.GameConstants.*;
+import static h13.controller.GameConstants.*;
 
 public class EnemyController {
     private final GameController gameController;

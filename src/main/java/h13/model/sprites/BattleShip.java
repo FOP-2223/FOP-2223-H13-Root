@@ -1,10 +1,11 @@
 package h13.model.sprites;
 
+import h13.controller.ApplicationSettings;
 import h13.controller.game.GameController;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.paint.Color;
 
-import static h13.model.GameConstants.RELATIVE_SHIP_WIDTH;
+import static h13.controller.GameConstants.RELATIVE_SHIP_WIDTH;
 
 public class BattleShip extends Sprite {
     public BattleShip(final double x, final double y, final double velocity, final Color color, final int health, final GameController gameController) {
@@ -12,7 +13,7 @@ public class BattleShip extends Sprite {
     }
 
     protected void shoot(final VerticalDirection direction) {
-        if (hasBullet()) {
+        if (hasBullet() && !ApplicationSettings.instantShootingProperty().get()) {
             return;
         }
         final Sprite bullet = new Bullet(

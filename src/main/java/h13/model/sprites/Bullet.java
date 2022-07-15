@@ -6,6 +6,8 @@ import javafx.scene.paint.Color;
 
 import java.util.HashSet;
 
+import static h13.controller.GameConstants.BULLET_VELOCITY;
+
 public class Bullet extends Sprite {
     private final BattleShip owner;
     private final HashSet<Sprite> hits = new HashSet<>();
@@ -14,7 +16,7 @@ public class Bullet extends Sprite {
 
 
     public Bullet(final double x, final double y, final GameController gameController, final BattleShip owner, final VerticalDirection direction) {
-        super(x, y, 0.003, 0.02, Color.WHITE, 1, 1, gameController);
+        super(x, y, 0.003, 0.02, Color.WHITE, BULLET_VELOCITY, 1, gameController);
         this.owner = owner;
         this.direction = direction;
         velocityYProperty().bind(getGameBoard().heightProperty().multiply(direction.equals(VerticalDirection.UP) ? -getVelocity() : getVelocity()));

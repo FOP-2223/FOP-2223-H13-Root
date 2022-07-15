@@ -6,8 +6,7 @@ import javafx.scene.input.KeyCode;
 import java.util.ArrayList;
 import java.util.List;
 
-import static h13.model.GameConstants.ORIGINAL_GAME_BOUNDS;
-import static h13.model.GameConstants.RELATIVE_SHIP_WIDTH;
+import static h13.controller.GameConstants.*;
 
 public class PlayerController {
     private final GameController gameController;
@@ -21,7 +20,7 @@ public class PlayerController {
         player = new Player(
             0,
             ORIGINAL_GAME_BOUNDS.getHeight() - ORIGINAL_GAME_BOUNDS.getWidth() * RELATIVE_SHIP_WIDTH,
-            1.5,
+            PLAYER_VELOCITY,
             getGameController());
         init();
     }

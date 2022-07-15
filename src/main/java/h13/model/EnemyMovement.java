@@ -1,11 +1,13 @@
 package h13.model;
 
+import h13.controller.ApplicationSettings;
+import h13.controller.GameConstants;
 import h13.controller.game.EnemyController;
 import h13.model.sprites.Enemy;
 import javafx.beans.property.*;
 import javafx.geometry.HorizontalDirection;
 
-import static h13.model.GameConstants.*;
+import static h13.controller.GameConstants.*;
 
 public class EnemyMovement implements Playable {
     private final EnemyController enemyController;
@@ -42,16 +44,31 @@ public class EnemyMovement implements Playable {
      */
     @Override
     public void update(final long now) {
+
+        if (!ApplicationSettings.enemyHorizontalMovementProperty().get()) {
+            horizontalMovementDirection.set(HorizontalDirection.LEFT);
+            verticalMovement.set(true);
+        }
         if (lastUpdate.get() > 0) {
-            final double elapsedTime = (now - lastUpdate.get()) / 1_000_000_000.0;
-            final double progress = movementProgress.get() + elapsedTime / (verticalMovement.get() ? VERTICAL_ENEMY_MOVEMENT_DURATION : HORIZONTAL_ENEMY_MOVEMENT_DURATION);
-            movementProgress.set(progress);
+            if (ApplicationSettings.enemyVerticalMovementProperty().get() || ApplicationSettings.enemyHorizontalMovementProperty().get()) {
+                final double elapsedTime = (now - lastUpdate.get()) / 1_000_000_000.0;
+                final double progress = movementProgress.get() + elapsedTime / (verticalMovement.get() ? VERTICAL_ENEMY_MOVEMENT_DURATION : HORIZONTAL_ENEMY_MOVEMENT_DURATION);
+                movementProgress.set(progress);
+            }
             if (movementProgress.get() >= 1) {
                 nextMovement();
             } else {
                 updatePositions();
             }
         }
+        lastUpdate.set(now);
+    }
+
+    /**
+     * @param now The timestamp of the current frame given in nanoseconds. This value will be the same for all AnimationTimers called during one frame.
+     */
+    @Override
+    public void resume(final long now) {
         lastUpdate.set(now);
     }
 
@@ -76,12 +93,14 @@ public class EnemyMovement implements Playable {
 
     private void nextMovement() {
         movementProgress.set(0);
-        if (verticalMovement.get()) {
+        if (ApplicationSettings.enemyHorizontalMovementProperty().get() && (verticalMovement.get() || !ApplicationSettings.enemyVerticalMovementProperty().get())) {
             horizontalMovementDirection.set(horizontalMovementDirection.get().equals(HorizontalDirection.LEFT) ? HorizontalDirection.RIGHT : HorizontalDirection.LEFT);
         } else {
             verticalMovementIteration.set(verticalMovementIteration.get() + 1);
         }
-        verticalMovement.set(!verticalMovement.get());
+        if (ApplicationSettings.enemyHorizontalMovementProperty().get() && ApplicationSettings.enemyVerticalMovementProperty().get()) {
+            verticalMovement.set(!verticalMovement.get());
+        }
     }
 
     public boolean bottomWasReached() {

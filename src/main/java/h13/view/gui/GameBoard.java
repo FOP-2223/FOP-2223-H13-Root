@@ -1,6 +1,7 @@
 package h13.view.gui;
 
-import h13.model.GameConstants;
+import h13.controller.ApplicationSettings;
+import h13.controller.GameConstants;
 import h13.model.Playable;
 import h13.model.sprites.Bullet;
 import h13.model.sprites.Enemy;
@@ -13,8 +14,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -27,7 +26,7 @@ public class GameBoard extends Canvas implements Playable {
 
     public GameBoard(final double width, final double height) {
         super(width, height);
-        if (GameConstants.LOAD_TEXTURES) {
+        if (ApplicationSettings.loadBackgroundProperty().get()) {
             try {
                 backgroundImage = new Image("/h13/images/wallpapers/Galaxy3.jpg");
 //            backgroundImage = ImageIO.read(getClass().getResourceAsStream("/h13/images/wallpapers/Galaxy1.jpg"));
@@ -133,6 +132,14 @@ public class GameBoard extends Canvas implements Playable {
         gc.setStroke(Color.PALEGREEN);
         gc.setLineWidth(4);
         gc.strokeRect(0, 0, getWidth(), getHeight());
+    }
+
+    /**
+     * @param now The timestamp of the current frame given in nanoseconds. This value will be the same for all AnimationTimers called during one frame.
+     */
+    @Override
+    public void resume(final long now) {
+        // Nothing to do
     }
 
     public double getScale() {

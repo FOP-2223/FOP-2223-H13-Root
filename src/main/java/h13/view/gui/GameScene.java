@@ -8,10 +8,9 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
-import static h13.model.GameConstants.ASPECT_RATIO;
-import static h13.model.GameConstants.ORIGINAL_GAME_BOUNDS;
+import static h13.controller.GameConstants.ASPECT_RATIO;
+import static h13.controller.GameConstants.ORIGINAL_GAME_BOUNDS;
 
 public class GameScene extends Scene {
 

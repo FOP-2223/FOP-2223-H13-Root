@@ -1,5 +1,7 @@
 package h13.controller.game;
 
+import h13.controller.ApplicationSettings;
+import h13.controller.scene.SceneSwitcher;
 import h13.model.GamePlay;
 import h13.model.Playable;
 import h13.model.gameplay.GameState;
@@ -10,7 +12,9 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class GameController implements Playable {
@@ -23,7 +27,12 @@ public class GameController implements Playable {
     private final AnimationTimer gameLoop = new AnimationTimer() {
         @Override
         public void handle(final long now) {
-            update(now);
+            if (resume) {
+                resume();
+                resume = false;
+            } else {
+                update(now);
+            }
         }
     };
 
@@ -55,6 +64,8 @@ public class GameController implements Playable {
         return gameScene.getGameBoard();
     }
 
+    private boolean resume = false;
+
 
     public GameController(final GameScene gameScene) {
         this.gameScene = gameScene;
@@ -62,8 +73,39 @@ public class GameController implements Playable {
     }
 
     private void init() {
+
+        // Full Screen
+        Platform.runLater(() -> {
+            ((Stage) getGameScene().getWindow()).setFullScreen(ApplicationSettings.fullscreenProperty().get());
+        });
         gamePlay = new GamePlay(this);
+
+        handleKeyboardInputs();
+
         gameLoop.start();
+    }
+
+    private void handleKeyboardInputs() {
+        getGameScene().setOnKeyTyped(k -> {
+            // escape
+            if (k.getCharacter().equals("\u001b")) {
+                Platform.runLater(() -> {
+                    gameLoop.stop();
+                    final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Exit to main Menu?", ButtonType.YES, ButtonType.NO);
+                    alert.showAndWait();
+
+                    if (alert.getResult() == ButtonType.YES) {
+                        try {
+                            SceneSwitcher.loadMainMenuScene((Stage) getGameScene().getWindow());
+                        } catch (final IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        resume();
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -90,6 +132,25 @@ public class GameController implements Playable {
         }
     }
 
+    /**
+     * @param now The timestamp of the current frame given in nanoseconds. This value will be the same for all AnimationTimers called during one frame.
+     */
+    @Override
+    public void resume(final long now) {
+        Platform.runLater(() -> {
+            if (enemyController != null && enemyController.getEnemyMovement() != null)
+                enemyController.getEnemyMovement().resume(now);
+        });
+        getGameBoard()
+            .getSprites()
+            .stream()
+            .filter(Objects::nonNull)
+            .map(Playable.class::cast)
+            .forEach(s -> {
+                Platform.runLater(() -> s.resume(now));
+            });
+    }
+
     private void lose() {
         Platform.runLater(() -> {
             gameLoop.stop();
@@ -100,6 +161,12 @@ public class GameController implements Playable {
                 reset();
                 gameLoop.start();
                 //do stuff
+            } else {
+                try {
+                    SceneSwitcher.loadMainMenuScene((Stage) getGameScene().getWindow());
+                } catch (final IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }
@@ -109,6 +176,7 @@ public class GameController implements Playable {
     }
 
     public void resume() {
+        resume = true;
         gameLoop.start();
     }
 

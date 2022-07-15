@@ -5,7 +5,7 @@ import h13.controller.game.GameController;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.paint.Color;
 
-import static h13.model.GameConstants.*;
+import static h13.controller.GameConstants.*;
 
 public class Enemy extends BattleShip {
     private double timeTillNextShot = 2; // 2 seconds

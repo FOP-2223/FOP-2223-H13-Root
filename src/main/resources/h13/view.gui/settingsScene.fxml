@@ -27,9 +27,9 @@
                     <content>
                         <VBox alignment="CENTER" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" spacing="10">
                             <children>
-                                <CheckBox mnemonicParsing="false" text="Instant Shooting" />
-                                <CheckBox mnemonicParsing="false" selected="true" text="Enemy Horizontal Movement" />
-                                <CheckBox layoutX="209.0" layoutY="28.0" mnemonicParsing="false" selected="true" text="Enemy Vertical Movement" />
+                                <CheckBox fx:id="instantShootingCheckBox" mnemonicParsing="false" text="Instant Shooting" />
+                                <CheckBox fx:id="enemyHorizontalMovementCheckBox" mnemonicParsing="false" selected="true" text="Enemy Horizontal Movement" />
+                                <CheckBox fx:id="enemyVerticalMovementCheckBox" layoutX="209.0" layoutY="28.0" mnemonicParsing="false" selected="true" text="Enemy Vertical Movement" />
                             </children>
                         </VBox>
                     </content>
@@ -38,8 +38,9 @@
                     <content>
                         <VBox alignment="CENTER" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" spacing="10">
                             <children>
-                                <CheckBox mnemonicParsing="false" text="Load Textures" />
-                                <CheckBox mnemonicParsing="false" text="Load Background" />
+                                <CheckBox fx:id="loadTexturesCheckBox" mnemonicParsing="false" text="Load Textures" />
+                                <CheckBox fx:id="loadBackgroundCheckBox" mnemonicParsing="false" text="Load Background" />
+                        <CheckBox fx:id="fullscreenCheckBox" mnemonicParsing="false" text="FullScreen" />
                             </children>
                         </VBox>
                     </content>

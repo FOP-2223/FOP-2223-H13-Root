@@ -1,6 +1,7 @@
 package h13.model.sprites;
 
-import h13.model.GameConstants;
+import h13.controller.ApplicationSettings;
+import h13.controller.GameConstants;
 import h13.model.Playable;
 import h13.controller.game.GameController;
 import h13.view.gui.GameBoard;
@@ -169,8 +170,9 @@ public abstract class Sprite implements Playable {
         movementTimer.stop();
     }
 
-    public void resume() {
-        movementTimer.start();
+    @Override
+    public void resume(final long now) {
+        lastUpdate.set(now);
     }
 
     public void stop() {
@@ -281,7 +283,7 @@ public abstract class Sprite implements Playable {
     }
 
     protected void loadTexture(final String path) {
-        if (!GameConstants.LOAD_TEXTURES) {
+        if (!ApplicationSettings.loadTexturesProperty().get()) {
             return;
         }
         try {
