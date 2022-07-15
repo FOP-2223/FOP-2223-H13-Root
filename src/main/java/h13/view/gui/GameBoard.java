@@ -10,6 +10,8 @@ import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -99,8 +101,30 @@ public class GameBoard extends Canvas implements Playable {
         // Draw the player last (on top of the enemies)
         getSprites(Player.class).forEach(player -> player.render(gc));
 
-        // Draw everything else
+        // Draw other sprites
         getSprites(s -> !(s instanceof Player) && !(s instanceof Bullet) && !(s instanceof Enemy)).forEach(sprite -> sprite.render(gc));
+
+        final Font font = Font.loadFont(GameConstants.class.getResourceAsStream(GameConstants.STATS_FONT_PATH), getWidth() / 30);
+        gc.setFont(font);
+        // Draw the score
+        getSprites(Player.class).forEach(player -> {
+            final String msg = "Score: " + player.getScore();
+            final Text text = new Text(msg);
+            text.setFont(font);
+            text.setFont(font);
+            gc.setFill(Color.WHITE);
+            gc.fillText(msg, 0.03 * getWidth(), 0.01 * getWidth() + text.getLayoutBounds().getHeight());
+        });
+
+        // Draw the lives
+        getSprites(Player.class).forEach(player -> {
+            final String msg = "Lives: " + player.getHealth();
+            final Text text = new Text(msg);
+            text.setFont(font);
+            text.setFont(font);
+            gc.setFill(Color.WHITE);
+            gc.fillText(msg, 0.97 * getWidth() - text.getLayoutBounds().getWidth(), 0.01 * getWidth() + text.getLayoutBounds().getHeight());
+        });
 
         // Draw borders
         gc.setStroke(Color.PALEGREEN);

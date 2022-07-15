@@ -118,14 +118,18 @@ public class GameController implements Playable {
     private void win() {
         Platform.runLater(() -> {
             gameLoop.stop();
-            final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You Won!!!\nContinue?", ButtonType.YES, ButtonType.NO);
-            alert.showAndWait();
-
-            if (alert.getResult() == ButtonType.YES) {
+//            final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You Won!!!\nContinue?", ButtonType.YES, ButtonType.NO);
+//            alert.showAndWait();
+//
+//            if (alert.getResult() == ButtonType.YES) {
+                final var score = getPlayer().getScore();
+                final var health = getPlayer().getHealth();
                 reset();
+                getPlayer().setScore(score);
+                getPlayer().setHealth(health);
                 gameLoop.start();
                 //do stuff
-            }
+//            }
         });
     }
 

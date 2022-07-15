@@ -4,9 +4,9 @@ import h13.model.EnemyMovement;
 import h13.model.GameConstants;
 import h13.model.sprites.Enemy;
 import h13.view.gui.GameBoard;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.HorizontalDirection;
-import javafx.scene.CacheHint;
-import javafx.scene.layout.Pane;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +17,8 @@ public class EnemyController {
     private final GameController gameController;
     private final EnemyMovement enemyMovement;
     private final Set<Enemy> enemies;
+
+    private final DoubleProperty yOffset = new SimpleDoubleProperty(0);
 
     public EnemyController(
         final GameController gameController,
@@ -39,7 +41,7 @@ public class EnemyController {
                     i,
                     j,
                     0,
-                    ENEMY_ROWS - j * 10,
+                    (ENEMY_ROWS - j) * 10,
                     getGameController()
                 );
 //                var insets = getGameBoard().getBorder().getInsets();
@@ -49,7 +51,7 @@ public class EnemyController {
                 final var chunkSize = horizontalEnemySpace / ENEMY_COLS;
                 final var padding = chunkSize / 2 - GameConstants.RELATIVE_SHIP_WIDTH * horizontalSpace / 2;
                 enemy.setX(chunkSize * i + padding);
-                enemy.setY(chunkSize * j + padding);
+                enemy.setY(chunkSize * j + padding + getYOffset());
 
                 getGameBoard().addSprite(enemy);
 //                getChildren().add(enemy);
@@ -57,7 +59,7 @@ public class EnemyController {
             }
         }
 
-
+        yOffsetProperty().bind(getGameBoard().heightProperty().divide(20));
     }
 
     public Set<Enemy> getEnemies() {
@@ -82,5 +84,17 @@ public class EnemyController {
 
     public EnemyMovement getEnemyMovement() {
         return enemyMovement;
+    }
+
+    public DoubleProperty yOffsetProperty() {
+        return yOffset;
+    }
+
+    public double getYOffset() {
+        return yOffset.get();
+    }
+
+    public void setYOffset(final double yOffset) {
+        this.yOffset.set(yOffset);
     }
 }

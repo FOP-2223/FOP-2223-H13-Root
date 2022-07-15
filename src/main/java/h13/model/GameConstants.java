@@ -3,6 +3,7 @@ package h13.model;
 
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.scene.text.Font;
 
 public final class GameConstants {
     public static final Bounds ORIGINAL_GAME_BOUNDS = new BoundingBox(
@@ -24,4 +25,7 @@ public final class GameConstants {
     public static final double HORIZONTAL_ENEMY_MOVEMENT_DURATION = 2;
     public static final double VERTICAL_ENEMY_MOVEMENT_DURATION = .5;
     public static final boolean LOAD_TEXTURES = true;
+    //font
+    public static final String STATS_FONT_PATH = "/h13/fonts/PressStart2P-Regular.ttf";
+//    public static final Font FONT = Font.loadFont(GameConstants.class.getResourceAsStream("/h13/fonts/PressStart2P-Regular.ttf"), 20);
 }

@@ -3,8 +3,6 @@ package h13.model.sprites;
 import h13.controller.EnemyController;
 import h13.controller.GameController;
 import javafx.geometry.VerticalDirection;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 import static h13.model.GameConstants.*;
@@ -14,10 +12,10 @@ public class Enemy extends BattleShip {
     private final int xIndex;
     private final int yIndex;
 
-    private final int points;
+    private final int pointsWorth;
 
 
-    public Enemy(final int xIndex, final int yIndex, final double velocity, final int points, final GameController gameController) {
+    public Enemy(final int xIndex, final int yIndex, final double velocity, final int pointsWorth, final GameController gameController) {
         super(
             0,
             0,
@@ -27,7 +25,7 @@ public class Enemy extends BattleShip {
             gameController);
         this.xIndex = xIndex;
         this.yIndex = yIndex;
-        this.points = points;
+        this.pointsWorth = pointsWorth;
         // get available textures
         final var random = new java.util.Random().nextInt(1, 3);
         // choose one randomly
@@ -65,7 +63,13 @@ public class Enemy extends BattleShip {
         return yIndex;
     }
 
-    public int getPoints() {
-        return points;
+    public int getPointsWorth() {
+        return pointsWorth;
+    }
+
+    @Override
+    public void die() {
+        super.die();
+        getGameController().getPlayerController().getPlayer().addPoints(getPointsWorth());
     }
 }

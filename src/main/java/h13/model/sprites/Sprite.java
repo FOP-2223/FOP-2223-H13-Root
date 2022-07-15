@@ -76,9 +76,6 @@ public abstract class Sprite implements Playable {
         final var newPos = getPaddedPosition(tick.newX(), tick.newY(), 0);
         setX(newPos.getX());
         setY(newPos.getY());
-        if (health <= 0) {
-            die();
-        }
     }
 
     public GameBoard getGameBoard() {
@@ -293,5 +290,9 @@ public abstract class Sprite implements Playable {
             System.out.println("Failed to load texture: " + path);
             e.printStackTrace();
         }
+    }
+
+    public void setHealth(final int health) {
+        this.health = health;
     }
 }

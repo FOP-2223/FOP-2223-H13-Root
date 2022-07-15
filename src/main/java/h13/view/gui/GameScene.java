@@ -47,22 +47,6 @@ public class GameScene extends Scene {
         final var scaleFactor = 3;
         gameBoard = new GameBoard(scaleFactor * ORIGINAL_GAME_BOUNDS.getWidth(), scaleFactor * ORIGINAL_GAME_BOUNDS.getHeight());
 
-        // Border
-//        gameBoard.setBorder(
-//            new Border(
-//                new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))
-//            )
-//        );
-
-        // Scaling
-//        gameBoard.scaleXProperty().bind(
-//            Bindings
-//                .when(widthProperty().divide(heightProperty()).lessThanOrEqualTo(ASPECT_RATIO))
-//                .then(widthProperty().divide(gameBoard.widthProperty()))
-//                .otherwise(heightProperty().multiply(ASPECT_RATIO).divide(gameBoard.widthProperty()))
-//        );
-//        gameBoard.scaleYProperty().bind(gameBoard.scaleXProperty());
-
         // Size
         gameBoard.widthProperty().bind(
             Bindings
