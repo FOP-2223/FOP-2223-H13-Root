@@ -12,6 +12,9 @@ public class BattleShip extends Sprite {
     }
 
     protected void shoot(final VerticalDirection direction) {
+        if (hasBullet()) {
+            return;
+        }
         final Sprite bullet = new Bullet(
             getX() + getWidth() / 2,
             getY(),
@@ -27,5 +30,9 @@ public class BattleShip extends Sprite {
 
     public boolean isEnemy(final BattleShip other) {
         return !isFriend(other);
+    }
+
+    public boolean hasBullet() {
+        return getGameBoard().getSprites(Bullet.class).stream().anyMatch(bullet -> bullet.getOwner() == this);
     }
 }

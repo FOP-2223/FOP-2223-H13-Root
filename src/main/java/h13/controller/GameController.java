@@ -122,13 +122,15 @@ public class GameController implements Playable {
 //            alert.showAndWait();
 //
 //            if (alert.getResult() == ButtonType.YES) {
-                final var score = getPlayer().getScore();
-                final var health = getPlayer().getHealth();
-                reset();
-                getPlayer().setScore(score);
-                getPlayer().setHealth(health);
-                gameLoop.start();
-                //do stuff
+            final var score = getPlayer().getScore();
+            final var health = getPlayer().getHealth();
+            final var playerXCoordinate = getPlayer().getX();
+            reset();
+            getPlayer().setScore(score);
+            getPlayer().setHealth(health);
+            getPlayer().setX(playerXCoordinate);
+            gameLoop.start();
+            //do stuff
 //            }
         });
     }
