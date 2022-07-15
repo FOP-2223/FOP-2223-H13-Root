@@ -42,6 +42,6 @@ public class Player extends BattleShip {
     }
 
     public void addPoints(final int points) {
-        this.score.set(this.score.get() + points);
+        score.set(score.get() + points);
     }
 }
