@@ -26,14 +26,14 @@ public class FXMLController implements Initializable {
 //    private Sprite player = new Sprite(100, 100, 20, 20, Color.BLUE, "player", 5);
 
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        String javaVersion = System.getProperty("java.version");
-        String javafxVersion = System.getProperty("javafx.version");
+    public void initialize(final URL url, final ResourceBundle rb) {
+        final String javaVersion = System.getProperty("java.version");
+        final String javafxVersion = System.getProperty("javafx.version");
 //        label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + ".");
     }
 
-    private void loadScene(String sceneName, ActionEvent e) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource(sceneName));
+    private void loadScene(final String sceneName, final ActionEvent e) throws IOException {
+        final Parent root = FXMLLoader.load(getClass().getResource(sceneName));
         stage = (Stage) ((Node)e.getSource()).getScene().getWindow();
         scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
@@ -41,10 +41,18 @@ public class FXMLController implements Initializable {
         stage.show();
     }
 
-    public void showMainMenuScene(ActionEvent e) throws IOException {
+    public void showMainMenuScene(final ActionEvent e) throws IOException {
         loadScene("mainMenuScene.fxml", e);
     }
-    public void showGameScene(ActionEvent e) throws IOException {
+    public void showGameScene(final ActionEvent e) throws IOException {
         new GameScene().apply((Stage) ((Node)e.getSource()).getScene().getWindow());
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public Scene getScene() {
+        return scene;
     }
 }

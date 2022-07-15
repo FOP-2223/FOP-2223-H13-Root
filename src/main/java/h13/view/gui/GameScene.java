@@ -6,8 +6,11 @@ import javafx.beans.binding.Bindings;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.layout.*;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import static h13.model.GameConstants.ASPECT_RATIO;
@@ -15,9 +18,9 @@ import static h13.model.GameConstants.ORIGINAL_GAME_BOUNDS;
 
 public class GameScene extends Scene {
 
-    private Group root;
+    private final Group root;
     private EnemyController enemyController;
-    private Pane gameBoard;
+    private GameBoard gameBoard;
     private GameController gameController;
 
     private Bounds lastGameboardSize;
@@ -28,7 +31,7 @@ public class GameScene extends Scene {
         init();
     }
 
-    public Pane getGameBoard() {
+    public GameBoard getGameBoard() {
         return gameBoard;
     }
 
@@ -41,38 +44,39 @@ public class GameScene extends Scene {
     }
 
     private void initGameboard() {
-        gameBoard = new Pane();
-
-        // Border
-        gameBoard.setBorder(
-            new Border(
-                new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))
-            )
-        );
+        final var scaleFactor = 3;
+        gameBoard = new GameBoard(scaleFactor * ORIGINAL_GAME_BOUNDS.getWidth(), scaleFactor * ORIGINAL_GAME_BOUNDS.getHeight());
 
         // Size
-        gameBoard.setMaxSize(ORIGINAL_GAME_BOUNDS.getWidth(), ORIGINAL_GAME_BOUNDS.getHeight());
-        gameBoard.setMinSize(ORIGINAL_GAME_BOUNDS.getWidth(), ORIGINAL_GAME_BOUNDS.getHeight());
-
-        // Scaling
-        gameBoard.scaleXProperty().bind(
+        gameBoard.widthProperty().bind(
             Bindings
                 .when(widthProperty().divide(heightProperty()).lessThanOrEqualTo(ASPECT_RATIO))
-                .then(widthProperty().divide(gameBoard.widthProperty()))
-                .otherwise(heightProperty().multiply(ASPECT_RATIO).divide(gameBoard.widthProperty()))
+                .then(widthProperty())
+                .otherwise(heightProperty().multiply(ASPECT_RATIO))
         );
-        gameBoard.scaleYProperty().bind(gameBoard.scaleXProperty());
-
-        // Positioning
+        gameBoard.heightProperty().bind(gameBoard.widthProperty().divide(ASPECT_RATIO));
+//
+//        // Positioning
         gameBoard.translateXProperty().bind(widthProperty().subtract(gameBoard.widthProperty()).divide(2));
         gameBoard.translateYProperty().bind(heightProperty().subtract(gameBoard.heightProperty()).divide(2));
 
+//        root.getChildren().add(gameBoard);
         root.getChildren().add(gameBoard);
+
+        final GraphicsContext gc = gameBoard.getGraphicsContext2D();
+
+        gc.setFill(Color.RED);
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(2);
     }
 
-    public void apply(Stage stage) {
+    public void apply(final Stage stage) {
         stage.setTitle("Space Invaders");
         stage.setScene(this);
         stage.show();
+    }
+
+    public GameController getGameController() {
+        return gameController;
     }
 }

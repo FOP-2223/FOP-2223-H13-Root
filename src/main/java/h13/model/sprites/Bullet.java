@@ -10,31 +10,32 @@ public class Bullet extends Sprite {
     private final BattleShip owner;
     private final HashSet<Sprite> hits = new HashSet<>();
 
-    VerticalDirection direction;
+    private final VerticalDirection direction;
 
 
-    public Bullet(double x, double y, GameController gameController, BattleShip owner, VerticalDirection direction) {
-            super(x, y, 0.003, 0.02, Color.WHITE, 1, 1, gameController);
+    public Bullet(final double x, final double y, final GameController gameController, final BattleShip owner, final VerticalDirection direction) {
+        super(x, y, 0.003, 0.02, Color.WHITE, 1, 1, gameController);
         this.owner = owner;
         this.direction = direction;
         velocityYProperty().bind(getGameBoard().heightProperty().multiply(direction.equals(VerticalDirection.UP) ? -getVelocity() : getVelocity()));
     }
 
     @Override
-    protected void gameTick(GameTickParameters tick) {
+    protected void gameTick(final GameTickParameters tick) {
         super.gameTick(tick);
-        if (!coordinatesInBounds(tick.newX(), tick.newY(), getGameBoard().getBorder().getInsets().getLeft())) {
+
+        // If the bullet reaches the edge of the game Board, remove it.
+        if (!coordinatesInBounds(tick.newX(), tick.newY(), 0)) {
             die();
-//            System.out.println("Bullet out of bounds");
         }
 
         // Hit Detection
-        var damaged = getGameBoard().getChildren().stream()
+        final var damaged = getGameBoard().getSprites().stream()
             .filter(BattleShip.class::isInstance)
             .map(BattleShip.class::cast)
             .filter(sprite -> sprite != owner)
             .filter(owner::isEnemy)
-            .filter(sprite -> sprite.getBoundsInParent().intersects(getBoundsInParent()))
+            .filter(sprite -> sprite.getBounds().intersects(getBounds()))
             .filter(sprite -> !hits.contains(sprite))
             .findFirst().orElse(null);
         if (damaged != null) {
@@ -46,5 +47,9 @@ public class Bullet extends Sprite {
 
     public BattleShip getOwner() {
         return owner;
+    }
+
+    public VerticalDirection getDirection() {
+        return direction;
     }
 }

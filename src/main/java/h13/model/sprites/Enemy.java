@@ -12,8 +12,10 @@ public class Enemy extends BattleShip {
     private final int xIndex;
     private final int yIndex;
 
+    private final int pointsWorth;
 
-    public Enemy(int xIndex, int yIndex, double velocity, GameController gameController) {
+
+    public Enemy(final int xIndex, final int yIndex, final double velocity, final int pointsWorth, final GameController gameController) {
         super(
             0,
             0,
@@ -23,58 +25,18 @@ public class Enemy extends BattleShip {
             gameController);
         this.xIndex = xIndex;
         this.yIndex = yIndex;
-//        moveRight();
-
-
-        // act
-//        TranslateTransition movement = new TranslateTransition();
-//        movement.setNode(this);
-//        movement.setDuration(Duration.seconds(1));
-//        movement.setByX(HORIZONTAL_ENEMY_MOVE_SPACE * getGameBoard().getMaxWidth());
-//        movement.setCycleCount(TranslateTransition.INDEFINITE);
-//        movement.setAutoReverse(true);
-////                System.out.println("movement.byXProperty().get(): " + movement.byXProperty().get());
-////                System.out.println(getGameBoard().widthProperty().get());
-//        movement.play();
+        this.pointsWorth = pointsWorth;
+        // get available textures
+        final var random = new java.util.Random().nextInt(1, 3);
+        // choose one randomly
+        loadTexture("/h13/images/sprites/enemy" + random + ".png");
     }
 
     @Override
-    protected void gameTick(GameTickParameters tick) {
-//        if (coordinatesInBounds(tick.newX(), tick.newY(), getGameBoard().getBorder().getInsets().getLeft())) {
-//        super.gameTick(tick);
+    protected void gameTick(final GameTickParameters tick) {
+        super.gameTick(tick);
 
-//        } else {
-        setX(tick.newX());
-        setY(tick.newY());
-        if (health <= 0) {
-            setVisible(false);
-            getGameBoard().getChildren().remove(this);
-//            tick.movementTimer.stop();
-        }
-//        if (!coordinatesInBounds(tick.newX(), tick.newY(), getGameBoard().getBorder().getInsets().getLeft())) {
-//            System.out.println("Enemy out of bounds");
-//            if (tick.newX() < getGameBoard().getBorder().getInsets().getLeft()) {
-//                getEnemyController().horizontalMovementDirectionProperty().set(HorizontalDirection.RIGHT);
-//            } else {
-//                getEnemyController().horizontalMovementDirectionProperty().set(HorizontalDirection.LEFT);
-//            }
-//            System.out.println("new Movemt Direction: " + getEnemyController().horizontalMovementDirectionProperty().get());
-//        }
-
-//        if (getEnemyController().getHorizontalMovementDirection() == HorizontalDirection.LEFT) {
-//            setVelocityX(-getVelocity() * getGameBoard().getWidth());
-//        } else {
-//            setVelocityX(getVelocity() * getGameBoard().getWidth());
-//        }
-
-//        System.out.println(getVelocityX());
-//        System.out.println(getEnemyController().getHorizontalMovementDirection());
-        var insets = getGameBoard().getBorder().getInsets();
-        var horizontalSpace = getGameBoard().getWidth() - insets.getLeft() - insets.getRight();
-        var horizontalEnemySpace = horizontalSpace * (1 - HORIZONTAL_ENEMY_MOVE_DISTANCE);
-        var chunkSize = horizontalEnemySpace / ENEMY_COLS;
-        var padding = chunkSize / 2 - getWidth() / 2;
-
+        // Shoot with a certain probability
         timeTillNextShot -= tick.elapsedTime();
         if (timeTillNextShot <= 0) {
             // Shoot at random intervals
@@ -99,5 +61,15 @@ public class Enemy extends BattleShip {
 
     public int getyIndex() {
         return yIndex;
+    }
+
+    public int getPointsWorth() {
+        return pointsWorth;
+    }
+
+    @Override
+    public void die() {
+        super.die();
+        getGameController().getPlayerController().getPlayer().addPoints(getPointsWorth());
     }
 }

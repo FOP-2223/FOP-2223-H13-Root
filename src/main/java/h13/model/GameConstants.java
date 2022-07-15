@@ -3,6 +3,7 @@ package h13.model;
 
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.scene.text.Font;
 
 public final class GameConstants {
     public static final Bounds ORIGINAL_GAME_BOUNDS = new BoundingBox(
@@ -20,7 +21,11 @@ public final class GameConstants {
     public static final double HORIZONTAL_ENEMY_MOVE_DISTANCE = 0.1;
     public static final double VERTICAL_ENEMY_MOVE_DISTANCE = .01;
     public static final double RELATIVE_SHIP_WIDTH = (1d - HORIZONTAL_ENEMY_MOVE_DISTANCE) / ENEMY_COLS - 2 * SHIP_PADING;
-    public static final double ENEMY_SHOOTING_PROBABILITY = 0.00005;
+    public static final double ENEMY_SHOOTING_PROBABILITY = 0.0005;
     public static final double HORIZONTAL_ENEMY_MOVEMENT_DURATION = 2;
     public static final double VERTICAL_ENEMY_MOVEMENT_DURATION = .5;
+    public static final boolean LOAD_TEXTURES = true;
+    //font
+    public static final String STATS_FONT_PATH = "/h13/fonts/PressStart2P-Regular.ttf";
+//    public static final Font FONT = Font.loadFont(GameConstants.class.getResourceAsStream("/h13/fonts/PressStart2P-Regular.ttf"), 20);
 }

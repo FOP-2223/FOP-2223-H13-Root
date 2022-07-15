@@ -2,31 +2,30 @@ package h13.model;
 
 import h13.controller.EnemyController;
 import h13.controller.GameController;
+import h13.controller.PlayerController;
 import h13.model.sprites.Player;
 import h13.view.gui.GameScene;
 import javafx.geometry.HorizontalDirection;
 import javafx.scene.CacheHint;
 
+import static h13.model.GameConstants.ORIGINAL_GAME_BOUNDS;
+import static h13.model.GameConstants.RELATIVE_SHIP_WIDTH;
+
 public class GamePlay {
 
-    private GameController gameController;
+    private final GameController gameController;
 
-    public GamePlay(GameController gameController) {
+    public GamePlay(final GameController gameController) {
         this.gameController = gameController;
         init();
     }
 
     private void init() {
         // Player
-        var player = new Player(100, 100, 1.5, getGameController());
-        getGameController().setPlayer(player);
-        player.setY(gameController.getGameBoard().getMaxHeight() - player.getHeight());
-
-        getGameController().getGameBoard().getChildren().add(player);
+        getGameController().setPlayerController(new PlayerController(getGameController()));
 
         // Enemies
         getGameController().setEnemyController(new EnemyController(getGameController(), HorizontalDirection.RIGHT));
-//        getGameBoard().getChildren().add(enemyController);
     }
 
     public GameController getGameController() {

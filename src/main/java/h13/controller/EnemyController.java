@@ -3,9 +3,10 @@ package h13.controller;
 import h13.model.EnemyMovement;
 import h13.model.GameConstants;
 import h13.model.sprites.Enemy;
+import h13.view.gui.GameBoard;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.HorizontalDirection;
-import javafx.scene.CacheHint;
-import javafx.scene.layout.Pane;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,17 +14,18 @@ import java.util.Set;
 import static h13.model.GameConstants.*;
 
 public class EnemyController {
-    private GameController gameController;
-    private EnemyMovement enemyMovement;
-    private Set<Enemy> enemies;
+    private final GameController gameController;
+    private final EnemyMovement enemyMovement;
+    private final Set<Enemy> enemies;
+
+    private final DoubleProperty yOffset = new SimpleDoubleProperty(0);
 
     public EnemyController(
-        GameController gameController,
-        HorizontalDirection initialMovementDirection) {
-        super();
-        this.enemies = new HashSet<>();
+        final GameController gameController,
+        final HorizontalDirection initialMovementDirection) {
+        enemies = new HashSet<>();
         this.gameController = gameController;
-        this.enemyMovement = new EnemyMovement(this, initialMovementDirection);
+        enemyMovement = new EnemyMovement(this, initialMovementDirection);
         init();
     }
 
@@ -35,27 +37,29 @@ public class EnemyController {
         // enemies
         for (int i = 0; i < ENEMY_COLS; i++) {
             for (int j = 0; j < ENEMY_ROWS; j++) {
-                var enemy = new Enemy(
+                final var enemy = new Enemy(
                     i,
                     j,
                     0,
+                    (ENEMY_ROWS - j) * 10,
                     getGameController()
                 );
-                var insets = getGameBoard().getBorder().getInsets();
-                var horizontalSpace = getGameBoard().getMaxWidth() - insets.getLeft() - insets.getRight();
-                var horizontalEnemySpace = horizontalSpace * (1 - HORIZONTAL_ENEMY_MOVE_DISTANCE);
-                var chunkSize = horizontalEnemySpace / ENEMY_COLS;
-                var padding = chunkSize / 2 - GameConstants.RELATIVE_SHIP_WIDTH * horizontalSpace / 2;
-                enemy.setX(chunkSize * i + insets.getLeft() + padding);
-                enemy.setY(chunkSize * j + insets.getTop() + padding);
+//                var insets = getGameBoard().getBorder().getInsets();
+//                var horizontalSpace = getGameBoard().getMaxWidth() - insets.getLeft() - insets.getRight();
+                final var horizontalSpace = getGameBoard().getWidth();
+                final var horizontalEnemySpace = horizontalSpace * (1 - HORIZONTAL_ENEMY_MOVE_DISTANCE);
+                final var chunkSize = horizontalEnemySpace / ENEMY_COLS;
+                final var padding = chunkSize / 2 - GameConstants.RELATIVE_SHIP_WIDTH * horizontalSpace / 2;
+                enemy.setX(chunkSize * i + padding);
+                enemy.setY(chunkSize * j + padding + getYOffset());
 
-                getGameBoard().getChildren().add(enemy);
+                getGameBoard().addSprite(enemy);
 //                getChildren().add(enemy);
                 enemies.add(enemy);
             }
         }
 
-
+        yOffsetProperty().bind(getGameBoard().heightProperty().divide(20));
     }
 
     public Set<Enemy> getEnemies() {
@@ -74,11 +78,23 @@ public class EnemyController {
         return getAliveEnemies().isEmpty();
     }
 
-    public Pane getGameBoard() {
+    public GameBoard getGameBoard() {
         return gameController.getGameBoard();
     }
 
     public EnemyMovement getEnemyMovement() {
         return enemyMovement;
+    }
+
+    public DoubleProperty yOffsetProperty() {
+        return yOffset;
+    }
+
+    public double getYOffset() {
+        return yOffset.get();
+    }
+
+    public void setYOffset(final double yOffset) {
+        this.yOffset.set(yOffset);
     }
 }
