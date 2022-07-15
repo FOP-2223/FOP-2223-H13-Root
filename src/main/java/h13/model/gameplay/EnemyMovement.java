@@ -1,9 +1,9 @@
-package h13.model;
+package h13.model.gameplay;
 
 import h13.controller.ApplicationSettings;
 import h13.controller.GameConstants;
 import h13.controller.game.EnemyController;
-import h13.model.sprites.Enemy;
+import h13.model.gameplay.sprites.Enemy;
 import javafx.beans.property.*;
 import javafx.geometry.HorizontalDirection;
 

@@ -1,4 +1,4 @@
-package h13.model;
+package h13.model.gameplay;
 
 import h13.controller.game.EnemyController;
 import h13.controller.game.GameController;

@@ -2,11 +2,11 @@ package h13.view.gui;
 
 import h13.controller.ApplicationSettings;
 import h13.controller.GameConstants;
-import h13.model.Playable;
-import h13.model.sprites.Bullet;
-import h13.model.sprites.Enemy;
-import h13.model.sprites.Player;
-import h13.model.sprites.Sprite;
+import h13.model.gameplay.Playable;
+import h13.model.gameplay.sprites.Bullet;
+import h13.model.gameplay.sprites.Enemy;
+import h13.model.gameplay.sprites.Player;
+import h13.model.gameplay.sprites.Sprite;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;

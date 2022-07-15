@@ -1,4 +1,4 @@
-package h13.model.sprites;
+package h13.model.gameplay.sprites;
 
 import h13.controller.ApplicationSettings;
 import h13.controller.game.GameController;

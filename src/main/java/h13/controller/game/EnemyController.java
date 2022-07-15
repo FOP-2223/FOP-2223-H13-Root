@@ -1,8 +1,8 @@
 package h13.controller.game;
 
-import h13.model.EnemyMovement;
+import h13.model.gameplay.EnemyMovement;
 import h13.controller.GameConstants;
-import h13.model.sprites.Enemy;
+import h13.model.gameplay.sprites.Enemy;
 import h13.view.gui.GameBoard;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;

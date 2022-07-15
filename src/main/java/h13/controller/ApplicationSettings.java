@@ -1,8 +1,14 @@
 package h13.controller;
 
+import h13.model.HighscoreEntry;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.stage.Stage;
+
+import java.util.Date;
+import java.util.HashMap;
 
 public class ApplicationSettings {
     private ApplicationSettings() {
@@ -43,4 +49,9 @@ public class ApplicationSettings {
     public static BooleanProperty enemyVerticalMovementProperty() {
         return enemyVerticalMovement;
     }
+
+    // highscores
+    public static final ObservableList<HighscoreEntry> highscores = FXCollections.observableArrayList(
+        new HighscoreEntry("Player 1", new Date().toString(), 100)
+    );
 }

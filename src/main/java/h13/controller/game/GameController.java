@@ -2,12 +2,13 @@ package h13.controller.game;
 
 import h13.controller.ApplicationSettings;
 import h13.controller.scene.SceneSwitcher;
-import h13.model.GamePlay;
-import h13.model.Playable;
+import h13.model.HighscoreEntry;
+import h13.model.gameplay.GamePlay;
+import h13.model.gameplay.Playable;
 import h13.model.gameplay.GameState;
 import h13.view.gui.GameBoard;
 import h13.view.gui.GameScene;
-import h13.model.sprites.Player;
+import h13.model.gameplay.sprites.Player;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -15,6 +16,7 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Objects;
 
 public class GameController implements Playable {
@@ -154,6 +156,15 @@ public class GameController implements Playable {
     private void lose() {
         Platform.runLater(() -> {
             gameLoop.stop();
+            if (getPlayer().getScore() > 0) {
+                ApplicationSettings.highscores.add(
+                    new HighscoreEntry(
+                        "getPlayer().getName()",
+                        new Date().toString(),
+                        getPlayer().getScore()
+                    )
+                );
+            }
             final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You Loose!!!\nContinue?", ButtonType.YES, ButtonType.NO);
             alert.showAndWait();
 

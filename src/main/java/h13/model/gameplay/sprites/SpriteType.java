@@ -1,4 +1,4 @@
-package h13.model.sprites;
+package h13.model.gameplay.sprites;
 
 public enum SpriteType {
     PLAYER,

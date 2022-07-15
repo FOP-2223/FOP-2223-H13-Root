@@ -1,8 +1,7 @@
-package h13.model.sprites;
+package h13.model.gameplay.sprites;
 
 import h13.controller.ApplicationSettings;
-import h13.controller.GameConstants;
-import h13.model.Playable;
+import h13.model.gameplay.Playable;
 import h13.controller.game.GameController;
 import h13.view.gui.GameBoard;
 import javafx.animation.AnimationTimer;

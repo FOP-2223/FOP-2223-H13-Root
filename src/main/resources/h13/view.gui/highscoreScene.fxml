@@ -21,11 +21,11 @@
         </Label>
     </top>
     <center>
-        <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <TableView fx:id="highscoreTableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <columns>
-                <TableColumn prefWidth="75.0" text="Player" />
-                <TableColumn prefWidth="75.0" text="Date" />
-                <TableColumn prefWidth="75.0" text="Score" />
+                <TableColumn fx:id="playerTableColumn" prefWidth="75.0" text="Player" />
+                <TableColumn fx:id="dateTableColumn" prefWidth="75.0" text="Date" />
+                <TableColumn fx:id="scoreTableColumn" prefWidth="75.0" text="Score" />
             </columns>
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
