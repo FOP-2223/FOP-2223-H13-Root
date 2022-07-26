@@ -6,6 +6,7 @@ import h13.model.HighscoreEntry;
 import h13.model.gameplay.GamePlay;
 import h13.model.gameplay.Playable;
 import h13.model.gameplay.GameState;
+import h13.model.gameplay.sprites.Sprite;
 import h13.view.gui.GameBoard;
 import h13.view.gui.GameScene;
 import h13.model.gameplay.sprites.Player;
@@ -17,11 +18,17 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Predicate;
 
 public class GameController implements Playable {
     private final GameScene gameScene;
     private GameState gameState;
+    private final Set<Sprite> sprites = new HashSet<>();
+
+
     private GamePlay gamePlay;
     private EnemyController enemyController;
     private PlayerController playerController;
@@ -37,6 +44,10 @@ public class GameController implements Playable {
             }
         }
     };
+
+    public Set<Sprite> getSprites() {
+        return sprites;
+    }
 
     public GameScene getGameScene() {
         return gameScene;
@@ -68,6 +79,34 @@ public class GameController implements Playable {
 
     private boolean resume = false;
 
+    public <T extends Sprite> Set<T> getSprites(final Class<T> clazz) {
+        return getSprites().stream().filter(clazz::isInstance).map(clazz::cast).collect(HashSet::new, Set::add, Set::addAll);
+    }
+
+    public Set<Sprite> getSprites(final Predicate<Sprite> predicate) {
+        return getSprites().stream().filter(predicate).collect(HashSet::new, Set::add, Set::addAll);
+    }
+
+    public void addSprite(final Sprite sprite) {
+        getSprites().add(sprite);
+    }
+
+    public void removeSprite(final Sprite sprite) {
+        getSprites().remove(sprite);
+    }
+
+    public void clearSprites() {
+        getSprites().clear();
+    }
+
+    public void clearSprites(final Class<? extends Sprite> clazz) {
+        getSprites().stream().filter(clazz::isInstance).forEach(sprite -> getSprites().remove(sprite));
+    }
+
+    public void clearSprites(final Predicate<Sprite> predicate) {
+        getSprites().stream().filter(predicate).forEach(getSprites()::remove);
+    }
+
 
     public GameController(final GameScene gameScene) {
         this.gameScene = gameScene;
@@ -75,11 +114,6 @@ public class GameController implements Playable {
     }
 
     private void init() {
-
-        // Full Screen
-        Platform.runLater(() -> {
-            ((Stage) getGameScene().getWindow()).setFullScreen(ApplicationSettings.fullscreenProperty().get());
-        });
         gamePlay = new GamePlay(this);
 
         handleKeyboardInputs();
@@ -116,8 +150,7 @@ public class GameController implements Playable {
             if (enemyController != null && enemyController.getEnemyMovement() != null)
                 enemyController.getEnemyMovement().update(now);
         });
-        getGameBoard()
-            .getSprites()
+        getSprites()
             .stream()
             .filter(Objects::nonNull)
             .map(Playable.class::cast)
@@ -143,8 +176,7 @@ public class GameController implements Playable {
             if (enemyController != null && enemyController.getEnemyMovement() != null)
                 enemyController.getEnemyMovement().resume(now);
         });
-        getGameBoard()
-            .getSprites()
+        getSprites()
             .stream()
             .filter(Objects::nonNull)
             .map(Playable.class::cast)
@@ -212,7 +244,7 @@ public class GameController implements Playable {
     }
 
     public void reset() {
-        getGameBoard().clearSprites();
+        clearSprites();
         init();
     }
 

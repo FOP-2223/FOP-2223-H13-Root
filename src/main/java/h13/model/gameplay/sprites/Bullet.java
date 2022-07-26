@@ -32,7 +32,7 @@ public class Bullet extends Sprite {
         }
 
         // Hit Detection
-        final var damaged = getGameBoard().getSprites().stream()
+        final var damaged = getGameController().getSprites().stream()
             .filter(BattleShip.class::isInstance)
             .map(BattleShip.class::cast)
             .filter(sprite -> sprite != owner)

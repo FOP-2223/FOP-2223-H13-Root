@@ -41,7 +41,7 @@ public class GameScene extends Scene {
 
     private void initGameboard() {
         final var scaleFactor = 3;
-        gameBoard = new GameBoard(scaleFactor * ORIGINAL_GAME_BOUNDS.getWidth(), scaleFactor * ORIGINAL_GAME_BOUNDS.getHeight());
+        gameBoard = new GameBoard(scaleFactor * ORIGINAL_GAME_BOUNDS.getWidth(), scaleFactor * ORIGINAL_GAME_BOUNDS.getHeight(), this);
 
         // Size
         gameBoard.widthProperty().bind(

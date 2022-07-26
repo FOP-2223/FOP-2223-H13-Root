@@ -52,7 +52,7 @@ public class PlayerController {
     }
 
     private void init() {
-        getGameController().getGameBoard().addSprite(player);
+        getGameController().addSprite(player);
         handleKeyboardInputs();
     }
 

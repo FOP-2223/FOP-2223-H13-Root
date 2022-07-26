@@ -1,6 +1,7 @@
 package h13.model.gameplay.sprites;
 
 import h13.controller.ApplicationSettings;
+import h13.model.gameplay.GamePlay;
 import h13.model.gameplay.Playable;
 import h13.controller.game.GameController;
 import h13.view.gui.GameBoard;
@@ -69,7 +70,7 @@ public abstract class Sprite implements Playable {
     public void die() {
         health = 0;
         dead = true;
-        getGameBoard().removeSprite(this);
+        getGameController().removeSprite(this);
     }
 
     protected void gameTick(final GameTickParameters tick) {
@@ -84,6 +85,10 @@ public abstract class Sprite implements Playable {
 
     public GameController getGameController() {
         return gameController;
+    }
+
+    public GamePlay getGamePlay() {
+        return getGameController().getGamePlay();
     }
 
     public int getHealth() {

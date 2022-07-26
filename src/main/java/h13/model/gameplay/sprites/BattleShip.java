@@ -22,7 +22,7 @@ public class BattleShip extends Sprite {
             getGameController(),
             this,
             direction);
-        getGameBoard().addSprite(bullet);
+        getGameController().addSprite(bullet);
     }
 
     public boolean isFriend(final BattleShip other) {
@@ -34,6 +34,6 @@ public class BattleShip extends Sprite {
     }
 
     public boolean hasBullet() {
-        return getGameBoard().getSprites(Bullet.class).stream().anyMatch(bullet -> bullet.getOwner() == this);
+        return getGameController().getSprites(Bullet.class).stream().anyMatch(bullet -> bullet.getOwner() == this);
     }
 }

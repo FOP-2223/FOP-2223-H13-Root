@@ -53,7 +53,7 @@ public class EnemyController {
                 enemy.setX(chunkSize * i + padding);
                 enemy.setY(chunkSize * j + padding + getYOffset());
 
-                getGameBoard().addSprite(enemy);
+                getGameController().addSprite(enemy);
 //                getChildren().add(enemy);
                 enemies.add(enemy);
             }

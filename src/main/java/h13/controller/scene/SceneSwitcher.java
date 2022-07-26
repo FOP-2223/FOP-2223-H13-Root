@@ -2,6 +2,7 @@ package h13.controller.scene;
 
 import h13.controller.ApplicationSettings;
 import h13.view.gui.GameScene;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -40,6 +41,8 @@ public final class SceneSwitcher {
         return scene;
     }
 
+    // TODO: Cleanup Title Setting
+
     public static Scene loadMainMenuScene(final Stage stage) throws IOException {
         stage.setTitle("Space Invaders - Main Menu");
         return loadFXMLScene("/h13/view.gui/mainMenuScene.fxml", stage);
@@ -62,6 +65,12 @@ public final class SceneSwitcher {
 
 
     public static Scene loadGameScene(final Stage stage) throws IOException {
-        return loadScene(new GameScene(), stage);
+        stage.setTitle("Space Invaders");
+        final var scene = loadScene(new GameScene(), stage);
+        // Full Screen
+        Platform.runLater(() -> {
+            stage.setFullScreen(ApplicationSettings.fullscreenProperty().get());
+        });
+        return scene;
     }
 }

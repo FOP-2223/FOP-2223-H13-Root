@@ -8,7 +8,7 @@ public class HighscoreEntry {
     SimpleStringProperty date;
     SimpleIntegerProperty score;
 
-    public HighscoreEntry(String playerName, String date, int score) {
+    public HighscoreEntry(final String playerName, final String date, final int score) {
         this.playerName = new SimpleStringProperty(playerName);
         this.date = new SimpleStringProperty(date);
         this.score = new SimpleIntegerProperty(score);
