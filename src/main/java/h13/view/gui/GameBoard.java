@@ -37,7 +37,7 @@ public class GameBoard extends Canvas implements Playable {
     }
 
     public GameController getGameController() {
-        return gameScene.getGameController();
+        return gameScene.getController();
     }
 
     /**

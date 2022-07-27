@@ -1,8 +1,7 @@
 package h13.controller.scene;
 
-import h13.controller.ApplicationSettings;
+import h13.view.gui.ControlledScene;
 import h13.view.gui.GameScene;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -18,14 +17,17 @@ public final class SceneSwitcher {
     }
 
     public static Stage getStage(final ActionEvent e) {
-        return (Stage) ((Node) e.getSource()).getScene().getWindow();
+        if (e.getSource() instanceof Node n && n.getScene().getWindow() instanceof Stage s) {
+            return s;
+        }
+        throw new IllegalArgumentException("ActionEvent source is not a Node or does not have a Scene with a Stage");
     }
 
     public static Scene loadScene(final Scene scene, final Stage stage) {
-//        ApplicationSettings.setSwitchingScenes(true);
         stage.setScene(scene);
-//        ApplicationSettings.setSwitchingScenes(false);
-//        ApplicationSettings.applyStageSettings(stage);
+        if (scene instanceof ControlledScene cs) {
+            cs.getController().initStage(stage);
+        }
         stage.show();
         return scene;
     }
@@ -38,39 +40,28 @@ public final class SceneSwitcher {
         final var loader = new FXMLLoader(sceneURL);
         final var scene = new Scene(loader.load());
         loadScene(scene, stage);
+        loader.<SceneController>getController().initStage(stage);
         return scene;
     }
 
-    // TODO: Cleanup Title Setting
-
     public static Scene loadMainMenuScene(final Stage stage) throws IOException {
-        stage.setTitle("Space Invaders - Main Menu");
         return loadFXMLScene("/h13/view.gui/mainMenuScene.fxml", stage);
     }
 
     public static Scene loadAboutScene(final Stage stage) throws IOException {
-        stage.setTitle("Space Invaders - About");
         return loadFXMLScene("/h13/view.gui/aboutScene.fxml", stage);
     }
 
     public static Scene loadSettingsScene(final Stage stage) throws IOException {
-        stage.setTitle("Space Invaders - Settings");
         return loadFXMLScene("/h13/view.gui/settingsScene.fxml", stage);
     }
 
     public static Scene loadHighscoreScene(final Stage stage) throws IOException {
-        stage.setTitle("Space Invaders - Highscore");
         return loadFXMLScene("/h13/view.gui/highscoreScene.fxml", stage);
     }
 
 
     public static Scene loadGameScene(final Stage stage) throws IOException {
-        stage.setTitle("Space Invaders");
-        final var scene = loadScene(new GameScene(), stage);
-        // Full Screen
-        Platform.runLater(() -> {
-            stage.setFullScreen(ApplicationSettings.fullscreenProperty().get());
-        });
-        return scene;
+        return loadScene(new GameScene(), stage);
     }
 }

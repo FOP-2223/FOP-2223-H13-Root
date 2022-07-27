@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -36,5 +37,10 @@ public class HighscoreController extends SceneController implements Initializabl
         dateTableColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         scoreTableColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
         highscoreTableView.setItems(ApplicationSettings.highscores);
+    }
+
+    @Override
+    public void initStage(final Stage stage) {
+        stage.setTitle("Space Invaders - Highscore");
     }
 }

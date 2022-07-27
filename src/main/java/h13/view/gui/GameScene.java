@@ -12,7 +12,7 @@ import javafx.scene.paint.Color;
 import static h13.controller.GameConstants.ASPECT_RATIO;
 import static h13.controller.GameConstants.ORIGINAL_GAME_BOUNDS;
 
-public class GameScene extends Scene {
+public class GameScene extends Scene implements ControlledScene {
 
     private final Group root;
     private EnemyController enemyController;
@@ -66,7 +66,8 @@ public class GameScene extends Scene {
         gc.setLineWidth(2);
     }
 
-    public GameController getGameController() {
+    @Override
+    public GameController getController() {
         return gameController;
     }
 }

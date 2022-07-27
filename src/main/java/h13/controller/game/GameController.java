@@ -1,6 +1,7 @@
 package h13.controller.game;
 
 import h13.controller.ApplicationSettings;
+import h13.controller.scene.SceneController;
 import h13.controller.scene.SceneSwitcher;
 import h13.model.HighscoreEntry;
 import h13.model.gameplay.GamePlay;
@@ -23,7 +24,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class GameController implements Playable {
+public class GameController extends SceneController implements Playable {
     private final GameScene gameScene;
     private GameState gameState;
     private final Set<Sprite> sprites = new HashSet<>();
@@ -119,6 +120,14 @@ public class GameController implements Playable {
         handleKeyboardInputs();
 
         gameLoop.start();
+    }
+
+    @Override
+    public void initStage(final Stage stage) {
+        stage.setTitle("Space Invaders");
+
+        // Full Screen
+        stage.setFullScreen(ApplicationSettings.fullscreenProperty().get());
     }
 
     private void handleKeyboardInputs() {

@@ -41,4 +41,9 @@ public class SettingsController extends SceneController implements Initializable
         enemyHorizontalMovementCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.enemyHorizontalMovementProperty());
         enemyVerticalMovementCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.enemyVerticalMovementProperty());
     }
+
+    @Override
+    public void initStage(final Stage stage) {
+        stage.setTitle("Space Invaders - Settings");
+    }
 }

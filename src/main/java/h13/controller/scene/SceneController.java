@@ -18,7 +18,9 @@ import static h13.controller.scene.SceneSwitcher.loadFXMLScene;
 import static h13.controller.scene.SceneSwitcher.loadScene;
 
 public abstract class SceneController {
-
+    public void initStage(final Stage stage) {
+        // Do nothing by default
+    }
     public Scene loadMainMenuScene(final ActionEvent e) throws IOException {
         return SceneSwitcher.loadMainMenuScene(SceneSwitcher.getStage(e));
     }
