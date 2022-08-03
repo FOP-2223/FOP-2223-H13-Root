@@ -184,15 +184,6 @@ public abstract class Sprite implements Playable {
         velocityY.set(0);
     }
 
-    public void render(final GraphicsContext gc) {
-        if (texture != null) {
-            gc.drawImage(texture, x.get(), y.get(), getWidth(), getHeight());
-        } else {
-            gc.setFill(color);
-            gc.fillRect(getX(), getY(), getWidth(), getHeight());
-        }
-    }
-
     @Override
     public void update(final long now) {
         // Smooth movement
@@ -300,5 +291,9 @@ public abstract class Sprite implements Playable {
 
     public void setHealth(final int health) {
         this.health = health;
+    }
+
+    public Color getColor() {
+        return color;
     }
 }

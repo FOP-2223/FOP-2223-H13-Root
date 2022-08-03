@@ -67,37 +67,35 @@ public class GameBoard extends Canvas implements Playable {
         }
 
         // Draw bullets first (behind the player)
-        getGameController().getSprites(Bullet.class).forEach(bullet -> bullet.render(gc));
+        getGameController().getSprites(Bullet.class).forEach(bullet -> SpriteRenderer.renderSprite(gc, bullet));
 
         // Draw the enemies
-        getGameController().getSprites(Enemy.class).forEach(enemy -> enemy.render(gc));
+        getGameController().getSprites(Enemy.class).forEach(enemy -> SpriteRenderer.renderSprite(gc, enemy));
 
         // Draw the player last (on top of the enemies)
-        getGameController().getSprites(Player.class).forEach(player -> player.render(gc));
+        getGameController().getSprites(Player.class).forEach(player -> SpriteRenderer.renderSprite(gc, player));
 
         // Draw other sprites
-        getGameController().getSprites(s -> !(s instanceof Player) && !(s instanceof Bullet) && !(s instanceof Enemy)).forEach(sprite -> sprite.render(gc));
+        getGameController().getSprites(s -> !(s instanceof Player) && !(s instanceof Bullet) && !(s instanceof Enemy)).forEach(sprite -> SpriteRenderer.renderSprite(gc, sprite));
 
         final Font font = Font.loadFont(GameConstants.class.getResourceAsStream(GameConstants.STATS_FONT_PATH), getWidth() / 30);
         gc.setFont(font);
-        // Draw the score
         getGameController().getSprites(Player.class).forEach(player -> {
-            final String msg = "Score: " + player.getScore();
-            final Text text = new Text(msg);
-            text.setFont(font);
-            text.setFont(font);
+            // Draw the score
+            final String score = "Score: " + player.getScore();
+            final Text scoreLabel = new Text(score);
+            scoreLabel.setFont(font);
+            scoreLabel.setFont(font);
             gc.setFill(Color.WHITE);
-            gc.fillText(msg, 0.03 * getWidth(), 0.01 * getWidth() + text.getLayoutBounds().getHeight());
-        });
+            gc.fillText(score, 0.03 * getWidth(), 0.01 * getWidth() + scoreLabel.getLayoutBounds().getHeight());
 
-        // Draw the lives
-        getGameController().getSprites(Player.class).forEach(player -> {
-            final String msg = "Lives: " + player.getHealth();
-            final Text text = new Text(msg);
-            text.setFont(font);
-            text.setFont(font);
+            // Draw the lives
+            final String lives = "Lives: " + player.getHealth();
+            final Text livesLabel = new Text(lives);
+            livesLabel.setFont(font);
+            livesLabel.setFont(font);
             gc.setFill(Color.WHITE);
-            gc.fillText(msg, 0.97 * getWidth() - text.getLayoutBounds().getWidth(), 0.01 * getWidth() + text.getLayoutBounds().getHeight());
+            gc.fillText(lives, 0.97 * getWidth() - livesLabel.getLayoutBounds().getWidth(), 0.01 * getWidth() + livesLabel.getLayoutBounds().getHeight());
         });
 
         // Draw borders

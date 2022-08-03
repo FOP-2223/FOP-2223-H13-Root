@@ -10,10 +10,12 @@ import javafx.stage.Stage;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.Map;
 
 public final class SceneSwitcher {
 
     private SceneSwitcher() {
+        throw new RuntimeException("Cannot instantiate SceneSwitcher");
     }
 
     public static Stage getStage(final ActionEvent e) {
