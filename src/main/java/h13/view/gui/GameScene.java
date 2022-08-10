@@ -2,6 +2,7 @@ package h13.view.gui;
 
 import h13.controller.game.EnemyController;
 import h13.controller.game.GameController;
+import h13.controller.scene.ControlledScene;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;

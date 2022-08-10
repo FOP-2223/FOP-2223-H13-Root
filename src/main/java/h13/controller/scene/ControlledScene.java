@@ -1,4 +1,4 @@
-package h13.view.gui;
+package h13.controller.scene;
 
 import h13.controller.scene.SceneController;
 

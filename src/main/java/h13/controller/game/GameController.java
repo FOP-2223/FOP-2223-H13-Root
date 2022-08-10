@@ -141,8 +141,8 @@ public class GameController extends SceneController implements Playable {
 
                     if (alert.getResult() == ButtonType.YES) {
                         try {
-                            SceneSwitcher.loadMainMenuScene((Stage) getGameScene().getWindow());
-                        } catch (final IOException e) {
+                            SceneSwitcher.loadScene(SceneSwitcher.SceneType.MAIN_MENU, (Stage) getGameScene().getWindow());
+                        } catch (final Exception e) {
                             throw new RuntimeException(e);
                         }
                     } else {
@@ -215,8 +215,8 @@ public class GameController extends SceneController implements Playable {
                 //do stuff
             } else {
                 try {
-                    SceneSwitcher.loadMainMenuScene((Stage) getGameScene().getWindow());
-                } catch (final IOException e) {
+                    SceneSwitcher.loadScene(SceneSwitcher.SceneType.MAIN_MENU, (Stage) getGameScene().getWindow());
+                } catch (final Exception e) {
                     throw new RuntimeException(e);
                 }
             }

@@ -14,30 +14,35 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
-import static h13.controller.scene.SceneSwitcher.loadFXMLScene;
 import static h13.controller.scene.SceneSwitcher.loadScene;
 
 public abstract class SceneController {
+    private Stage stage;
+
+    public Stage getStage() {
+        return stage;
+    }
+
     public void initStage(final Stage stage) {
-        // Do nothing by default
+        this.stage = stage;
     }
-    public Scene loadMainMenuScene(final ActionEvent e) throws IOException {
-        return SceneSwitcher.loadMainMenuScene(SceneSwitcher.getStage(e));
-    }
-
-    public Scene loadAboutScene(final ActionEvent e) throws IOException {
-        return SceneSwitcher.loadAboutScene(SceneSwitcher.getStage(e));
+    public Scene loadMainMenuScene(final ActionEvent e) throws Exception {
+        return SceneSwitcher.loadScene(SceneSwitcher.SceneType.MAIN_MENU, getStage());
     }
 
-    public Scene loadSettingsScene(final ActionEvent e) throws IOException {
-        return SceneSwitcher.loadSettingsScene(SceneSwitcher.getStage(e));
+    public Scene loadAboutScene(final ActionEvent e) throws Exception {
+        return SceneSwitcher.loadScene(SceneSwitcher.SceneType.ABOUT, getStage());
     }
 
-    public Scene loadHighscoreScene(final ActionEvent e) throws IOException {
-        return SceneSwitcher.loadHighscoreScene(SceneSwitcher.getStage(e));
+    public Scene loadSettingsScene(final ActionEvent e) throws Exception {
+        return SceneSwitcher.loadScene(SceneSwitcher.SceneType.SETTINGS, getStage());
     }
 
-    public Scene loadGameScene(final ActionEvent e) throws IOException {
-        return SceneSwitcher.loadGameScene(SceneSwitcher.getStage(e));
+    public Scene loadHighscoreScene(final ActionEvent e) throws Exception {
+        return SceneSwitcher.loadScene(SceneSwitcher.SceneType.HIGHSCORE, getStage());
+    }
+
+    public Scene loadGameScene(final ActionEvent e) throws Exception {
+        return SceneSwitcher.loadScene(SceneSwitcher.SceneType.GAME, getStage());
     }
 }
