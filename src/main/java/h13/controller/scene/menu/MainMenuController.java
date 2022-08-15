@@ -12,6 +12,7 @@ public class MainMenuController extends SceneController {
 
     @Override
     public void initStage(final Stage stage) {
+        super.initStage(stage);
         stage.setTitle("Space Invaders - Main Menu");
     }
 }

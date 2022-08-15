@@ -41,6 +41,7 @@ public class HighscoreController extends SceneController implements Initializabl
 
     @Override
     public void initStage(final Stage stage) {
+        super.initStage(stage);
         stage.setTitle("Space Invaders - Highscore");
     }
 }
