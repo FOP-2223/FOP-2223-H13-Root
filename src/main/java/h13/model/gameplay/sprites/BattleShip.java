@@ -1,13 +1,15 @@
 package h13.model.gameplay.sprites;
 
 import h13.controller.ApplicationSettings;
-import h13.controller.game.GameController;
+import h13.controller.scene.game.GameController;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.paint.Color;
+import org.jetbrains.annotations.Nullable;
 
 import static h13.controller.GameConstants.RELATIVE_SHIP_WIDTH;
 
 public class BattleShip extends Sprite {
+    private @Nullable Bullet bullet;
     public BattleShip(final double x, final double y, final double velocity, final Color color, final int health, final GameController gameController) {
         super(x, y, RELATIVE_SHIP_WIDTH, RELATIVE_SHIP_WIDTH, color, velocity, health, gameController);
     }
@@ -16,13 +18,13 @@ public class BattleShip extends Sprite {
         if (hasBullet() && !ApplicationSettings.instantShootingProperty().get()) {
             return;
         }
-        final Sprite bullet = new Bullet(
+        setBullet(new Bullet(
             getX() + getWidth() / 2,
             getY(),
             getGameController(),
             this,
-            direction);
-        getGameController().addSprite(bullet);
+            direction));
+        getGameController().addSprite(getBullet());
     }
 
     public boolean isFriend(final BattleShip other) {
@@ -34,6 +36,14 @@ public class BattleShip extends Sprite {
     }
 
     public boolean hasBullet() {
-        return getGameController().getSprites(Bullet.class).stream().anyMatch(bullet -> bullet.getOwner() == this);
+        return bullet != null;
+    }
+
+    public void setBullet(@Nullable Bullet bullet) {
+        this.bullet = bullet;
+    }
+
+    public @Nullable Bullet getBullet() {
+        return bullet;
     }
 }

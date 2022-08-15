@@ -79,6 +79,6 @@ public final class SceneSwitcher {
             throw new IOException("Scene not found: " + sceneName);
         }
         final var loader = new FXMLLoader(sceneURL);
-        return new SceneAndController(new Scene(loader.load()), loader.<SceneController>getController());
+        return new SceneAndController(new Scene(loader.load()), loader.getController());
     }
 }

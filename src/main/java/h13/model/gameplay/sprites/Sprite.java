@@ -3,7 +3,7 @@ package h13.model.gameplay.sprites;
 import h13.controller.ApplicationSettings;
 import h13.model.gameplay.GamePlay;
 import h13.model.gameplay.Playable;
-import h13.controller.game.GameController;
+import h13.controller.scene.game.GameController;
 import h13.view.gui.GameBoard;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.DoubleProperty;
@@ -13,7 +13,6 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
@@ -35,8 +34,6 @@ public abstract class Sprite implements Playable {
     protected int health;
     protected double velocity;
     private boolean dead = false;
-
-    private AnimationTimer movementTimer;
 
     public Sprite(final double x, final double y, final double relativeWidth, final double relativeHeight, final Color color, final double velocity, final int health, final GameController gameController) {
         this.x = new SimpleDoubleProperty(x);
@@ -93,10 +90,6 @@ public abstract class Sprite implements Playable {
 
     public int getHealth() {
         return health;
-    }
-
-    public AnimationTimer getMovementTimer() {
-        return movementTimer;
     }
 
     protected Point2D getPaddedPosition(final double x, final double y, final double padding) {
@@ -170,10 +163,6 @@ public abstract class Sprite implements Playable {
         velocityY.set(velocityY.get() - velocity * getGameboardHeight());
     }
 
-    public void pause() {
-        movementTimer.stop();
-    }
-
     @Override
     public void resume(final long now) {
         lastUpdate.set(now);
@@ -197,7 +186,6 @@ public abstract class Sprite implements Playable {
             final double newY = oldY + deltaY;
             gameTick(
                 new GameTickParameters(
-                    getMovementTimer(),
                     now,
                     elapsedTime,
                     deltaX,
@@ -221,7 +209,6 @@ public abstract class Sprite implements Playable {
     }
 
     protected record GameTickParameters(
-        AnimationTimer movementTimer,
         long now,
         /**
          * The time elapsed since the last update in seconds.

@@ -1,7 +1,7 @@
 package h13.model.gameplay.sprites;
 
-import h13.controller.game.EnemyController;
-import h13.controller.game.GameController;
+import h13.controller.gamelogic.EnemyController;
+import h13.controller.scene.game.GameController;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.paint.Color;
 

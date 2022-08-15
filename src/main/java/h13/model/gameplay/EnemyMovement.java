@@ -2,7 +2,7 @@ package h13.model.gameplay;
 
 import h13.controller.ApplicationSettings;
 import h13.controller.GameConstants;
-import h13.controller.game.EnemyController;
+import h13.controller.gamelogic.EnemyController;
 import h13.model.gameplay.sprites.Enemy;
 import javafx.beans.property.*;
 import javafx.geometry.HorizontalDirection;
@@ -79,8 +79,8 @@ public class EnemyMovement implements Playable {
         final var chunkSize = horizontalEnemySpace / ENEMY_COLS;
         final var padding = chunkSize / 2 - GameConstants.RELATIVE_SHIP_WIDTH * horizontalSpace / 2;
         for (final Enemy enemy : getEnemyController().getAliveEnemies()) {
-            final var enemyXPos = chunkSize * enemy.getxIndex() + +padding;
-            final var enemyYPos = chunkSize * enemy.getyIndex() + +padding + enemyController.getYOffset();
+            final var enemyXPos = chunkSize * enemy.getxIndex() + padding;
+            final var enemyYPos = chunkSize * enemy.getyIndex() + padding + enemyController.getYOffset();
             if (verticalMovement.get()) {
                 enemy.setX(enemyXPos + (horizontalMovementDirection.get().equals(HorizontalDirection.LEFT) ? 0 : (HORIZONTAL_ENEMY_MOVE_DISTANCE * horizontalSpace)));
                 enemy.setY(enemyYPos + (VERTICAL_ENEMY_MOVE_DISTANCE * verticalSpace) * (verticalMovementIteration.get() - 1) + (VERTICAL_ENEMY_MOVE_DISTANCE * verticalSpace) * movementProgress.get());

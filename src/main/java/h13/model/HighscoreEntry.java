@@ -4,9 +4,9 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class HighscoreEntry {
-    SimpleStringProperty playerName;
-    SimpleStringProperty date;
-    SimpleIntegerProperty score;
+    final SimpleStringProperty playerName;
+    final SimpleStringProperty date;
+    final SimpleIntegerProperty score;
 
     public HighscoreEntry(final String playerName, final String date, final int score) {
         this.playerName = new SimpleStringProperty(playerName);

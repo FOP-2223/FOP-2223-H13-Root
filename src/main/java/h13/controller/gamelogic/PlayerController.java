@@ -1,5 +1,6 @@
-package h13.controller.game;
+package h13.controller.gamelogic;
 
+import h13.controller.scene.game.GameController;
 import h13.model.gameplay.sprites.Player;
 import javafx.scene.input.KeyCode;
 

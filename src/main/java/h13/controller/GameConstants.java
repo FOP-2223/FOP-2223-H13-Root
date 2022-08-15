@@ -3,7 +3,6 @@ package h13.controller;
 
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import javafx.scene.text.Font;
 
 public final class GameConstants {
     public static final Bounds ORIGINAL_GAME_BOUNDS = new BoundingBox(

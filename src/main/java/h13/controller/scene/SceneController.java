@@ -1,20 +1,8 @@
 package h13.controller.scene;
 
-import h13.view.gui.GameScene;
 import javafx.event.ActionEvent;
-import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.function.Consumer;
-
-import static h13.controller.scene.SceneSwitcher.loadScene;
 
 public abstract class SceneController {
     private Stage stage;

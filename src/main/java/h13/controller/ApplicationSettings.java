@@ -5,10 +5,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.stage.Stage;
 
 import java.util.Date;
-import java.util.HashMap;
 
 public class ApplicationSettings {
     private ApplicationSettings() {

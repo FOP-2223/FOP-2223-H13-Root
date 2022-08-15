@@ -1,6 +1,8 @@
-package h13.controller.game;
+package h13.controller.scene.game;
 
 import h13.controller.ApplicationSettings;
+import h13.controller.gamelogic.EnemyController;
+import h13.controller.gamelogic.PlayerController;
 import h13.controller.scene.SceneController;
 import h13.controller.scene.SceneSwitcher;
 import h13.model.HighscoreEntry;
@@ -17,7 +19,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
@@ -164,9 +165,7 @@ public class GameController extends SceneController implements Playable {
             .stream()
             .filter(Objects::nonNull)
             .map(Playable.class::cast)
-            .forEach(s -> {
-                Platform.runLater(() -> s.update(now));
-            });
+            .forEach(s -> Platform.runLater(() -> s.update(now)));
 //        getGameBoard().getSprites().forEach(s -> s.update(now));
         getGameBoard().update(now);
         if (getEnemyController() != null && getEnemyController().defeated()) {
@@ -190,9 +189,7 @@ public class GameController extends SceneController implements Playable {
             .stream()
             .filter(Objects::nonNull)
             .map(Playable.class::cast)
-            .forEach(s -> {
-                Platform.runLater(() -> s.resume(now));
-            });
+            .forEach(s -> Platform.runLater(() -> s.resume(now)));
     }
 
     private void lose() {

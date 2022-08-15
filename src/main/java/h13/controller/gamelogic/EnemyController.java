@@ -1,5 +1,6 @@
-package h13.controller.game;
+package h13.controller.gamelogic;
 
+import h13.controller.scene.game.GameController;
 import h13.model.gameplay.EnemyMovement;
 import h13.controller.GameConstants;
 import h13.model.gameplay.sprites.Enemy;

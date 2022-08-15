@@ -1,8 +1,8 @@
 package h13.model.gameplay;
 
-import h13.controller.game.EnemyController;
-import h13.controller.game.GameController;
-import h13.controller.game.PlayerController;
+import h13.controller.gamelogic.EnemyController;
+import h13.controller.scene.game.GameController;
+import h13.controller.gamelogic.PlayerController;
 import javafx.geometry.HorizontalDirection;
 
 public class GamePlay {

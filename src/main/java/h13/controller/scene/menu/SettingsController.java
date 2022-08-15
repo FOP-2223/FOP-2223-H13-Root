@@ -2,7 +2,6 @@ package h13.controller.scene.menu;
 
 import h13.controller.ApplicationSettings;
 import h13.controller.scene.SceneController;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;

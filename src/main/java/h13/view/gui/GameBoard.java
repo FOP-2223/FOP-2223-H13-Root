@@ -2,7 +2,7 @@ package h13.view.gui;
 
 import h13.controller.ApplicationSettings;
 import h13.controller.GameConstants;
-import h13.controller.game.GameController;
+import h13.controller.scene.game.GameController;
 import h13.model.gameplay.Playable;
 import h13.model.gameplay.sprites.Bullet;
 import h13.model.gameplay.sprites.Enemy;
