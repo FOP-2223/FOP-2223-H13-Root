@@ -11,8 +11,10 @@ public abstract class SceneController {
         return stage;
     }
 
+    public abstract String getTitle();
+
     public void initStage(final Stage stage) {
-        this.stage = stage;
+        (this.stage = stage).setTitle(getTitle());
     }
     public Scene loadMainMenuScene(final ActionEvent e) throws Exception {
         return SceneSwitcher.loadScene(SceneSwitcher.SceneType.MAIN_MENU, getStage());

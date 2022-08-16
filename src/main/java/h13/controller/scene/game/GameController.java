@@ -128,9 +128,13 @@ public class GameController extends SceneController implements Playable {
     }
 
     @Override
+    public String getTitle() {
+        return "Space Invaders";
+    }
+
+    @Override
     public void initStage(final Stage stage) {
         super.initStage(stage);
-        stage.setTitle("Space Invaders");
 
         // Full Screen
         stage.setFullScreen(ApplicationSettings.fullscreenProperty().get());

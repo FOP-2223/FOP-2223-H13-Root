@@ -5,7 +5,6 @@ import h13.controller.scene.SceneController;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
-import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -25,6 +24,11 @@ public class SettingsController extends SceneController implements Initializable
     @FXML
     private CheckBox fullscreenCheckBox;
 
+    @Override
+    public String getTitle() {
+        return "Space Invaders - Settings";
+    }
+
     /**
      * @param location  The location used to resolve relative paths for the root object, or
      *                  {@code null} if the location is not known.
@@ -39,11 +43,5 @@ public class SettingsController extends SceneController implements Initializable
         instantShootingCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.instantShootingProperty());
         enemyHorizontalMovementCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.enemyHorizontalMovementProperty());
         enemyVerticalMovementCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.enemyVerticalMovementProperty());
-    }
-
-    @Override
-    public void initStage(final Stage stage) {
-        super.initStage(stage);
-        stage.setTitle("Space Invaders - Settings");
     }
 }
