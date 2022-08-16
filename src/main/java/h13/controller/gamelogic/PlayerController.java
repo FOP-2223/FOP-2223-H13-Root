@@ -2,18 +2,12 @@ package h13.controller.gamelogic;
 
 import h13.controller.scene.game.GameController;
 import h13.model.gameplay.sprites.Player;
-import javafx.scene.input.KeyCode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static h13.controller.GameConstants.*;
 
 public class PlayerController {
     private final GameController gameController;
     private final Player player;
-
-    private final List<KeyCode> keysPressed = new ArrayList<>();
 
 
     public PlayerController(final GameController gameController) {
@@ -27,9 +21,9 @@ public class PlayerController {
     }
 
     private void handleKeyboardInputs() {
-        getGameController().getGameScene().setOnKeyPressed(e -> {
-            if (keysPressed.contains(e.getCode())) return;
-            keysPressed.add(e.getCode());
+        final var gameInputHandler = getGameController().getGameInputHandler();
+        gameInputHandler.addOnKeyPressed(e -> {
+            if (gameInputHandler.getKeysPressed().contains(e.getCode())) return;
             switch (e.getCode()) {
                 case LEFT, A -> player.moveLeft();
                 case RIGHT, D -> player.moveRight();
@@ -38,15 +32,14 @@ public class PlayerController {
                 case SPACE -> player.shoot();
             }
         });
-        gameController.getGameScene().setOnKeyReleased(e -> {
-            keysPressed.remove(e.getCode());    // remove the key from the list of pressed keys
+        gameInputHandler.addOnKeyReleased(e -> {
             switch (e.getCode()) {
                 case LEFT, A -> player.moveRight();
                 case RIGHT, D -> player.moveLeft();
                 case UP, W -> player.moveDown();
                 case DOWN, S -> player.moveUp();
             }
-            if (keysPressed.isEmpty()) {
+            if (gameInputHandler.getKeysPressed().isEmpty()) {
                 player.stop();
             }
         });

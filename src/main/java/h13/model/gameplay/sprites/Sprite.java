@@ -1,11 +1,9 @@
 package h13.model.gameplay.sprites;
 
 import h13.controller.ApplicationSettings;
-import h13.model.gameplay.GamePlay;
 import h13.model.gameplay.Playable;
 import h13.controller.scene.game.GameController;
 import h13.view.gui.GameBoard;
-import javafx.animation.AnimationTimer;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -82,10 +80,6 @@ public abstract class Sprite implements Playable {
 
     public GameController getGameController() {
         return gameController;
-    }
-
-    public GamePlay getGamePlay() {
-        return getGameController().getGamePlay();
     }
 
     public int getHealth() {

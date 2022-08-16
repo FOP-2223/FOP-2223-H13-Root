@@ -2,11 +2,11 @@ package h13.controller.scene.game;
 
 import h13.controller.ApplicationSettings;
 import h13.controller.gamelogic.EnemyController;
+import h13.controller.gamelogic.GameInputHandler;
 import h13.controller.gamelogic.PlayerController;
 import h13.controller.scene.SceneController;
 import h13.controller.scene.SceneSwitcher;
 import h13.model.HighscoreEntry;
-import h13.model.gameplay.GamePlay;
 import h13.model.gameplay.Playable;
 import h13.model.gameplay.GameState;
 import h13.model.gameplay.sprites.Sprite;
@@ -15,6 +15,7 @@ import h13.view.gui.GameScene;
 import h13.model.gameplay.sprites.Player;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.geometry.HorizontalDirection;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
@@ -31,9 +32,10 @@ public class GameController extends SceneController implements Playable {
     private final Set<Sprite> sprites = new HashSet<>();
 
 
-    private GamePlay gamePlay;
     private EnemyController enemyController;
     private PlayerController playerController;
+
+    private GameInputHandler gameInputHandler;
 
     private final AnimationTimer gameLoop = new AnimationTimer() {
         @Override
@@ -53,10 +55,6 @@ public class GameController extends SceneController implements Playable {
 
     public GameScene getGameScene() {
         return gameScene;
-    }
-
-    public GamePlay getGamePlay() {
-        return gamePlay;
     }
 
     public EnemyController getEnemyController() {
@@ -116,7 +114,13 @@ public class GameController extends SceneController implements Playable {
     }
 
     private void init() {
-        gamePlay = new GamePlay(this);
+        // Keyboard input handler
+        setGameInputHandler(new GameInputHandler(getGameScene()));
+        // Player
+        setPlayerController(new PlayerController(this));
+
+        // Enemies
+        setEnemyController(new EnemyController(this, HorizontalDirection.RIGHT));
 
         handleKeyboardInputs();
 
@@ -133,10 +137,10 @@ public class GameController extends SceneController implements Playable {
     }
 
     private void handleKeyboardInputs() {
-        getGameScene().setOnKeyTyped(k -> {
+        getGameInputHandler().addOnKeyReleased(k -> {
             // escape
-            if (k.getCharacter().equals("\u001b")) {
-                Platform.runLater(() -> {
+            switch (k.getCode()) {
+                case ESCAPE -> Platform.runLater(() -> {
                     gameLoop.stop();
                     final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Exit to main Menu?", ButtonType.YES, ButtonType.NO);
                     alert.showAndWait();
@@ -150,6 +154,13 @@ public class GameController extends SceneController implements Playable {
                     } else {
                         resume();
                     }
+                });
+
+                // F11
+                case F11 -> Platform.runLater(() -> {
+                    final Stage stage = (Stage) getGameScene().getWindow();
+                    stage.setFullScreen(!stage.isFullScreen());
+                    System.out.println("Fullscreen: " + stage.isFullScreen());
                 });
             }
         });
@@ -261,5 +272,13 @@ public class GameController extends SceneController implements Playable {
 
     public void setPlayerController(final PlayerController playerController) {
         this.playerController = playerController;
+    }
+
+    public GameInputHandler getGameInputHandler() {
+        return gameInputHandler;
+    }
+
+    public void setGameInputHandler(GameInputHandler gameInputHandler) {
+        this.gameInputHandler = gameInputHandler;
     }
 }
