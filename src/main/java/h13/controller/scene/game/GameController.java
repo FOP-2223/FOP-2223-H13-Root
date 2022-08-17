@@ -28,7 +28,7 @@ import java.util.function.Predicate;
 
 public class GameController extends SceneController implements Updatable {
     private final GameScene gameScene;
-    private GameState gameState;
+    private GameState gameState = GameState.PLAYING;
     private final Set<Sprite> sprites = new HashSet<>();
 
     private double lastUpdate = 0;
@@ -42,7 +42,7 @@ public class GameController extends SceneController implements Updatable {
     private final AnimationTimer gameLoop = new AnimationTimer() {
         @Override
         public void handle(final long now) {
-            if (lastUpdate > 0) {
+            if (lastUpdate > 0 && !isPaused()) {
                 final double elapsedTime = (now - lastUpdate) / 1_000_000_000.0;
                 lastUpdate = now;
                 update(elapsedTime);
@@ -79,8 +79,6 @@ public class GameController extends SceneController implements Updatable {
     public GameBoard getGameBoard() {
         return gameScene.getGameBoard();
     }
-
-    private boolean resume = false;
 
     public <T extends Sprite> Set<T> getSprites(final Class<T> clazz) {
         return getSprites().stream().filter(clazz::isInstance).map(clazz::cast).collect(HashSet::new, Set::add, Set::addAll);
@@ -148,7 +146,7 @@ public class GameController extends SceneController implements Updatable {
             // escape
             switch (k.getCode()) {
                 case ESCAPE -> Platform.runLater(() -> {
-                    gameLoop.stop();
+                    pause();
                     final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Exit to main Menu?", ButtonType.YES, ButtonType.NO);
                     alert.showAndWait();
 
@@ -203,7 +201,7 @@ public class GameController extends SceneController implements Updatable {
 
     private void lose() {
         Platform.runLater(() -> {
-            gameLoop.stop();
+            pause();
             if (getPlayer().getScore() > 0) {
                 ApplicationSettings.highscores.add(
                     new HighscoreEntry(
@@ -218,7 +216,7 @@ public class GameController extends SceneController implements Updatable {
 
             if (alert.getResult() == ButtonType.YES) {
                 reset();
-                gameLoop.start();
+                resume();
                 //do stuff
             } else {
                 try {
@@ -231,12 +229,15 @@ public class GameController extends SceneController implements Updatable {
     }
 
     public void pause() {
-        gameLoop.stop();
+        gameState = GameState.PAUSED;
     }
 
     public void resume() {
-        resume = true;
-        gameLoop.start();
+        gameState = GameState.PLAYING;
+    }
+
+    public boolean isPaused() {
+        return gameState != GameState.PLAYING;
     }
 
     private void win() {
