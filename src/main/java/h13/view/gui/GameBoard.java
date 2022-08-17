@@ -3,19 +3,19 @@ package h13.view.gui;
 import h13.controller.ApplicationSettings;
 import h13.controller.GameConstants;
 import h13.controller.scene.game.GameController;
-import h13.model.gameplay.Playable;
+import h13.model.gameplay.Updatable;
 import h13.model.gameplay.sprites.Bullet;
 import h13.model.gameplay.sprites.Enemy;
 import h13.model.gameplay.sprites.Player;
-import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class GameBoard extends Canvas implements Playable {
-    private Bounds previousBounds = getBoundsInParent();
+import static h13.controller.GameConstants.*;
+
+public class GameBoard extends Canvas implements Updatable {
 
 //    private final GameController gameController;
 
@@ -41,23 +41,12 @@ public class GameBoard extends Canvas implements Playable {
     }
 
     /**
-     * @param now The timestamp of the current frame given in nanoseconds. This value will be the same for all AnimationTimers called during one frame.
+     * @param elapsedTime The timestamp of the current frame given in nanoseconds. This value will be the same for all AnimationTimers called during one frame.
      */
     @Override
-    public void update(final long now) {
-        if (!getBoundsInParent().equals(previousBounds)) {
-            if (previousBounds.getWidth() > 0 && previousBounds.getHeight() > 0 && getBoundsInParent().getWidth() > 0 && getBoundsInParent().getHeight() > 0) {
-                final var scale = getWidth() / previousBounds.getWidth();
-                System.out.println("scale: " + scale);
-                getGameController().getSprites().forEach(sprite -> {
-                    sprite.setX(sprite.getX() * scale);
-                    sprite.setY(sprite.getY() * scale);
-                });
-            }
-            previousBounds = getBoundsInParent();
-        }
-        getGameController().getSprites(Player.class).forEach(player -> player.setY(getHeight() - player.getHeight()));
+    public void update(final double elapsedTime) {
         final var gc = getGraphicsContext2D();
+        final double scale = getWidth() / ORIGINAL_GAME_BOUNDS.getWidth();
 
         // Background
         if (backgroundImage != null) {
@@ -67,16 +56,16 @@ public class GameBoard extends Canvas implements Playable {
         }
 
         // Draw bullets first (behind the player)
-        getGameController().getSprites(Bullet.class).forEach(bullet -> SpriteRenderer.renderSprite(gc, bullet));
+        getGameController().getSprites(Bullet.class).forEach(bullet -> SpriteRenderer.renderSprite(gc, bullet, scale));
 
         // Draw the enemies
-        getGameController().getSprites(Enemy.class).forEach(enemy -> SpriteRenderer.renderSprite(gc, enemy));
+        getGameController().getSprites(Enemy.class).forEach(enemy -> SpriteRenderer.renderSprite(gc, enemy, scale));
 
         // Draw the player last (on top of the enemies)
-        getGameController().getSprites(Player.class).forEach(player -> SpriteRenderer.renderSprite(gc, player));
+        SpriteRenderer.renderSprite(gc, getGameController().getPlayer(), scale);
 
         // Draw other sprites
-        getGameController().getSprites(s -> !(s instanceof Player) && !(s instanceof Bullet) && !(s instanceof Enemy)).forEach(sprite -> SpriteRenderer.renderSprite(gc, sprite));
+        getGameController().getSprites(s -> !(s instanceof Player) && !(s instanceof Bullet) && !(s instanceof Enemy)).forEach(sprite -> SpriteRenderer.renderSprite(gc, sprite,scale));
 
         final Font font = Font.loadFont(GameConstants.class.getResourceAsStream(GameConstants.STATS_FONT_PATH), getWidth() / 30);
         gc.setFont(font);
@@ -104,15 +93,7 @@ public class GameBoard extends Canvas implements Playable {
         gc.strokeRect(0, 0, getWidth(), getHeight());
     }
 
-    /**
-     * @param now The timestamp of the current frame given in nanoseconds. This value will be the same for all AnimationTimers called during one frame.
-     */
-    @Override
-    public void resume(final long now) {
-        // Nothing to do
-    }
-
     public double getScale() {
-        return getWidth() / GameConstants.ORIGINAL_GAME_BOUNDS.getWidth();
+        return getWidth() / ORIGINAL_GAME_BOUNDS.getWidth();
     }
 }

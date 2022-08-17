@@ -1,25 +1,25 @@
 package h13.model.gameplay.sprites;
 
 import h13.controller.scene.game.GameController;
+import h13.model.gameplay.Direction;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.paint.Color;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 
 import static h13.controller.GameConstants.BULLET_VELOCITY;
+import static h13.controller.GameConstants.ORIGINAL_GAME_BOUNDS;
 
 public class Bullet extends Sprite {
     private final BattleShip owner;
     private final HashSet<Sprite> hits = new HashSet<>();
 
-    private final VerticalDirection direction;
 
-
-    public Bullet(final double x, final double y, final GameController gameController, final BattleShip owner, final VerticalDirection direction) {
-        super(x, y, 0.003, 0.02, Color.WHITE, BULLET_VELOCITY, 1, gameController);
+    public Bullet(final double x, final double y, final GameController gameController, final BattleShip owner, final Direction direction) {
+        super(x, y, 1, 5, Color.WHITE, BULLET_VELOCITY, 1, gameController);
         this.owner = owner;
-        this.direction = direction;
-        velocityYProperty().bind(getGameBoard().heightProperty().multiply(direction.equals(VerticalDirection.UP) ? -getVelocity() : getVelocity()));
+        this.setDirection(direction);
     }
 
     @Override
@@ -51,13 +51,12 @@ public class Bullet extends Sprite {
     public void die() {
         super.die();
         owner.setBullet(null);
+        if(owner instanceof Player p && p.isKeepShooting()) {
+            p.shoot();
+        }
     }
 
     public BattleShip getOwner() {
         return owner;
-    }
-
-    public VerticalDirection getDirection() {
-        return direction;
     }
 }

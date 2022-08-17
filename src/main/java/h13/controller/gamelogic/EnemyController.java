@@ -1,6 +1,7 @@
 package h13.controller.gamelogic;
 
 import h13.controller.scene.game.GameController;
+import h13.model.gameplay.Direction;
 import h13.model.gameplay.EnemyMovement;
 import h13.controller.GameConstants;
 import h13.model.gameplay.sprites.Enemy;
@@ -23,7 +24,7 @@ public class EnemyController {
 
     public EnemyController(
         final GameController gameController,
-        final HorizontalDirection initialMovementDirection) {
+        final Direction initialMovementDirection) {
         enemies = new HashSet<>();
         this.gameController = gameController;
         enemyMovement = new EnemyMovement(this, initialMovementDirection);
@@ -47,7 +48,7 @@ public class EnemyController {
                 );
 //                var insets = getGameBoard().getBorder().getInsets();
 //                var horizontalSpace = getGameBoard().getMaxWidth() - insets.getLeft() - insets.getRight();
-                final var horizontalSpace = getGameBoard().getWidth();
+                final var horizontalSpace = ORIGINAL_GAME_BOUNDS.getWidth();
                 final var horizontalEnemySpace = horizontalSpace * (1 - HORIZONTAL_ENEMY_MOVE_DISTANCE);
                 final var chunkSize = horizontalEnemySpace / ENEMY_COLS;
                 final var padding = chunkSize / 2 - GameConstants.RELATIVE_SHIP_WIDTH * horizontalSpace / 2;

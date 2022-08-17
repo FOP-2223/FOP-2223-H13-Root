@@ -1,52 +1,49 @@
 package h13.model.gameplay.sprites;
 
 import h13.controller.ApplicationSettings;
-import h13.model.gameplay.Playable;
 import h13.controller.scene.game.GameController;
-import h13.view.gui.GameBoard;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleLongProperty;
+import h13.model.gameplay.Direction;
+import h13.model.gameplay.Updatable;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class Sprite implements Playable {
+import static h13.controller.GameConstants.ORIGINAL_GAME_BOUNDS;
+
+public abstract class Sprite implements Updatable {
 
     // --Variables--//
-    protected final GameController gameController;
+    private final GameController gameController;
     private final Color color;
-    private final LongProperty lastUpdate = new SimpleLongProperty(0);
-    private final double relativeHeight;
-    private final double relativeWidth;
+    private final double height;
+    private final double width;
 
-    protected Image texture;
+    private Image texture;
 
-    private final DoubleProperty x;
-    private final DoubleProperty y;
-    private final DoubleProperty velocityX = new SimpleDoubleProperty(0);
-    private final DoubleProperty velocityY = new SimpleDoubleProperty(0);
-    protected int health;
-    protected double velocity;
+    private double x;
+    private double y;
+    private @NotNull Direction direction = Direction.NONE;
+    private int health;
+    private final double velocity;
     private boolean dead = false;
 
-    public Sprite(final double x, final double y, final double relativeWidth, final double relativeHeight, final Color color, final double velocity, final int health, final GameController gameController) {
-        this.x = new SimpleDoubleProperty(x);
-        this.y = new SimpleDoubleProperty(y);
+    public Sprite(final double x, final double y, final double width, final double height, final Color color, final double velocity, final int health, final GameController gameController) {
+        this.x = x;
+        this.y = y;
         this.velocity = velocity;
         this.color = color;
         this.gameController = gameController;
-        this.relativeWidth = relativeWidth;
-        this.relativeHeight = relativeHeight;
+        this.width = width;
+        this.height = height;
         this.health = health;
     }
 
     protected boolean coordinatesInBounds(final double x, final double y, final double padding) {
-        return x >= padding && x <= getGameBoard().getWidth() - getWidth() - padding
-            && y >= padding && y <= getGameBoard().getHeight() - getHeight() - padding;
+        return x >= padding && x <= ORIGINAL_GAME_BOUNDS.getWidth() - getWidth() - padding
+            && y >= padding && y <= ORIGINAL_GAME_BOUNDS.getHeight() - getHeight() - padding;
     }
 
     // --Getters and Setters--//
@@ -74,10 +71,6 @@ public abstract class Sprite implements Playable {
         setY(newPos.getY());
     }
 
-    public GameBoard getGameBoard() {
-        return gameController.getGameBoard();
-    }
-
     public GameController getGameController() {
         return gameController;
     }
@@ -88,49 +81,21 @@ public abstract class Sprite implements Playable {
 
     protected Point2D getPaddedPosition(final double x, final double y, final double padding) {
         return new Point2D(
-            Math.max(padding, Math.min(getGameBoard().getWidth() - getWidth() - padding, x)),
-            Math.max(padding, Math.min(getGameBoard().getHeight() - getHeight() - padding, y))
+            Math.max(padding, Math.min(ORIGINAL_GAME_BOUNDS.getWidth() - getWidth() - padding, x)),
+            Math.max(padding, Math.min(ORIGINAL_GAME_BOUNDS.getHeight() - getHeight() - padding, y))
         );
     }
 
     public double getHeight() {
-        return relativeHeight * getGameboardWidth();
+        return height;
     }
 
     public double getWidth() {
-        return relativeWidth * getGameboardWidth();
-    }
-
-    public double getRelativeHeight() {
-        return relativeHeight;
-    }
-
-    public double getRelativeWidth() {
-        return relativeWidth;
+        return width;
     }
 
     public double getVelocity() {
         return velocity;
-    }
-
-    public void setVelocity(final int velocity) {
-        this.velocity = velocity;
-    }
-
-    public double getVelocityX() {
-        return velocityX.get();
-    }
-
-    public void setVelocityX(final double velocityX) {
-        this.velocityX.set(velocityX);
-    }
-
-    protected double getGameboardWidth() {
-        return getGameBoard().getWidth();
-    }
-
-    protected double getGameboardHeight() {
-        return getGameBoard().getHeight();
     }
 
     public boolean isDead() {
@@ -141,46 +106,45 @@ public abstract class Sprite implements Playable {
         return !isDead();
     }
 
+    public @NotNull Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(@NotNull Direction direction) {
+        this.direction = direction;
+    }
+
     public void moveDown() {
-        velocityY.set(velocityY.get() + velocity * getGameboardHeight());
+        setDirection(Direction.DOWN);
     }
 
     public void moveLeft() {
-        velocityX.set(velocityX.get() - velocity * getGameboardWidth());
+        setDirection(Direction.LEFT);
     }
 
     public void moveRight() {
-        velocityX.set(velocityX.get() + velocity * getGameboardWidth());
+        setDirection(Direction.RIGHT);
     }
 
     public void moveUp() {
-        velocityY.set(velocityY.get() - velocity * getGameboardHeight());
-    }
-
-    @Override
-    public void resume(final long now) {
-        lastUpdate.set(now);
+        setDirection(Direction.UP);
     }
 
     public void stop() {
-        velocityX.set(0);
-        velocityY.set(0);
+        setDirection(Direction.NONE);
     }
 
     @Override
-    public void update(final long now) {
+    public void update(final double elapsedTime) {
         // Smooth movement
-        if (lastUpdate.get() > 0) {
-            final double elapsedTime = (now - lastUpdate.get()) / 1_000_000_000.0;
-            final double deltaX = velocityX.get() * elapsedTime;
-            final double deltaY = velocityY.get() * elapsedTime;
+            final double deltaX = getDirection().getX() * velocity * elapsedTime;
+            final double deltaY = getDirection().getY() * velocity * elapsedTime;
             final double oldX = getX();
             final double oldY = getY();
             final double newX = oldX + deltaX;
             final double newY = oldY + deltaY;
             gameTick(
                 new GameTickParameters(
-                    now,
                     elapsedTime,
                     deltaX,
                     deltaY,
@@ -191,19 +155,8 @@ public abstract class Sprite implements Playable {
                 )
             );
         }
-        lastUpdate.set(now);
-    }
-
-    public DoubleProperty velocityXProperty() {
-        return velocityX;
-    }
-
-    public DoubleProperty velocityYProperty() {
-        return velocityY;
-    }
 
     protected record GameTickParameters(
-        long now,
         /**
          * The time elapsed since the last update in seconds.
          */
@@ -218,27 +171,19 @@ public abstract class Sprite implements Playable {
     }
 
     public double getX() {
-        return x.get();
+        return this.x;
     }
 
     public double getY() {
-        return y.get();
+        return this.y;
     }
 
     public void setX(final double x) {
-        this.x.set(x);
+        this.x = x;
     }
 
     public void setY(final double y) {
-        this.y.set(y);
-    }
-
-    public DoubleProperty xProperty() {
-        return x;
-    }
-
-    public DoubleProperty yProperty() {
-        return y;
+        this.y = y;
     }
 
     // getBounds
@@ -248,10 +193,6 @@ public abstract class Sprite implements Playable {
 
     public Image getTexture() {
         return texture;
-    }
-
-    public double getVelocityY() {
-        return velocityY.get();
     }
 
     public void setTexture(final Image texture) {

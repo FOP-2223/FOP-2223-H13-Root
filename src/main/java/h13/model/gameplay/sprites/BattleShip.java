@@ -2,19 +2,21 @@ package h13.model.gameplay.sprites;
 
 import h13.controller.ApplicationSettings;
 import h13.controller.scene.game.GameController;
+import h13.model.gameplay.Direction;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.Nullable;
 
+import static h13.controller.GameConstants.ORIGINAL_GAME_BOUNDS;
 import static h13.controller.GameConstants.RELATIVE_SHIP_WIDTH;
 
 public class BattleShip extends Sprite {
     private @Nullable Bullet bullet;
     public BattleShip(final double x, final double y, final double velocity, final Color color, final int health, final GameController gameController) {
-        super(x, y, RELATIVE_SHIP_WIDTH, RELATIVE_SHIP_WIDTH, color, velocity, health, gameController);
+        super(x, y, RELATIVE_SHIP_WIDTH * ORIGINAL_GAME_BOUNDS.getWidth(), RELATIVE_SHIP_WIDTH * ORIGINAL_GAME_BOUNDS.getWidth(), color, velocity, health, gameController);
     }
 
-    protected void shoot(final VerticalDirection direction) {
+    protected void shoot(final Direction direction) {
         if (hasBullet() && !ApplicationSettings.instantShootingProperty().get()) {
             return;
         }

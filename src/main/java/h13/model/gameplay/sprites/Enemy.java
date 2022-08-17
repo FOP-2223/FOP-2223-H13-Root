@@ -2,6 +2,7 @@ package h13.model.gameplay.sprites;
 
 import h13.controller.gamelogic.EnemyController;
 import h13.controller.scene.game.GameController;
+import h13.model.gameplay.Direction;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.paint.Color;
 
@@ -48,7 +49,7 @@ public class Enemy extends BattleShip {
     }
 
     public void shoot() {
-        shoot(VerticalDirection.DOWN);
+        shoot(Direction.DOWN);
     }
 
     public EnemyController getEnemyController() {

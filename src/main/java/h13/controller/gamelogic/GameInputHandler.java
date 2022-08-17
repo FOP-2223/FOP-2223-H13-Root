@@ -6,7 +6,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class GameInputHandler {
     private final List<EventHandler<KeyEvent>> onKeyPressed = new ArrayList<>();
@@ -17,7 +20,7 @@ public class GameInputHandler {
      * The keys that were pressed during the last frame.
      * When a key is pressed, it is added to this list after the onKeyPressed event is handled.
      */
-    private final List<KeyCode> keysPressed = new ArrayList<>();
+    private final Set<KeyCode> keysPressed = new HashSet<>();
 
     public GameInputHandler(Scene scene) {
         handleKeyboardInputs(scene);
@@ -37,8 +40,8 @@ public class GameInputHandler {
 
     private void handleKeyboardInputs(Scene scene) {
         scene.setOnKeyPressed(e -> {
-            onKeyPressed.forEach(eventHandler -> eventHandler.handle(e));
             keysPressed.add(e.getCode());
+            onKeyPressed.forEach(eventHandler -> eventHandler.handle(e));
         });
         scene.setOnKeyReleased(e -> {
             keysPressed.remove(e.getCode()); // remove the key from the list of pressed keys
@@ -53,7 +56,7 @@ public class GameInputHandler {
      * @return the value of the {@link #keysPressed} field.
      * @see #keysPressed
      */
-    public List<KeyCode> getKeysPressed() {
+    public Set<KeyCode> getKeysPressed() {
         return keysPressed;
     }
 }

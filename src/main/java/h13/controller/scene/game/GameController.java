@@ -7,7 +7,8 @@ import h13.controller.gamelogic.PlayerController;
 import h13.controller.scene.SceneController;
 import h13.controller.scene.SceneSwitcher;
 import h13.model.HighscoreEntry;
-import h13.model.gameplay.Playable;
+import h13.model.gameplay.Direction;
+import h13.model.gameplay.Updatable;
 import h13.model.gameplay.GameState;
 import h13.model.gameplay.sprites.Sprite;
 import h13.view.gui.GameBoard;
@@ -15,7 +16,6 @@ import h13.view.gui.GameScene;
 import h13.model.gameplay.sprites.Player;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
-import javafx.geometry.HorizontalDirection;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
@@ -26,10 +26,12 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class GameController extends SceneController implements Playable {
+public class GameController extends SceneController implements Updatable {
     private final GameScene gameScene;
     private GameState gameState;
     private final Set<Sprite> sprites = new HashSet<>();
+
+    private double lastUpdate = 0;
 
 
     private EnemyController enemyController;
@@ -40,11 +42,12 @@ public class GameController extends SceneController implements Playable {
     private final AnimationTimer gameLoop = new AnimationTimer() {
         @Override
         public void handle(final long now) {
-            if (resume) {
-                resume();
-                resume = false;
+            if (lastUpdate > 0) {
+                final double elapsedTime = (now - lastUpdate) / 1_000_000_000.0;
+                lastUpdate = now;
+                update(elapsedTime);
             } else {
-                update(now);
+                lastUpdate = now;
             }
         }
     };
@@ -120,7 +123,7 @@ public class GameController extends SceneController implements Playable {
         setPlayerController(new PlayerController(this));
 
         // Enemies
-        setEnemyController(new EnemyController(this, HorizontalDirection.RIGHT));
+        setEnemyController(new EnemyController(this, Direction.RIGHT));
 
         handleKeyboardInputs();
 
@@ -171,18 +174,16 @@ public class GameController extends SceneController implements Playable {
     }
 
     @Override
-    public void update(final long now) {
+    public void update(final double elapsedTime) {
         Platform.runLater(() -> {
             if (enemyController != null && enemyController.getEnemyMovement() != null)
-                enemyController.getEnemyMovement().update(now);
+                enemyController.getEnemyMovement().update(elapsedTime);
         });
         getSprites()
             .stream()
             .filter(Objects::nonNull)
-            .map(Playable.class::cast)
-            .forEach(s -> Platform.runLater(() -> s.update(now)));
-//        getGameBoard().getSprites().forEach(s -> s.update(now));
-        getGameBoard().update(now);
+            .forEach(s -> Platform.runLater(() -> s.update(elapsedTime)));
+        getGameBoard().update(elapsedTime);
         if (getEnemyController() != null && getEnemyController().defeated()) {
             win();
         }
@@ -192,19 +193,12 @@ public class GameController extends SceneController implements Playable {
     }
 
     /**
+     * resumes the object after pausing. This is necessary, when the game resumes after a pause.
+     *
      * @param now The timestamp of the current frame given in nanoseconds. This value will be the same for all AnimationTimers called during one frame.
      */
-    @Override
     public void resume(final long now) {
-        Platform.runLater(() -> {
-            if (enemyController != null && enemyController.getEnemyMovement() != null)
-                enemyController.getEnemyMovement().resume(now);
-        });
-        getSprites()
-            .stream()
-            .filter(Objects::nonNull)
-            .map(Playable.class::cast)
-            .forEach(s -> Platform.runLater(() -> s.resume(now)));
+        lastUpdate = now;
     }
 
     private void lose() {

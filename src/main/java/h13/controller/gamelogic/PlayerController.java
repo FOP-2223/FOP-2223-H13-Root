@@ -1,11 +1,17 @@
 package h13.controller.gamelogic;
 
 import h13.controller.scene.game.GameController;
+import h13.model.gameplay.Direction;
+import h13.model.gameplay.Updatable;
 import h13.model.gameplay.sprites.Player;
+import javafx.scene.input.KeyEvent;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static h13.controller.GameConstants.*;
 
-public class PlayerController {
+public class PlayerController implements Updatable {
     private final GameController gameController;
     private final Player player;
 
@@ -20,29 +26,27 @@ public class PlayerController {
         init();
     }
 
+    private void playerKeyAction(KeyEvent e) {
+        final var gameInputHandler = getGameController().getGameInputHandler();
+        Set<Direction> directions = new HashSet<>();
+        boolean shouldKeepShooting = false;
+        for (var keyCode : gameInputHandler.getKeysPressed()) {
+            switch (keyCode) {
+                case LEFT, A -> directions.add(Direction.LEFT);
+                case RIGHT, D -> directions.add(Direction.RIGHT);
+                case UP, W -> directions.add(Direction.UP);
+                case DOWN, S -> directions.add(Direction.DOWN);
+                case SPACE -> shouldKeepShooting = true;
+            }
+        }
+        player.setDirection(directions.stream().reduce(Direction::combine).orElse(Direction.NONE));
+        player.setKeepShooting(shouldKeepShooting);
+    }
+
     private void handleKeyboardInputs() {
         final var gameInputHandler = getGameController().getGameInputHandler();
-        gameInputHandler.addOnKeyPressed(e -> {
-            if (gameInputHandler.getKeysPressed().contains(e.getCode())) return;
-            switch (e.getCode()) {
-                case LEFT, A -> player.moveLeft();
-                case RIGHT, D -> player.moveRight();
-                case UP, W -> player.moveUp();
-                case DOWN, S -> player.moveDown();
-                case SPACE -> player.shoot();
-            }
-        });
-        gameInputHandler.addOnKeyReleased(e -> {
-            switch (e.getCode()) {
-                case LEFT, A -> player.moveRight();
-                case RIGHT, D -> player.moveLeft();
-                case UP, W -> player.moveDown();
-                case DOWN, S -> player.moveUp();
-            }
-            if (gameInputHandler.getKeysPressed().isEmpty()) {
-                player.stop();
-            }
-        });
+        gameInputHandler.addOnKeyPressed(this::playerKeyAction);
+        gameInputHandler.addOnKeyReleased(this::playerKeyAction);
     }
 
     private void init() {
@@ -56,5 +60,10 @@ public class PlayerController {
 
     public Player getPlayer() {
         return player;
+    }
+
+    @Override
+    public void update(double elapsedTime) {
+
     }
 }

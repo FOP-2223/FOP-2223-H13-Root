@@ -9,12 +9,12 @@ public final class SpriteRenderer {
         throw new RuntimeException("Cannot instantiate SpriteRenderer");
     }
 
-    public static void renderSprite(@NotNull final GraphicsContext gc, @NotNull final Sprite s) {
+    public static void renderSprite(@NotNull final GraphicsContext gc, @NotNull final Sprite s, final double scale) {
         if (s.getTexture() != null) {
-            gc.drawImage(s.getTexture(), s.getX(), s.getY(), s.getWidth(), s.getHeight());
+            gc.drawImage(s.getTexture(), s.getX() * scale, s.getY() * scale, s.getWidth() * scale, s.getHeight() * scale);
         } else {
             gc.setFill(s.getColor());
-            gc.fillRect(s.getX(), s.getY(), s.getWidth(), s.getHeight());
+            gc.fillRect(s.getX() * scale, s.getY() * scale, s.getWidth() * scale, s.getHeight() * scale);
         }
     }
 }

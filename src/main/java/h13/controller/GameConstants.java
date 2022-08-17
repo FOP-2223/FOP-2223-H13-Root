@@ -18,13 +18,17 @@ public final class GameConstants {
 
     public static final double SHIP_PADING = 0.01;
     public static final double HORIZONTAL_ENEMY_MOVE_DISTANCE = 0.1;
-    public static final double VERTICAL_ENEMY_MOVE_DISTANCE = .015;
+    public static final double VERTICAL_ENEMY_MOVE_DISTANCE = .03 * ORIGINAL_GAME_BOUNDS.getHeight();
+
+    public static final double HORIZONTAL_ENEMY_MOVE_SPACE = ORIGINAL_GAME_BOUNDS.getWidth() * (1 - HORIZONTAL_ENEMY_MOVE_DISTANCE);
+    public static final double VERTICAL_ENEMY_MOVE_SPACE = ORIGINAL_GAME_BOUNDS.getHeight() * (1 - VERTICAL_ENEMY_MOVE_DISTANCE);
+    public static final double CHUNK_SIZE = HORIZONTAL_ENEMY_MOVE_SPACE / ENEMY_COLS;
     public static final double RELATIVE_SHIP_WIDTH = (1d - HORIZONTAL_ENEMY_MOVE_DISTANCE) / ENEMY_COLS - 2 * SHIP_PADING;
     public static final double ENEMY_SHOOTING_PROBABILITY = 0.0005;
     public static final double HORIZONTAL_ENEMY_MOVEMENT_DURATION = 3;
     public static final double VERTICAL_ENEMY_MOVEMENT_DURATION = .5;
-    public static final double PLAYER_VELOCITY = 0.9;
-    public static final double BULLET_VELOCITY = 0.75;
+    public static final double PLAYER_VELOCITY = 0.9 * ORIGINAL_GAME_BOUNDS.getWidth();
+    public static final double BULLET_VELOCITY = 0.75 * ORIGINAL_GAME_BOUNDS.getWidth();
     //font
     public static final String STATS_FONT_PATH = "/h13/fonts/PressStart2P-Regular.ttf";
 //    public static final Font FONT = Font.loadFont(GameConstants.class.getResourceAsStream("/h13/fonts/PressStart2P-Regular.ttf"), 20);
