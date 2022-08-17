@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class GameInputHandler {
     private final List<EventHandler<KeyEvent>> onKeyPressed = new ArrayList<>();
@@ -22,23 +21,23 @@ public class GameInputHandler {
      */
     private final Set<KeyCode> keysPressed = new HashSet<>();
 
-    public GameInputHandler(Scene scene) {
+    public GameInputHandler(final Scene scene) {
         handleKeyboardInputs(scene);
     }
 
-    public void addOnKeyPressed(EventHandler<KeyEvent> eventHandler) {
+    public void addOnKeyPressed(final EventHandler<KeyEvent> eventHandler) {
         onKeyPressed.add(eventHandler);
     }
 
-    public void addOnKeyReleased(EventHandler<KeyEvent> eventHandler) {
+    public void addOnKeyReleased(final EventHandler<KeyEvent> eventHandler) {
         onKeyReleased.add(eventHandler);
     }
 
-    public void addOnKeyTyped(EventHandler<KeyEvent> eventHandler) {
+    public void addOnKeyTyped(final EventHandler<KeyEvent> eventHandler) {
         onKeyTyped.add(eventHandler);
     }
 
-    private void handleKeyboardInputs(Scene scene) {
+    private void handleKeyboardInputs(final Scene scene) {
         scene.setOnKeyPressed(e -> {
             keysPressed.add(e.getCode());
             onKeyPressed.forEach(eventHandler -> eventHandler.handle(e));

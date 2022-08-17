@@ -11,7 +11,7 @@ public record SceneAndController(Scene scene, @Nullable SceneController controll
         return controller;
     }
 
-    public static SceneAndController fromScene(Scene scene) {
+    public static SceneAndController fromScene(final Scene scene) {
         return new SceneAndController(scene, scene instanceof ControlledScene cs ? cs.getController() : null);
     }
 }

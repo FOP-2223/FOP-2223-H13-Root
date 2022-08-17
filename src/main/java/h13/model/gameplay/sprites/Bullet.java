@@ -2,14 +2,11 @@ package h13.model.gameplay.sprites;
 
 import h13.controller.scene.game.GameController;
 import h13.model.gameplay.Direction;
-import javafx.geometry.VerticalDirection;
 import javafx.scene.paint.Color;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 
 import static h13.controller.GameConstants.BULLET_VELOCITY;
-import static h13.controller.GameConstants.ORIGINAL_GAME_BOUNDS;
 
 public class Bullet extends Sprite {
     private final BattleShip owner;
@@ -19,7 +16,7 @@ public class Bullet extends Sprite {
     public Bullet(final double x, final double y, final GameController gameController, final BattleShip owner, final Direction direction) {
         super(x, y, 1, 5, Color.WHITE, BULLET_VELOCITY, 1, gameController);
         this.owner = owner;
-        this.setDirection(direction);
+        setDirection(direction);
     }
 
     @Override

@@ -276,7 +276,7 @@ public class GameController extends SceneController implements Updatable {
         return gameInputHandler;
     }
 
-    public void setGameInputHandler(GameInputHandler gameInputHandler) {
+    public void setGameInputHandler(final GameInputHandler gameInputHandler) {
         this.gameInputHandler = gameInputHandler;
     }
 }

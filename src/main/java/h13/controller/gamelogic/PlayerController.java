@@ -26,11 +26,11 @@ public class PlayerController implements Updatable {
         init();
     }
 
-    private void playerKeyAction(KeyEvent e) {
+    private void playerKeyAction(final KeyEvent e) {
         final var gameInputHandler = getGameController().getGameInputHandler();
-        Set<Direction> directions = new HashSet<>();
+        final Set<Direction> directions = new HashSet<>();
         boolean shouldKeepShooting = false;
-        for (var keyCode : gameInputHandler.getKeysPressed()) {
+        for (final var keyCode : gameInputHandler.getKeysPressed()) {
             switch (keyCode) {
                 case LEFT, A -> directions.add(Direction.LEFT);
                 case RIGHT, D -> directions.add(Direction.RIGHT);
@@ -63,7 +63,7 @@ public class PlayerController implements Updatable {
     }
 
     @Override
-    public void update(double elapsedTime) {
+    public void update(final double elapsedTime) {
 
     }
 }

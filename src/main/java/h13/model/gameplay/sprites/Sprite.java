@@ -110,7 +110,7 @@ public abstract class Sprite implements Updatable {
         return direction;
     }
 
-    public void setDirection(@NotNull Direction direction) {
+    public void setDirection(@NotNull final Direction direction) {
         this.direction = direction;
     }
 
@@ -171,11 +171,11 @@ public abstract class Sprite implements Updatable {
     }
 
     public double getX() {
-        return this.x;
+        return x;
     }
 
     public double getY() {
-        return this.y;
+        return y;
     }
 
     public void setX(final double x) {

@@ -3,7 +3,6 @@ package h13.model.gameplay.sprites;
 import h13.controller.ApplicationSettings;
 import h13.controller.scene.game.GameController;
 import h13.model.gameplay.Direction;
-import javafx.geometry.VerticalDirection;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +40,7 @@ public class BattleShip extends Sprite {
         return bullet != null;
     }
 
-    public void setBullet(@Nullable Bullet bullet) {
+    public void setBullet(@Nullable final Bullet bullet) {
         this.bullet = bullet;
     }
 

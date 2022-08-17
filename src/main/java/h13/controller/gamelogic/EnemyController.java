@@ -8,7 +8,6 @@ import h13.model.gameplay.sprites.Enemy;
 import h13.view.gui.GameBoard;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.geometry.HorizontalDirection;
 
 import java.util.HashSet;
 import java.util.Set;

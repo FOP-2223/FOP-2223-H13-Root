@@ -30,7 +30,7 @@ public class EnemyMovement implements Updatable {
         return direction;
     }
 
-    public void setDirection(Direction direction) {
+    public void setDirection(final Direction direction) {
         this.direction = direction;
     }
 
@@ -50,7 +50,7 @@ public class EnemyMovement implements Updatable {
         int lowestxIndex, highestxIndex, lowestyIndex, highestyIndex;
         lowestxIndex = highestxIndex = lowestyIndex = highestyIndex = 0;
         Enemy enemyWithLowestXIndex = null, enemyWithLowestYIndex = null, enemyWithHighestXIndex = null, enemyWithHighestYIndex = null;
-        for (var e : enemies) {
+        for (final var e : enemies) {
             if (!e.isAlive()) {
                 continue;
             }
@@ -138,15 +138,15 @@ public class EnemyMovement implements Updatable {
 
     private void updatePositions(final double deltaX, final double deltaY) {
         final var enemies = getEnemyController().getAliveEnemies();
-        for (var e : enemies) {
+        for (final var e : enemies) {
             e.setX(e.getX() + deltaX);
             e.setY(e.getY() + deltaY);
         }
     }
 
-    private void nextMovement(Bounds enemyBounds) {
+    private void nextMovement(final Bounds enemyBounds) {
         if (ApplicationSettings.enemyHorizontalMovementProperty().get() && ApplicationSettings.enemyVerticalMovementProperty().get()) {
-            var oldDirection = direction;
+            final var oldDirection = direction;
             direction = switch (direction) {
                 case LEFT, RIGHT -> Direction.DOWN;
                 case DOWN -> previousDirection == Direction.RIGHT ? Direction.LEFT : Direction.RIGHT;
