@@ -65,8 +65,8 @@ public abstract class Sprite implements Updatable {
         getGameController().removeSprite(this);
     }
 
-    protected void gameTick(final GameTickParameters tick) {
-        final var newPos = getPaddedPosition(tick.newX(), tick.newY(), 0);
+    protected void nextFrame(final GameFrameParameters frame) {
+        final var newPos = getBoundedPosition(frame.newX(), frame.newY(), 0);
         setX(newPos.getX());
         setY(newPos.getY());
     }
@@ -79,7 +79,7 @@ public abstract class Sprite implements Updatable {
         return health;
     }
 
-    protected Point2D getPaddedPosition(final double x, final double y, final double padding) {
+    protected Point2D getBoundedPosition(final double x, final double y, final double padding) {
         return new Point2D(
             Math.max(padding, Math.min(ORIGINAL_GAME_BOUNDS.getWidth() - getWidth() - padding, x)),
             Math.max(padding, Math.min(ORIGINAL_GAME_BOUNDS.getHeight() - getHeight() - padding, y))
@@ -143,8 +143,8 @@ public abstract class Sprite implements Updatable {
             final double oldY = getY();
             final double newX = oldX + deltaX;
             final double newY = oldY + deltaY;
-            gameTick(
-                new GameTickParameters(
+            nextFrame(
+                new GameFrameParameters(
                     elapsedTime,
                     deltaX,
                     deltaY,
@@ -156,7 +156,7 @@ public abstract class Sprite implements Updatable {
             );
         }
 
-    protected record GameTickParameters(
+    protected record GameFrameParameters(
         /**
          * The time elapsed since the last update in seconds.
          */

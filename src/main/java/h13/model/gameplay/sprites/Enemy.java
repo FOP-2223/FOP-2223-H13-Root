@@ -33,11 +33,11 @@ public class Enemy extends BattleShip {
     }
 
     @Override
-    protected void gameTick(final GameTickParameters tick) {
-        super.gameTick(tick);
+    protected void nextFrame(final GameFrameParameters frame) {
+        super.nextFrame(frame);
 
         // Shoot with a certain probability
-        timeTillNextShot -= tick.elapsedTime();
+        timeTillNextShot -= frame.elapsedTime();
         if (timeTillNextShot <= 0) {
             // Shoot at random intervals
             if (Math.random() < ENEMY_SHOOTING_PROBABILITY) {

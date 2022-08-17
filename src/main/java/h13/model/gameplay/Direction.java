@@ -93,9 +93,6 @@ public enum Direction {
     }
 
     public Direction combine(final Direction other) {
-        return switch (this) {
-            case NONE -> other;
-            default -> isOpposite(other) ? NONE : other;
-        };
+        return equals(NONE) ? other : isOpposite(other) ? NONE : other;
     }
 }

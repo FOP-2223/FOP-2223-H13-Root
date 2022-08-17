@@ -20,11 +20,11 @@ public class Bullet extends Sprite {
     }
 
     @Override
-    protected void gameTick(final GameTickParameters tick) {
-        super.gameTick(tick);
+    protected void nextFrame(final GameFrameParameters frame) {
+        super.nextFrame(frame);
 
         // If the bullet reaches the edge of the game Board, remove it.
-        if (!coordinatesInBounds(tick.newX(), tick.newY(), 0)) {
+        if (!coordinatesInBounds(frame.newX(), frame.newY(), 0)) {
             die();
         }
 
