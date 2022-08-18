@@ -1,9 +1,12 @@
 package h13.model.gameplay;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * A Direction is a type of {@linkplain Enum} that represents an orthogonal direction on a 2D plane.
+ *
+ * @author Ruben Deisenroth
  */
 public enum Direction {
     /**
@@ -43,56 +46,142 @@ public enum Direction {
      */
     UP_LEFT(-1, -1);
 
+    /**
+     * The x-component of the direction. It is meant to be multiplied with the velocity of a sprite to get the horizontal velocity.
+     */
     final int x;
+    /**
+     * The y-component of the direction. It is meant to be multiplied with the velocity of a sprite to get the vertical velocity.
+     */
     final int y;
+
     Direction(final int x, final int y) {
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * Checks whether this direction is a horizontal direction.
+     *
+     * @return {@code true} if this direction is a horizontal direction.
+     */
     public boolean isHorizontal() {
-        return this == Direction.LEFT || this == Direction.RIGHT;
+        return y == 0;
     }
 
+    /**
+     * Checks whether this direction is a vertical direction.
+     *
+     * @return {@code true} if this direction is a vertical direction.
+     */
     public boolean isVertical() {
-        return this == Direction.UP || this == Direction.DOWN;
+        return x == 0;
     }
 
+    /**
+     * Checks whether this direction is an orthogonal direction.
+     *
+     * @return {@code true} if this direction is an orthogonal direction.
+     */
+    public boolean isOrthogonal() {
+        return !equals(NONE) && (isHorizontal() || isVertical());
+    }
+
+    /**
+     * Returns {@code true} if this direction is a diagonal direction.
+     *
+     * @return {@code true} if this direction is a diagonal direction.
+     */
+    public boolean isDiagonal() {
+        return !equals(NONE) && !isOrthogonal();
+    }
+
+    /**
+     * Returns the {@linkplain #x X-Component} of the direction.
+     * It is meant to be multiplied with the velocity of a sprite to get the horizontal velocity.
+     *
+     * @return the X-Coordinate of the unit vector of this direction.
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     * Returns the {@linkplain #y Y-Component} of the direction.
+     * It is meant to be multiplied with the velocity of a sprite to get the vertical velocity.
+     *
+     * @return the Y-Coordinate of the unit vector of this direction.
+     */
     public int getY() {
         return y;
     }
 
-    public Direction fromUnitVector(final double x, final double y) {
-        return Arrays.stream(Direction.values()).min((d1, d2) -> {
-            final double d1Length = Math.sqrt(d1.x * d1.x + d1.y * d1.y);
-            final double d2Length = Math.sqrt(d2.x * d2.x + d2.y * d2.y);
-            return Double.compare(d1Length, d2Length);
-        }).orElse(Direction.NONE);
+    /**
+     * Calculates the length of a given vector of an arbitrary dimension.
+     *
+     * @param components the components of the vector.
+     * @return the length of the vector.
+     */
+    private double vectorLength(final double... components) {
+        return Math.sqrt(Arrays.stream(components).map(c -> Math.pow(c, 2)).sum());
     }
 
+    /**
+     * Returns the direction who best matches the given vector.
+     *
+     * @param x The x-component of the vector.
+     * @param y The y-component of the vector.
+     * @return Returns the direction who best matches the given vector.
+     */
+    public Direction fromVector(final double x, final double y) {
+        // convert to unit vector
+        final var length = vectorLength(x, y);
+        final var unitX = x / length;
+        final var unitY = y / length;
+        return Arrays
+            .stream(Direction.values())
+            .min(
+                // Compare the distance of the unit vector of this direction to the given vector scaled to length 1.
+                Comparator.comparingDouble(d -> {
+                        // calculate unit vector of this direction
+                        final var directionVectorLength = vectorLength(d.getX(), d.getY());
+                        final var directionUnitX = d.getX() / directionVectorLength;
+                        final var directionUnitY = d.getY() / directionVectorLength;
+                        // calculate distance
+                        return vectorLength(directionUnitX - unitX, directionUnitY - unitY);
+                    }
+                )
+            )
+            .orElse(Direction.NONE);
+    }
+
+    /**
+     * Returns the direction opposite to this direction.
+     *
+     * @return the direction opposite to this direction.
+     */
     public Direction getOpposite() {
-        return switch (this) {
-            case UP -> DOWN;
-            case DOWN -> UP;
-            case LEFT -> RIGHT;
-            case RIGHT -> LEFT;
-            case UP_RIGHT -> DOWN_LEFT;
-            case DOWN_RIGHT -> UP_LEFT;
-            case DOWN_LEFT -> UP_RIGHT;
-            case UP_LEFT -> DOWN_RIGHT;
-            default -> NONE;
-        };
+        return fromVector(-x, -y);
     }
 
+    /**
+     * Checks whether the given direction is opposite to this direction.
+     *
+     * @param direction The direction to check.
+     * @return {@code true} if the given direction is opposite to this direction.
+     */
     public boolean isOpposite(final Direction direction) {
-        return this == direction.getOpposite();
+        return equals(direction.getOpposite());
     }
 
+    /**
+     * Combines this direction with the given direction.
+     *
+     * @param other The direction to combine with this direction.
+     * @return The combined direction.
+     */
     public Direction combine(final Direction other) {
-        return equals(NONE) ? other : isOpposite(other) ? NONE : other;
+        // add the x and y components of this direction and the other direction
+        return fromVector(x + other.x, y + other.y);
     }
 }

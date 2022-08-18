@@ -3,6 +3,7 @@ import org.sourcegrade.submitter.submit
 plugins {
     java
     application
+    idea
     id("org.sourcegrade.style") version "1.3.0"
     id("org.sourcegrade.submitter") version "0.4.0"
     id("org.openjfx.javafxplugin") version "0.0.13"
@@ -11,6 +12,8 @@ plugins {
 version = "0.1.0-SNAPSHOT"
 
 repositories {
+    mavenLocal()
+    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
     mavenCentral()
 }
 
@@ -33,6 +36,8 @@ val grader: SourceSet by sourceSets.creating {
     runtimeClasspath += output + test.runtimeClasspath
 }
 
+idea
+
 dependencies {
     implementation("org.jetbrains:annotations:23.0.0")
     "graderCompileOnly"("org.sourcegrade:jagr-launcher:0.5.0") {
@@ -40,6 +45,8 @@ dependencies {
     }
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     implementation("com.google.code.gson:gson:2.9.0")
+    implementation("org.tudalgo:algoutils-student:0.1.0-SNAPSHOT")
+    "graderImplementation"("org.tudalgo:algoutils-tutor:0.1.0-SNAPSHOT")
 }
 
 application {

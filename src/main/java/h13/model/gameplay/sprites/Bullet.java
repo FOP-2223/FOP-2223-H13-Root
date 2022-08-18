@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
 import java.util.HashSet;
 
 import static h13.controller.GameConstants.BULLET_VELOCITY;
+import static h13.controller.GameConstants.ORIGINAL_GAME_BOUNDS;
 
 public class Bullet extends Sprite {
     private final BattleShip owner;
@@ -24,7 +25,7 @@ public class Bullet extends Sprite {
         super.nextFrame(frame);
 
         // If the bullet reaches the edge of the game Board, remove it.
-        if (!coordinatesInBounds(frame.newX(), frame.newY(), 0)) {
+        if (!ORIGINAL_GAME_BOUNDS.contains(frame.newX(), frame.newY())) {
             die();
         }
 
@@ -48,7 +49,7 @@ public class Bullet extends Sprite {
     public void die() {
         super.die();
         owner.setBullet(null);
-        if(owner instanceof Player p && p.isKeepShooting()) {
+        if (owner instanceof Player p && p.isKeepShooting()) {
             p.shoot();
         }
     }

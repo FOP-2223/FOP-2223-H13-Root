@@ -49,7 +49,11 @@ public class ApplicationSettings {
     }
 
     // highscores
-    public static final ObservableList<HighscoreEntry> highscores = FXCollections.observableArrayList(
+    private static final ObservableList<HighscoreEntry> highscores = FXCollections.observableArrayList(
         new HighscoreEntry("Player 1", new Date().toString(), 100)
     );
+
+    public static ObservableList<HighscoreEntry> getHighscores() {
+        return highscores;
+    }
 }

@@ -203,7 +203,7 @@ public class GameController extends SceneController implements Updatable {
         Platform.runLater(() -> {
             pause();
             if (getPlayer().getScore() > 0) {
-                ApplicationSettings.highscores.add(
+                ApplicationSettings.getHighscores().add(
                     new HighscoreEntry(
                         "getPlayer().getName()",
                         new Date().toString(),

@@ -40,6 +40,6 @@ public class HighscoreController extends SceneController implements Initializabl
         playerTableColumn.setCellValueFactory(new PropertyValueFactory<>("playerName"));
         dateTableColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         scoreTableColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
-        highscoreTableView.setItems(ApplicationSettings.highscores);
+        highscoreTableView.setItems(ApplicationSettings.getHighscores());
     }
 }
