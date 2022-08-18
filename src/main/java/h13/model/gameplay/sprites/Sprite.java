@@ -18,53 +18,68 @@ import static h13.controller.GameConstants.ORIGINAL_GAME_BOUNDS;
  */
 public abstract class Sprite implements Updatable {
 
-    // --Variables--//
-    /**
-     * The GameController that controls the game.
-     */
-    private final GameController gameController;
-    /**
-     * The color of the sprite. (fallback for when the sprite has no texture)
-     */
-    private final Color color;
-    /**
-     * the height of the sprite.
-     */
-    private final double height;
-    /**
-     * The width of the sprite.
-     */
-    private final double width;
-    /**
-     * The texture of the sprite.
-     */
+    // --Variables-- //
 
-    private Image texture;
     /**
      * The x-coordinate of the sprite.
      */
-
     private double x;
     /**
      * The y-coordinate of the sprite.
      */
     private double y;
     /**
-     * The current Movement-{@link Direction} of the sprite.
+     * The width of the sprite.
      */
-    private @NotNull Direction direction = Direction.NONE;
+    private final double width;
     /**
-     * The remaining life of the sprite.
+     * the height of the sprite.
      */
-    private int health;
+    private final double height;
     /**
      * The movement velocity of the sprite.
      */
     private final double velocity;
     /**
+     * The remaining life of the sprite.
+     */
+    private int health;
+    /**
+     * The current Movement-{@link Direction} of the sprite.
+     */
+    private @NotNull Direction direction = Direction.NONE;
+    /**
      * whether the sprite is no longer alive.
      */
     private boolean dead = false;
+    /**
+     * The color of the sprite. (fallback for when the sprite has no texture)
+     */
+    private final Color color;
+    /**
+     * The texture of the sprite.
+     */
+    private Image texture;
+    /**
+     * The GameController that controls the game.
+     */
+    private final GameController gameController;
+
+    protected record GameFrameParameters(
+        /**
+         * The time elapsed since the last update in seconds.
+         */
+        double elapsedTime,
+        double deltaX,
+        double deltaY,
+        double oldX,
+        double oldY,
+        double newX,
+        double newY
+    ) {
+    }
+
+    // --Constructors-- //
 
     /**
      * Constructs a new Sprite with the given parameters.
@@ -89,37 +104,203 @@ public abstract class Sprite implements Updatable {
         this.health = health;
     }
 
-    // --Getters and Setters--//
+    // --Getters and Setters-- //
 
-    public void damage() {
-        damage(1);
+    /**
+     * Gets the value of the {@link #x} field.
+     *
+     * @return the value of the {@link #x} field.
+     * @see #x
+     */
+    public double getX() {
+        return x;
     }
 
-    public void damage(final int damage) {
-        health -= damage;
-        if (health <= 0) {
-            die();
+    /**
+     * Sets the value of the {@link #x} field to the given value.
+     *
+     * @param x the new value of the {@link #x} field.
+     * @see #x
+     */
+    public void setX(final double x) {
+        this.x = x;
+    }
+
+    /**
+     * Gets the value of the {@link #y} field.
+     *
+     * @return the value of the {@link #y} field.
+     * @see #y
+     */
+    public double getY() {
+        return y;
+    }
+
+    /**
+     * Sets the value of the {@link #y} field to the given value.
+     *
+     * @param y the new value of the {@link #y} field.
+     * @see #y
+     */
+    public void setY(final double y) {
+        this.y = y;
+    }
+
+    /**
+     * Gets the value of the {@link #width} field.
+     *
+     * @return the value of the {@link #width} field.
+     * @see #width
+     */
+    public double getWidth() {
+        return width;
+    }
+
+    /**
+     * Gets the value of the {@link #height} field.
+     *
+     * @return the value of the {@link #height} field.
+     * @see #height
+     */
+    public double getHeight() {
+        return height;
+    }
+
+    /**
+     * Gets the value of the {@link #velocity} field.
+     *
+     * @return the value of the {@link #velocity} field.
+     * @see #velocity
+     */
+    public double getVelocity() {
+        return velocity;
+    }
+
+    /**
+     * Gets the value of the {@link #health} field.
+     *
+     * @return the value of the {@link #health} field.
+     * @see #health
+     */
+    public int getHealth() {
+        return health;
+    }
+
+    /**
+     * Sets the value of the {@link #health} field to the given value.
+     *
+     * @param health the new value of the {@link #health} field.
+     * @see #health
+     */
+    public void setHealth(final int health) {
+        this.health = health;
+    }
+
+    /**
+     * Gets the value of the {@link #direction} field.
+     *
+     * @return the value of the {@link #direction} field.
+     * @see #direction
+     */
+    public @NotNull Direction getDirection() {
+        return direction;
+    }
+
+    /**
+     * Sets the value of the {@link #direction} field to the given value.
+     *
+     * @param direction the new value of the {@link #direction} field.
+     * @see #direction
+     */
+    public void setDirection(@NotNull final Direction direction) {
+        this.direction = direction;
+    }
+
+    /**
+     * Returns whether the sprite is no longer alive.
+     *
+     * @return whether the sprite is no longer alive.
+     */
+    public boolean isDead() {
+        return dead;
+    }
+
+    /**
+     * Checks whether the sprite is alive.
+     *
+     * @return whether the sprite is alive.
+     * @see #isDead()
+     */
+    public boolean isAlive() {
+        return !isDead();
+    }
+
+    /**
+     * Gets the value of the {@link #color} field.
+     *
+     * @return the value of the {@link #color} field.
+     * @see #color
+     */
+    public Color getColor() {
+        return color;
+    }
+
+    /**
+     * Gets the value of the {@link #texture} field.
+     *
+     * @return the value of the {@link #texture} field.
+     * @see #texture
+     */
+    public Image getTexture() {
+        return texture;
+    }
+
+    /**
+     * Sets the value of the {@link #texture} field to the given value.
+     *
+     * @param texture the new value of the {@link #texture} field.
+     * @see #texture
+     */
+    public void setTexture(final Image texture) {
+        this.texture = texture;
+    }
+
+    /**
+     * Loads the texture of the sprite from the given path and sets it to the {@link #texture} field.
+     *
+     * @param path the path to the texture.
+     */
+    protected void loadTexture(final String path) {
+        if (!ApplicationSettings.loadTexturesProperty().get()) {
+            return;
+        }
+        try {
+            texture = new Image(path);
+        } catch (final Exception e) {
+            System.out.println("Failed to load texture: " + path);
+            e.printStackTrace();
         }
     }
 
-    public void die() {
-        health = 0;
-        dead = true;
-        getGameController().removeSprite(this);
-    }
-
-    protected void nextFrame(final GameFrameParameters frame) {
-        final var newPos = clamp(frame.newX(), frame.newY());
-        setX(newPos.getX());
-        setY(newPos.getY());
-    }
-
+    /**
+     * Gets the value of the {@link #gameController} field.
+     *
+     * @return the value of the {@link #gameController} field.
+     * @see #gameController
+     */
     public GameController getGameController() {
         return gameController;
     }
 
-    public int getHealth() {
-        return health;
+    //--Utility Methods--//
+
+    /**
+     * Gets the {@link Bounds} of the sprite.
+     *
+     * @return the {@link Bounds} of the sprite.
+     */
+    public Bounds getBounds() {
+        return new BoundingBox(getX(), getY(), getWidth(), getHeight());
     }
 
     /**
@@ -137,53 +318,77 @@ public abstract class Sprite implements Updatable {
         );
     }
 
-    public double getHeight() {
-        return height;
-    }
+    // --movement-- //
 
-    public double getWidth() {
-        return width;
-    }
-
-    public double getVelocity() {
-        return velocity;
-    }
-
-    public boolean isDead() {
-        return dead;
-    }
-
-    public boolean isAlive() {
-        return !isDead();
-    }
-
-    public @NotNull Direction getDirection() {
-        return direction;
-    }
-
-    public void setDirection(@NotNull final Direction direction) {
-        this.direction = direction;
-    }
-
-    public void moveDown() {
-        setDirection(Direction.DOWN);
-    }
-
-    public void moveLeft() {
-        setDirection(Direction.LEFT);
-    }
-
-    public void moveRight() {
-        setDirection(Direction.RIGHT);
-    }
-
+    /**
+     * Sets the {@linkplain #direction movement direction} of the sprite to {@link Direction#UP}.
+     */
     public void moveUp() {
         setDirection(Direction.UP);
     }
 
+    /**
+     * Sets the {@linkplain #direction movement direction} of the sprite to {@link Direction#DOWN}.
+     */
+    public void moveDown() {
+        setDirection(Direction.DOWN);
+    }
+
+    /**
+     * Sets the {@linkplain #direction movement direction} of the sprite to {@link Direction#LEFT}.
+     */
+    public void moveLeft() {
+        setDirection(Direction.LEFT);
+    }
+
+    /**
+     * Sets the {@linkplain #direction movement direction} of the sprite to {@link Direction#RIGHT}.
+     */
+    public void moveRight() {
+        setDirection(Direction.RIGHT);
+    }
+
+    /**
+     * Sets the {@linkplain #direction movement direction} of the sprite to {@link Direction#NONE}.
+     */
     public void stop() {
         setDirection(Direction.NONE);
     }
+
+    // --health-- //
+
+    /**
+     * Damages the sprite by the given amount.
+     * <br>
+     * If the sprite's health is less than or equal to 0, the method {@link #die()} is called.
+     *
+     * @param amount the amount to damage the sprite by.
+     */
+    public void damage(final int amount) {
+        health -= amount;
+        if (health <= 0) {
+            die();
+        }
+    }
+
+    /**
+     * Damages the sprite by 1.
+     *
+     * @see #damage(int)
+     */
+    public void damage() {
+        damage(1);
+    }
+
+    /**
+     * Kills the sprite.
+     */
+    public void die() {
+        health = 0;
+        dead = true;
+        getGameController().removeSprite(this);
+    }
+    // --update-- //
 
     @Override
     public void update(final double elapsedTime) {
@@ -207,66 +412,15 @@ public abstract class Sprite implements Updatable {
         );
     }
 
-    protected record GameFrameParameters(
-        /**
-         * The time elapsed since the last update in seconds.
-         */
-        double elapsedTime,
-        double deltaX,
-        double deltaY,
-        double oldX,
-        double oldY,
-        double newX,
-        double newY
-    ) {
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public void setX(final double x) {
-        this.x = x;
-    }
-
-    public void setY(final double y) {
-        this.y = y;
-    }
-
-    // getBounds
-    public Bounds getBounds() {
-        return new BoundingBox(getX(), getY(), getWidth(), getHeight());
-    }
-
-    public Image getTexture() {
-        return texture;
-    }
-
-    public void setTexture(final Image texture) {
-        this.texture = texture;
-    }
-
-    protected void loadTexture(final String path) {
-        if (!ApplicationSettings.loadTexturesProperty().get()) {
-            return;
-        }
-        try {
-            texture = new Image(path);
-        } catch (final Exception e) {
-            System.out.println("Failed to load texture: " + path);
-            e.printStackTrace();
-        }
-    }
-
-    public void setHealth(final int health) {
-        this.health = health;
-    }
-
-    public Color getColor() {
-        return color;
+    /**
+     * Processes the next Game Frame.
+     *
+     * @param frame the {@link GameFrameParameters} of the next frame.
+     */
+    protected void nextFrame(final GameFrameParameters frame) {
+        // move the sprite to the new position
+        final var newPos = clamp(frame.newX(), frame.newY());
+        setX(newPos.getX());
+        setY(newPos.getY());
     }
 }
