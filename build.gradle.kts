@@ -3,7 +3,6 @@ import org.sourcegrade.submitter.submit
 plugins {
     java
     application
-    idea
     id("org.sourcegrade.style") version "1.3.0"
     id("org.sourcegrade.submitter") version "0.4.0"
     id("org.openjfx.javafxplugin") version "0.0.13"
@@ -35,8 +34,6 @@ val grader: SourceSet by sourceSets.creating {
     compileClasspath += test.output + test.compileClasspath
     runtimeClasspath += output + test.runtimeClasspath
 }
-
-idea
 
 dependencies {
     implementation("org.jetbrains:annotations:23.0.0")
