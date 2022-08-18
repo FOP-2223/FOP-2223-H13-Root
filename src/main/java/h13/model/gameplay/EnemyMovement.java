@@ -9,38 +9,118 @@ import org.jetbrains.annotations.Nullable;
 
 import static h13.controller.GameConstants.*;
 
+/**
+ * The EnemyMovement class is responsible for moving the enemies in a grid.
+ */
 public class EnemyMovement implements Updatable {
-    private final EnemyController enemyController;
-    private double velocity = 10;
 
-    private double yTarget = 0;
+    // --Variables-- //
+
+    /**
+     * The current movement direction
+     */
     private Direction direction;
-
+    /**
+     * the previous movement direction
+     */
     private @Nullable Direction previousDirection;
-
+    /**
+     * The current movement speed
+     */
+    private double velocity = 10;
+    /**
+     * The Next y-coordinate to reach
+     */
+    private double yTarget = 0;
+    /**
+     * Whether the bottom was reached
+     */
     private boolean bottomWasReached = false;
+    /**
+     * The enemy controller
+     */
+    private final EnemyController enemyController;
 
+    // --Constructors-- //
 
+    /**
+     * Creates a new EnemyMovement.
+     *
+     * @param enemyController The enemy controller.
+     * @param direction       The current movement direction.
+     */
     public EnemyMovement(final EnemyController enemyController, final Direction direction) {
         this.enemyController = enemyController;
         this.direction = direction;
     }
 
+    // --Getters and Setters-- //
+
+    /**
+     * Gets the current {@link #velocity}.
+     *
+     * @return The current {@link #velocity}.
+     * @see #velocity
+     */
+    public double getVelocity() {
+        return velocity;
+    }
+
+    /**
+     * Sets the current {@link #velocity} to the given value.
+     *
+     * @param velocity The new {@link #velocity}.
+     * @see #velocity
+     */
+    public void setVelocity(final double velocity) {
+        this.velocity = velocity;
+    }
+
+    /**
+     * Gets the current {@link #direction}.
+     *
+     * @return The current {@link #direction}.
+     * @see #direction
+     */
     public Direction getDirection() {
         return direction;
     }
 
+    /**
+     * Sets the current {@link #direction} to the given value.
+     *
+     * @param direction The new {@link #direction}.
+     * @see #direction
+     */
     public void setDirection(final Direction direction) {
         this.direction = direction;
     }
 
-    private boolean targetReached(final Bounds enemyBounds) {
-        return direction == Direction.UP && enemyBounds.getMinY() <= yTarget
-            || direction == Direction.DOWN && enemyBounds.getMaxY() >= yTarget
-            || direction == Direction.LEFT && enemyBounds.getMinX() <= 0
-            || direction == Direction.RIGHT && enemyBounds.getMaxX() >= ORIGINAL_GAME_BOUNDS.getWidth();
+    /**
+     * Checks whether the bottom was reached.
+     *
+     * @return {@code true} if the bottom was reached, {@code false} otherwise.
+     */
+    public boolean bottomWasReached() {
+        return bottomWasReached;
     }
 
+    /**
+     * Gets the enemy controller.
+     *
+     * @return The enemy controller.
+     */
+    public EnemyController getEnemyController() {
+        return enemyController;
+    }
+
+    // --Utility Methods-- //
+
+    /**
+     * Creates a BoundingBox around all alive enemies.
+     *
+     * @return The BoundingBox.
+     */
     private @Nullable Bounds getEnemyBounds() {
         final var enemies = getEnemyController().getAliveEnemies();
         if (enemies.isEmpty()) {
@@ -90,8 +170,20 @@ public class EnemyMovement implements Updatable {
     }
 
     /**
-     * @param elapsedTime The timestamp of the current frame given in nanoseconds. This value will be the same for all AnimationTimers called during one frame.
+     * Checks whether the target Position of the current movement iteration is reached.
+     *
+     * @param enemyBounds The BoundingBox of all alive enemies.
+     * @return {@code true} if the target Position of the current movement iteration is reached, {@code false} otherwise.
      */
+    private boolean targetReached(final Bounds enemyBounds) {
+        return direction == Direction.UP && enemyBounds.getMinY() <= yTarget
+            || direction == Direction.DOWN && enemyBounds.getMaxY() >= yTarget
+            || direction == Direction.LEFT && enemyBounds.getMinX() <= 0
+            || direction == Direction.RIGHT && enemyBounds.getMaxX() >= ORIGINAL_GAME_BOUNDS.getWidth();
+    }
+
+    // --Movement-- //
+
     @Override
     public void update(final double elapsedTime) {
         if (bottomWasReached) {
@@ -136,6 +228,12 @@ public class EnemyMovement implements Updatable {
         }
     }
 
+    /**
+     * Updates the positions of all alive enemies.
+     *
+     * @param deltaX The deltaX.
+     * @param deltaY The deltaY.
+     */
     private void updatePositions(final double deltaX, final double deltaY) {
         final var enemies = getEnemyController().getAliveEnemies();
         for (final var e : enemies) {
@@ -162,13 +260,5 @@ public class EnemyMovement implements Updatable {
             yTarget = enemyBounds.getMaxY() + VERTICAL_ENEMY_MOVE_DISTANCE;
         }
         velocity += .3;
-    }
-
-    public boolean bottomWasReached() {
-        return bottomWasReached;
-    }
-
-    public EnemyController getEnemyController() {
-        return enemyController;
     }
 }

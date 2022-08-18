@@ -1,7 +1,7 @@
 package h13.model.gameplay;
 
 /**
- * An interface that defines the methods that a playable object must implement.
+ * An interface that defines the methods that an Updatable object must implement.
  * A Updatable Object is an object that needs to update its state every frame.
  */
 public interface Updatable {

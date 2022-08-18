@@ -9,6 +9,8 @@ import java.util.Comparator;
  * @author Ruben Deisenroth
  */
 public enum Direction {
+	// --Enum Constants-- //
+
     /**
      * The direction of no movement.
      */
@@ -46,6 +48,8 @@ public enum Direction {
      */
     UP_LEFT(-1, -1);
 
+	// -- Variables-- //
+
     /**
      * The x-component of the direction. It is meant to be multiplied with the velocity of a sprite to get the horizontal velocity.
      */
@@ -55,12 +59,44 @@ public enum Direction {
      */
     final int y;
 
+    // --Constructors-- //
+
+    /**
+     * Creates a new direction.
+     *
+     * @param x The x-component of the direction.
+     * @param y The y-component of the direction.
+     */
     Direction(final int x, final int y) {
         this.x = x;
         this.y = y;
     }
 
+    // --Getters and Setters-- //
+
     /**
+	 * Returns the {@linkplain #x X-Component} of the direction.
+	 * It is meant to be multiplied with the velocity of a sprite to get the horizontal velocity.
+	 *
+	 * @return the X-Coordinate of the unit vector of this direction.
+	 */
+	public int getX() {
+	    return x;
+	}
+
+	/**
+	 * Returns the {@linkplain #y Y-Component} of the direction.
+	 * It is meant to be multiplied with the velocity of a sprite to get the vertical velocity.
+	 *
+	 * @return the Y-Coordinate of the unit vector of this direction.
+	 */
+	public int getY() {
+	    return y;
+	}
+
+	// --Utility Methods-- //
+
+	/**
      * Checks whether this direction is a horizontal direction.
      *
      * @return {@code true} if this direction is a horizontal direction.
@@ -94,26 +130,6 @@ public enum Direction {
      */
     public boolean isDiagonal() {
         return !equals(NONE) && !isOrthogonal();
-    }
-
-    /**
-     * Returns the {@linkplain #x X-Component} of the direction.
-     * It is meant to be multiplied with the velocity of a sprite to get the horizontal velocity.
-     *
-     * @return the X-Coordinate of the unit vector of this direction.
-     */
-    public int getX() {
-        return x;
-    }
-
-    /**
-     * Returns the {@linkplain #y Y-Component} of the direction.
-     * It is meant to be multiplied with the velocity of a sprite to get the vertical velocity.
-     *
-     * @return the Y-Coordinate of the unit vector of this direction.
-     */
-    public int getY() {
-        return y;
     }
 
     /**
