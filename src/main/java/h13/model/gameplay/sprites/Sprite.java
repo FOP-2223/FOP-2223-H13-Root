@@ -66,9 +66,6 @@ public abstract class Sprite implements Updatable {
     private final GameController gameController;
 
     protected record GameFrameParameters(
-        /**
-         * The time elapsed since the last update in seconds.
-         */
         double elapsedTime,
         double deltaX,
         double deltaY,

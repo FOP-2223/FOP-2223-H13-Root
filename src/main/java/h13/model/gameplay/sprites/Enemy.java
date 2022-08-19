@@ -1,6 +1,5 @@
 package h13.model.gameplay.sprites;
 
-import h13.controller.gamelogic.EnemyController;
 import h13.controller.scene.game.GameController;
 import h13.model.gameplay.Direction;
 import javafx.scene.paint.Color;

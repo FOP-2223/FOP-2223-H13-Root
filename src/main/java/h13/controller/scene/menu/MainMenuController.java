@@ -2,8 +2,6 @@ package h13.controller.scene.menu;
 
 import h13.controller.scene.SceneController;
 import javafx.event.ActionEvent;
-import javafx.scene.Node;
-import javafx.stage.Stage;
 
 /**
  * A {@link SceneController} that manages the "Main Menu" scene.

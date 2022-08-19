@@ -155,7 +155,7 @@ public enum Direction {
         final var unitX = x / length;
         final var unitY = y / length;
         return Arrays
-            .stream(Direction.values())
+            .stream(values())
             .min(
                 // Compare the distance of the unit vector of this direction to the given vector scaled to length 1.
                 Comparator.comparingDouble(d -> {
@@ -168,7 +168,7 @@ public enum Direction {
                     }
                 )
             )
-            .orElse(Direction.NONE);
+            .orElse(NONE);
     }
 
     /**
