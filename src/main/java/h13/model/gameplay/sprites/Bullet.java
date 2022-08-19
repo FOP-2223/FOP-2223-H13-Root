@@ -84,7 +84,7 @@ public class Bullet extends Sprite {
         super.nextFrame(frame);
 
         // If the bullet reaches the edge of the game Board, remove it.
-        if (!ORIGINAL_GAME_BOUNDS.contains(frame.newX(), frame.newY())) {
+        if (!ORIGINAL_GAME_BOUNDS.contains(frame.newX(), frame.newY(), getWidth(), getHeight())) {
             die();
         }
 

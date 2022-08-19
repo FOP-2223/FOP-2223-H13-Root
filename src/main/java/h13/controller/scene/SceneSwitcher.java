@@ -11,36 +11,88 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 
+/**
+ * A SceneSwitcher is responsible for switching between the different {@link Scene}s.
+ */
 public final class SceneSwitcher {
 
+    // --Variables-- //
+
+    /**
+     * An enum that represents the different scenes that can be switched to.
+     */
+    public enum SceneType {
+        // --Enum Constants-- //
+
+        /**
+         * The main menu scene.
+         */
+        MAIN_MENU(() -> getFXMLScene("/h13/view.gui/mainMenuScene.fxml")),
+        /**
+         * The about scene.
+         */
+        ABOUT(() -> getFXMLScene("/h13/view.gui/aboutScene.fxml")),
+        /**
+         * The settings scene.
+         */
+        SETTINGS(() -> getFXMLScene("/h13/view.gui/settingsScene.fxml")),
+        /**
+         * The highscore scene.
+         */
+        HIGHSCORE(() -> getFXMLScene("/h13/view.gui/highscoreScene.fxml")),
+        /**
+         * The game scene.
+         */
+        GAME(() -> SceneAndController.fromScene(new GameScene()));
+
+        // --Variables-- //
+        /**
+         * A Callable that creates a {@link SceneAndController} for this {@link SceneType}.
+         * The Controller is used to initialize the {@link Scene}.
+         */
+        private final Callable<SceneAndController> sacGenerator;
+
+        // --Constructors-- //
+
+        /**
+         * Creates a new SceneType.
+         *
+         * @param sacGenerator A Callable that creates a {@link SceneAndController} for this {@link SceneType}.
+         */
+        SceneType(final Callable<SceneAndController> sacGenerator) {
+            this.sacGenerator = sacGenerator;
+        }
+
+        // --Getters and Setters-- //
+
+        /**
+         * Gets the value of {@link #sacGenerator} field.
+         *
+         * @return The value of {@link #sacGenerator} field.
+         * @see #sacGenerator
+         */
+        public Callable<SceneAndController> getSacGenerator() {
+            return sacGenerator;
+        }
+    }
+
+    // --Constructors-- //
+
+    /**
+     * Overrides the default constructor.
+     */
     private SceneSwitcher() {
         throw new RuntimeException("Cannot instantiate SceneSwitcher");
     }
 
-    public enum SceneType {
-        MAIN_MENU(() -> getFXMLScene("/h13/view.gui/mainMenuScene.fxml"), "Space Invaders - Main Menu"),
-        ABOUT(() -> getFXMLScene("/h13/view.gui/aboutScene.fxml"), "Space Invaders - About"),
-        SETTINGS(() -> getFXMLScene("/h13/view.gui/settingsScene.fxml"), "Space Invaders - Settings"),
-        HIGHSCORE(() -> getFXMLScene("/h13/view.gui/highscoreScene.fxml"), "Space Invaders - Highscore"),
-        GAME(() -> SceneAndController.fromScene(new GameScene()), "Space Invaders - Game");
-        private final Callable<SceneAndController> sacGenerator;
-        private final String title;
-        SceneType(final Callable<SceneAndController> sacGenerator, final String title) {
-            this.sacGenerator = sacGenerator;
-            this.title = title;
-        }
+    // --Methods-- //
 
-        public Callable<SceneAndController> getSacGenerator() {
-            return sacGenerator;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-    }
-
-
-
+    /**
+     * Retrieve the {@link Stage} from an {@link ActionEvent}.
+     *
+     * @param e The {@link ActionEvent}.
+     * @return The {@link Stage} from the {@link ActionEvent}.
+     */
     public static Stage getStage(final ActionEvent e) {
         if (e.getSource() instanceof Node n && n.getScene().getWindow() instanceof Stage s) {
             return s;
@@ -48,15 +100,33 @@ public final class SceneSwitcher {
         throw new IllegalArgumentException("ActionEvent source is not a Node or does not have a Scene with a Stage");
     }
 
-    private static Scene loadScene(final Scene scene, final Stage stage) {
-        stage.setScene(scene);
-        if (scene instanceof ControlledScene cs) {
-            cs.getController().initStage(stage);
+    /**
+     * Loads an FXML file and creates a {@link SceneAndController} from it.
+     *
+     * @param sceneName The path to the FXML file.
+     * @return The {@link SceneAndController} from the FXML file.
+     * @throws IOException If the FXML file could not be loaded.
+     * @see FXMLLoader#load(java.io.InputStream)
+     */
+
+    private static SceneAndController getFXMLScene(final String sceneName) throws IOException {
+        final @Nullable var sceneURL = SceneSwitcher.class.getResource(sceneName);
+        if (sceneURL == null) {
+            throw new IOException("Scene not found: " + sceneName);
         }
-        stage.show();
-        return scene;
+        final var loader = new FXMLLoader(sceneURL);
+        return new SceneAndController(new Scene(loader.load()), loader.getController());
     }
 
+    /**
+     * Switches to the given Scene and initializes its Controller.
+     *
+     * @param sac   The {@link SceneAndController} to switch to and initialize.
+     * @param stage The {@link Stage} to show the {@link Scene} on.
+     * @return The {@link Scene} that was switched to.
+     * @see Stage#setScene(javafx.scene.Scene)
+     * @see SceneController#initStage(Stage)
+     */
     private static Scene loadScene(final SceneAndController sac, final Stage stage) {
         final var scene = sac.getScene();
         final var controller = sac.getController();
@@ -68,17 +138,17 @@ public final class SceneSwitcher {
         return scene;
     }
 
+    /**
+     * Loads the given {@link SceneType} and initializes its Controller.
+     *
+     * @param sceneType The {@link SceneType} to load.
+     * @param stage     The {@link Stage} to show the {@link Scene} on.
+     * @return The {@link Scene} that was switched to.
+     * @throws Exception If the {@link SceneType} could not be loaded.
+     * @see #loadScene(SceneAndController, Stage)
+     */
     public static Scene loadScene(final SceneType sceneType, final Stage stage) throws Exception {
         final var sac = sceneType.getSacGenerator().call();
         return loadScene(sac, stage);
-    }
-
-    private static SceneAndController getFXMLScene(final String sceneName) throws IOException {
-        final @Nullable var sceneURL = SceneSwitcher.class.getResource(sceneName);
-        if (sceneURL == null) {
-            throw new IOException("Scene not found: " + sceneName);
-        }
-        final var loader = new FXMLLoader(sceneURL);
-        return new SceneAndController(new Scene(loader.load()), loader.getController());
     }
 }

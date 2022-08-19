@@ -14,13 +14,34 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * A {@link SceneController} that manages the "Highscore" scene.
+ */
 public class HighscoreController extends SceneController implements Initializable {
+
+    // --Variables-- //
+
+    /**
+     * The table view.
+     */
     @FXML
     public TableView<HighscoreEntry> highscoreTableView;
+
+    /**
+     * The player name column.
+     */
     @FXML
     public TableColumn<HighscoreEntry, StringProperty> playerTableColumn;
+
+    /**
+     * The date column.
+     */
     @FXML
     public TableColumn<HighscoreEntry, StringProperty> dateTableColumn;
+
+    /**
+     * The score column.
+     */
     @FXML
     public TableColumn<HighscoreEntry, IntegerProperty> scoreTableColumn;
 

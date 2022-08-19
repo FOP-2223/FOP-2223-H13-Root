@@ -9,18 +9,46 @@ import javafx.scene.control.CheckBox;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * A {@link SceneController} that manages the "Settings" scene.
+ */
 public class SettingsController extends SceneController implements Initializable {
 
+    // --Variables-- //
+
+    /**
+     * The checkbox for the "load textures" setting.
+     */
     @FXML
     public CheckBox loadTexturesCheckBox;
+
+    /**
+     * The checkbox for the "load background" setting.
+     */
     @FXML
     public CheckBox loadBackgroundCheckBox;
+
+    /**
+     * The checkbox for the "instant shooting" setting.
+     */
     @FXML
     public CheckBox instantShootingCheckBox;
+
+    /**
+     * The checkbox for the "enable Horizontal enemy Movement" setting.
+     */
     @FXML
     public CheckBox enemyHorizontalMovementCheckBox;
+
+    /**
+     * The checkbox for the "enable Vertical enemy Movement" setting.
+     */
     @FXML
     public CheckBox enemyVerticalMovementCheckBox;
+
+    /**
+     * The checkbox for the "full screen" setting.
+     */
     @FXML
     private CheckBox fullscreenCheckBox;
 

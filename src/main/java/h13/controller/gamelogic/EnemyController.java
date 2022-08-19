@@ -14,13 +14,34 @@ import java.util.Set;
 
 import static h13.controller.GameConstants.*;
 
+/**
+ * An EnemyController is responsible for instantiating and updating the enemies.
+ */
 public class EnemyController {
-    private final GameController gameController;
-    private final EnemyMovement enemyMovement;
+
+    // --Variables-- //
+
+    /**
+     * The enemies.
+     */
     private final Set<Enemy> enemies;
+    /**
+     * The enemy movement controller.
+     */
+    private final EnemyMovement enemyMovement;
+    /**
+     * The yOffset.
+     */
+    private final GameController gameController;
 
-    private final DoubleProperty yOffset = new SimpleDoubleProperty(0);
+    // --Constructors-- //
 
+    /**
+     * Creates a new EnemyController.
+     *
+     * @param gameController           The game controller.
+     * @param initialMovementDirection The initial movement direction.
+     */
     public EnemyController(
         final GameController gameController,
         final Direction initialMovementDirection) {
@@ -30,12 +51,69 @@ public class EnemyController {
         init();
     }
 
+    // --Getters and Setters-- //
+
+    /**
+     * Gets the value of {@link #enemies} field.
+     *
+     * @return The value of {@link #enemies} field.
+     * @see #enemies
+     */
+    public Set<Enemy> getEnemies() {
+        return enemies;
+    }
+
+    /**
+     * Gets the value of {@link #enemyMovement} field.
+     *
+     * @return The value of {@link #enemyMovement} field.
+     * @see #enemyMovement
+     */
+    public EnemyMovement getEnemyMovement() {
+        return enemyMovement;
+    }
+
+    /**
+     * Gets the value of {@link #gameController} field.
+     *
+     * @return The value of {@link #gameController} field.
+     * @see #gameController
+     */
     public GameController getGameController() {
         return gameController;
     }
 
+    // --Utility Methods-- //
+
+    /**
+     * Gets all the {@link Enemy}s where {@link Enemy#isAlive()} returns true.
+     *
+     * @return The {@link Enemy}s where {@link Enemy#isAlive()} returns true.
+     * @see Enemy#isAlive()
+     */
+    public Set<Enemy> getAliveEnemies() {
+        return enemies.stream().filter(Enemy::isAlive).collect(HashSet::new, HashSet::add, HashSet::addAll);
+    }
+
+    /**
+     * Checks whether all the {@link Enemy}s are dead.
+     *
+     * @return {@code true} if all the {@link Enemy}s are dead, {@code false} otherwise.
+     * @see Enemy#isDead()
+     */
+    public boolean defeated() {
+        return getAliveEnemies().isEmpty();
+    }
+
+    // --Other Methods-- //
+
+    /**
+     * Initializes the enemies.
+     */
     private void init() {
         // enemies
+        final var horizontalSpace = ORIGINAL_GAME_BOUNDS.getWidth();
+        final var padding = CHUNK_SIZE / 2 - GameConstants.RELATIVE_SHIP_WIDTH * horizontalSpace / 2;
         for (int i = 0; i < ENEMY_COLS; i++) {
             for (int j = 0; j < ENEMY_ROWS; j++) {
                 final var enemy = new Enemy(
@@ -45,57 +123,14 @@ public class EnemyController {
                     (ENEMY_ROWS - j) * 10,
                     getGameController()
                 );
-//                var insets = getGameBoard().getBorder().getInsets();
-//                var horizontalSpace = getGameBoard().getMaxWidth() - insets.getLeft() - insets.getRight();
-                final var horizontalSpace = ORIGINAL_GAME_BOUNDS.getWidth();
-                final var horizontalEnemySpace = horizontalSpace * (1 - HORIZONTAL_ENEMY_MOVE_DISTANCE);
-                final var chunkSize = horizontalEnemySpace / ENEMY_COLS;
-                final var padding = chunkSize / 2 - GameConstants.RELATIVE_SHIP_WIDTH * horizontalSpace / 2;
-                enemy.setX(chunkSize * i + padding);
-                enemy.setY(chunkSize * j + padding + getYOffset());
+
+                enemy.setX(CHUNK_SIZE * i + padding);
+                enemy.setY(CHUNK_SIZE * j + padding + ENEMY_Y_OFFSET);
 
                 getGameController().addSprite(enemy);
-//                getChildren().add(enemy);
                 enemies.add(enemy);
             }
         }
 
-        yOffsetProperty().bind(getGameBoard().heightProperty().divide(20));
-    }
-
-    public Set<Enemy> getEnemies() {
-        return enemies;
-    }
-
-    public Set<Enemy> getAliveEnemies() {
-        return enemies.stream().filter(Enemy::isAlive).collect(HashSet::new, HashSet::add, HashSet::addAll);
-    }
-
-    public int getAliveEnemyCount() {
-        return getAliveEnemies().size();
-    }
-
-    public boolean defeated() {
-        return getAliveEnemies().isEmpty();
-    }
-
-    public GameBoard getGameBoard() {
-        return gameController.getGameBoard();
-    }
-
-    public EnemyMovement getEnemyMovement() {
-        return enemyMovement;
-    }
-
-    public DoubleProperty yOffsetProperty() {
-        return yOffset;
-    }
-
-    public double getYOffset() {
-        return yOffset.get();
-    }
-
-    public void setYOffset(final double yOffset) {
-        this.yOffset.set(yOffset);
     }
 }

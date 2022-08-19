@@ -5,6 +5,9 @@ import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.stage.Stage;
 
+/**
+ * A {@link SceneController} that manages the "Main Menu" scene.
+ */
 public class MainMenuController extends SceneController {
 
     @Override
@@ -12,7 +15,12 @@ public class MainMenuController extends SceneController {
         return "Space Invaders - Main Menu";
     }
 
+    /**
+     * Called when the user clicks the "Quit" button.
+     *
+     * @param e The {@link ActionEvent} that triggered this method.
+     */
     public void quit(final ActionEvent e) {
-        ((Stage) ((Node) e.getSource()).getScene().getWindow()).close();
+        getStage().close();
     }
 }
