@@ -15,14 +15,37 @@ import javafx.scene.text.Text;
 
 import static h13.controller.GameConstants.*;
 
+/**
+ * A GameBoard is a {@link Canvas} on which the {@link h13.model.gameplay.sprites.Sprite}s as well as the HUD are drawn.
+ * It is part of the {@link GameScene} and is controlled by a {@link GameController}.
+ */
 public class GameBoard extends Canvas implements Updatable {
 
-//    private final GameController gameController;
+    // --Variables-- //
 
+    /**
+     * The {@link GameScene} that contains this {@link GameBoard}.
+     *
+     * @see GameScene
+     */
     private final GameScene gameScene;
 
+    /**
+     * The Background of this {@link GameBoard}.
+     *
+     * @see Image
+     */
     private Image backgroundImage;
 
+    // --Constructors-- //
+
+    /**
+     * Creates a new GameBoard with the given parameters.
+     *
+     * @param width     The width of the {@link GameBoard}.
+     * @param height    The height of the {@link GameBoard}.
+     * @param gameScene The {@link GameScene} that contains this {@link GameBoard}.
+     */
     public GameBoard(final double width, final double height, final GameScene gameScene) {
         super(width, height);
         this.gameScene = gameScene;
@@ -36,13 +59,30 @@ public class GameBoard extends Canvas implements Updatable {
         }
     }
 
+    // --Utility Methods-- //
+
+    /**
+     * Calculates the Scale factor of the {@link GameBoard} based on the {@link GameScene}'s width and height.
+     *
+     * @return The calculated Scale factor.
+     */
+    public double getScale() {
+        return getWidth() / ORIGINAL_GAME_BOUNDS.getWidth();
+    }
+
+
+    /**
+     * Gets the {@link GameController} that controls this {@link GameBoard}.
+     *
+     * @return The {@link GameController} that controls this {@link GameBoard}.
+     * @see GameController
+     */
     public GameController getGameController() {
         return gameScene.getController();
     }
 
-    /**
-     * @param elapsedTime The timestamp of the current frame given in nanoseconds. This value will be the same for all AnimationTimers called during one frame.
-     */
+    // --Methods-- //
+
     @Override
     public void update(final double elapsedTime) {
         final var gc = getGraphicsContext2D();
@@ -65,7 +105,7 @@ public class GameBoard extends Canvas implements Updatable {
         SpriteRenderer.renderSprite(gc, getGameController().getPlayer(), scale);
 
         // Draw other sprites
-        getGameController().getSprites(s -> !(s instanceof Player) && !(s instanceof Bullet) && !(s instanceof Enemy)).forEach(sprite -> SpriteRenderer.renderSprite(gc, sprite,scale));
+        getGameController().getSprites(s -> !(s instanceof Player) && !(s instanceof Bullet) && !(s instanceof Enemy)).forEach(sprite -> SpriteRenderer.renderSprite(gc, sprite, scale));
 
         final Font font = Font.loadFont(GameConstants.class.getResourceAsStream(GameConstants.STATS_FONT_PATH), getWidth() / 30);
         gc.setFont(font);
@@ -93,7 +133,4 @@ public class GameBoard extends Canvas implements Updatable {
         gc.strokeRect(0, 0, getWidth(), getHeight());
     }
 
-    public double getScale() {
-        return getWidth() / ORIGINAL_GAME_BOUNDS.getWidth();
-    }
 }
