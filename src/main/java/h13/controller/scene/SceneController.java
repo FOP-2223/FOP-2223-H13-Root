@@ -1,43 +1,92 @@
 package h13.controller.scene;
 
-import h13.view.gui.GameScene;
 import javafx.event.ActionEvent;
-import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.function.Consumer;
-
-import static h13.controller.scene.SceneSwitcher.loadFXMLScene;
-import static h13.controller.scene.SceneSwitcher.loadScene;
-
+/**
+ * A SceneController is responsible for dynamically managing a {@link Scene} and its {@link Stage}.
+ */
 public abstract class SceneController {
+    // --Variables-- //
+
+    /**
+     * The {@link Stage} that is managed by this {@link SceneController}.
+     */
+    private Stage stage;
+
+    /**
+     * The {@link Stage} that is managed by this {@link SceneController}.
+     */
+    public Stage getStage() {
+        return stage;
+    }
+
+    /**
+     * Specifies the title of the {@link Stage}.
+     * This is used in {@link #initStage(Stage)} to set the title of the {@link Stage}.
+     *
+     * @return The title of the {@link Stage}.
+     */
+    public abstract String getTitle();
+
+    // --Setup Methods-- //
+
+    /**
+     * Initializes the {@link Stage} of this {@link SceneController}.
+     * This default implementation sets the title of the {@link Stage} to {@link #getTitle()}.
+     *
+     * @param stage The {@link Stage} to initialize.
+     */
     public void initStage(final Stage stage) {
-        // Do nothing by default
-    }
-    public Scene loadMainMenuScene(final ActionEvent e) throws IOException {
-        return SceneSwitcher.loadMainMenuScene(SceneSwitcher.getStage(e));
+        (this.stage = stage).setTitle(getTitle());
     }
 
-    public Scene loadAboutScene(final ActionEvent e) throws IOException {
-        return SceneSwitcher.loadAboutScene(SceneSwitcher.getStage(e));
+    // --Button Actions-- //
+
+    /**
+     * Called when the user clicks the "Main Menu" button.
+     *
+     * @param e The {@link ActionEvent} that triggered this method.
+     */
+    public Scene loadMainMenuScene(final @Nullable ActionEvent e) throws Exception {
+        return SceneSwitcher.loadScene(SceneSwitcher.SceneType.MAIN_MENU, getStage());
     }
 
-    public Scene loadSettingsScene(final ActionEvent e) throws IOException {
-        return SceneSwitcher.loadSettingsScene(SceneSwitcher.getStage(e));
+    /**
+     * Called when the user clicks the "About" button.
+     *
+     * @param e The {@link ActionEvent} that triggered this method.
+     */
+    public Scene loadAboutScene(final @Nullable ActionEvent e) throws Exception {
+        return SceneSwitcher.loadScene(SceneSwitcher.SceneType.ABOUT, getStage());
     }
 
-    public Scene loadHighscoreScene(final ActionEvent e) throws IOException {
-        return SceneSwitcher.loadHighscoreScene(SceneSwitcher.getStage(e));
+    /**
+     * Called when the user clicks the "Settings" button.
+     *
+     * @param e The {@link ActionEvent} that triggered this method.
+     */
+    public Scene loadSettingsScene(final @Nullable ActionEvent e) throws Exception {
+        return SceneSwitcher.loadScene(SceneSwitcher.SceneType.SETTINGS, getStage());
     }
 
-    public Scene loadGameScene(final ActionEvent e) throws IOException {
-        return SceneSwitcher.loadGameScene(SceneSwitcher.getStage(e));
+    /**
+     * Called when the user clicks the "High Scores" button.
+     *
+     * @param e The {@link ActionEvent} that triggered this method.
+     */
+    public Scene loadHighscoreScene(final @Nullable ActionEvent e) throws Exception {
+        return SceneSwitcher.loadScene(SceneSwitcher.SceneType.HIGHSCORE, getStage());
+    }
+
+    /**
+     * Called when the user clicks the "Start Game" button.
+     *
+     * @param e The {@link ActionEvent} that triggered this method.
+     */
+    public Scene loadGameScene(final @Nullable ActionEvent e) throws Exception {
+        return SceneSwitcher.loadScene(SceneSwitcher.SceneType.GAME, getStage());
     }
 }

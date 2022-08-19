@@ -11,6 +11,8 @@ plugins {
 version = "0.1.0-SNAPSHOT"
 
 repositories {
+    mavenLocal()
+    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
     mavenCentral()
 }
 
@@ -40,6 +42,8 @@ dependencies {
     }
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
     implementation("com.google.code.gson:gson:2.9.0")
+    implementation("org.tudalgo:algoutils-student:0.1.0-SNAPSHOT")
+    "graderImplementation"("org.tudalgo:algoutils-tutor:0.1.0-SNAPSHOT")
 }
 
 application {

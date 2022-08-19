@@ -1,33 +1,90 @@
 package h13.model.gameplay.sprites;
 
-import h13.controller.game.GameController;
-import javafx.geometry.VerticalDirection;
+import h13.controller.scene.game.GameController;
+import h13.model.gameplay.Direction;
 import javafx.scene.paint.Color;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import static h13.controller.GameConstants.BULLET_VELOCITY;
+import static h13.controller.GameConstants.ORIGINAL_GAME_BOUNDS;
 
+/**
+ * A Bullet is a Sprite that can be fired by a BattleShip and can hit other BattleShips.
+ *
+ * <ul>
+ *   <li>A Bullet cannot damage itself, other Bullets, its owner or Friends of its owner.</li>
+ *   <li>A Bullet can only damage the same BattleShip only once.</li>
+ * </ul>
+ */
 public class Bullet extends Sprite {
+    // --Variables-- //
+
+    /**
+     * The owner of the Bullet.
+     */
     private final BattleShip owner;
-    private final HashSet<Sprite> hits = new HashSet<>();
 
-    private final VerticalDirection direction;
+    /**
+     * The set of BattleShips that have been damaged by the Bullet.
+     */
+    private final Set<Sprite> hits = new HashSet<>();
 
+    // --Constructors-- //
 
-    public Bullet(final double x, final double y, final GameController gameController, final BattleShip owner, final VerticalDirection direction) {
-        super(x, y, 0.003, 0.02, Color.WHITE, BULLET_VELOCITY, 1, gameController);
+    /**
+     * Creates a new Bullet.
+     *
+     * @param x              The initial x-coordinate of the Bullet.
+     * @param y              The initial y-coordinate of the Bullet.
+     * @param gameController The game controller.
+     * @param owner          The owner of the Bullet.
+     * @param direction      The direction the Bullet is travelling towards.
+     */
+    public Bullet(final double x, final double y, final GameController gameController, final BattleShip owner, final Direction direction) {
+        super(x, y, 1, 5, Color.WHITE, BULLET_VELOCITY, 1, gameController);
         this.owner = owner;
-        this.direction = direction;
-        velocityYProperty().bind(getGameBoard().heightProperty().multiply(direction.equals(VerticalDirection.UP) ? -getVelocity() : getVelocity()));
+        setDirection(direction);
+    }
+
+    // --Getters and Setters-- //
+
+    /**
+     * Gets the owner of the Bullet.
+     *
+     * @return The owner of the Bullet.
+     * @see #owner
+     */
+    public BattleShip getOwner() {
+        return owner;
+    }
+
+    /**
+     * Gets the set of BattleShips that have been damaged by the Bullet.
+     *
+     * @return The set of BattleShips that have been damaged by the Bullet.
+     * @see #hits
+     */
+    public Set<Sprite> getHits() {
+        return hits;
     }
 
     @Override
-    protected void gameTick(final GameTickParameters tick) {
-        super.gameTick(tick);
+    public void die() {
+        super.die();
+        owner.setBullet(null);
+        if (owner instanceof Player p && p.isKeepShooting()) {
+            p.shoot();
+        }
+    }
+
+    @Override
+    protected void nextFrame(final GameFrameParameters frame) {
+        super.nextFrame(frame);
 
         // If the bullet reaches the edge of the game Board, remove it.
-        if (!coordinatesInBounds(tick.newX(), tick.newY(), 0)) {
+        if (!ORIGINAL_GAME_BOUNDS.contains(frame.newX(), frame.newY(), getWidth(), getHeight())) {
             die();
         }
 
@@ -45,13 +102,5 @@ public class Bullet extends Sprite {
             damage();
             hits.add(damaged);
         }
-    }
-
-    public BattleShip getOwner() {
-        return owner;
-    }
-
-    public VerticalDirection getDirection() {
-        return direction;
     }
 }

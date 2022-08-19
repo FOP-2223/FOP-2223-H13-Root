@@ -1,116 +1,264 @@
 package h13.model.gameplay;
 
 import h13.controller.ApplicationSettings;
-import h13.controller.GameConstants;
-import h13.controller.game.EnemyController;
+import h13.controller.gamelogic.EnemyController;
 import h13.model.gameplay.sprites.Enemy;
-import javafx.beans.property.*;
-import javafx.geometry.HorizontalDirection;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
+import org.jetbrains.annotations.Nullable;
 
 import static h13.controller.GameConstants.*;
 
-public class EnemyMovement implements Playable {
+/**
+ * The EnemyMovement class is responsible for moving the enemies in a grid.
+ */
+public class EnemyMovement implements Updatable {
+
+    // --Variables-- //
+
+    /**
+     * The current movement direction
+     */
+    private Direction direction;
+    /**
+     * the previous movement direction
+     */
+    private @Nullable Direction previousDirection;
+    /**
+     * The current movement speed
+     */
+    private double velocity = 10;
+    /**
+     * The Next y-coordinate to reach
+     */
+    private double yTarget = 0;
+    /**
+     * Whether the bottom was reached
+     */
+    private boolean bottomWasReached = false;
+    /**
+     * The enemy controller
+     */
     private final EnemyController enemyController;
-    private final DoubleProperty movementProgress;
 
-    private final BooleanProperty verticalMovement = new SimpleBooleanProperty(false);
-    private final DoubleProperty verticalMovementIteration = new SimpleDoubleProperty(0);
+    // --Constructors-- //
 
-    private final LongProperty lastUpdate = new SimpleLongProperty(0);
-
-    private final SimpleObjectProperty<HorizontalDirection> horizontalMovementDirection;
-
-
-    public EnemyMovement(final EnemyController enemyController, final HorizontalDirection initialMovementDirection) {
+    /**
+     * Creates a new EnemyMovement.
+     *
+     * @param enemyController The enemy controller.
+     * @param direction       The current movement direction.
+     */
+    public EnemyMovement(final EnemyController enemyController, final Direction direction) {
         this.enemyController = enemyController;
-        movementProgress = new SimpleDoubleProperty(0);
-        horizontalMovementDirection = new SimpleObjectProperty<>(initialMovementDirection);
+        this.direction = direction;
     }
 
-    public double getMovementProgress() {
-        return movementProgress.get();
-    }
+    // --Getters and Setters-- //
 
-    public HorizontalDirection getHorizontalMovementDirection() {
-        return horizontalMovementDirection.get();
-    }
-
-    public SimpleObjectProperty<HorizontalDirection> horizontalMovementDirectionProperty() {
-        return horizontalMovementDirection;
+    /**
+     * Gets the current {@link #velocity}.
+     *
+     * @return The current {@link #velocity}.
+     * @see #velocity
+     */
+    public double getVelocity() {
+        return velocity;
     }
 
     /**
-     * @param now The timestamp of the current frame given in nanoseconds. This value will be the same for all AnimationTimers called during one frame.
+     * Sets the current {@link #velocity} to the given value.
+     *
+     * @param velocity The new {@link #velocity}.
+     * @see #velocity
      */
-    @Override
-    public void update(final long now) {
-
-        if (!ApplicationSettings.enemyHorizontalMovementProperty().get()) {
-            horizontalMovementDirection.set(HorizontalDirection.LEFT);
-            verticalMovement.set(true);
-        }
-        if (lastUpdate.get() > 0) {
-            if (ApplicationSettings.enemyVerticalMovementProperty().get() || ApplicationSettings.enemyHorizontalMovementProperty().get()) {
-                final double elapsedTime = (now - lastUpdate.get()) / 1_000_000_000.0;
-                final double progress = movementProgress.get() + elapsedTime / (verticalMovement.get() ? VERTICAL_ENEMY_MOVEMENT_DURATION : HORIZONTAL_ENEMY_MOVEMENT_DURATION);
-                movementProgress.set(progress);
-            }
-            if (movementProgress.get() >= 1) {
-                nextMovement();
-            } else {
-                updatePositions();
-            }
-        }
-        lastUpdate.set(now);
+    public void setVelocity(final double velocity) {
+        this.velocity = velocity;
     }
 
     /**
-     * @param now The timestamp of the current frame given in nanoseconds. This value will be the same for all AnimationTimers called during one frame.
+     * Gets the current {@link #direction}.
+     *
+     * @return The current {@link #direction}.
+     * @see #direction
      */
-    @Override
-    public void resume(final long now) {
-        lastUpdate.set(now);
+    public Direction getDirection() {
+        return direction;
     }
 
-    private void updatePositions() {
-        final var horizontalSpace = getEnemyController().getGameBoard().getWidth();
-        final var verticalSpace = getEnemyController().getGameBoard().getHeight();
-        final var horizontalEnemySpace = horizontalSpace * (1 - HORIZONTAL_ENEMY_MOVE_DISTANCE);
-        final var chunkSize = horizontalEnemySpace / ENEMY_COLS;
-        final var padding = chunkSize / 2 - GameConstants.RELATIVE_SHIP_WIDTH * horizontalSpace / 2;
-        for (final Enemy enemy : getEnemyController().getAliveEnemies()) {
-            final var enemyXPos = chunkSize * enemy.getxIndex() + +padding;
-            final var enemyYPos = chunkSize * enemy.getyIndex() + +padding + enemyController.getYOffset();
-            if (verticalMovement.get()) {
-                enemy.setX(enemyXPos + (horizontalMovementDirection.get().equals(HorizontalDirection.LEFT) ? 0 : (HORIZONTAL_ENEMY_MOVE_DISTANCE * horizontalSpace)));
-                enemy.setY(enemyYPos + (VERTICAL_ENEMY_MOVE_DISTANCE * verticalSpace) * (verticalMovementIteration.get() - 1) + (VERTICAL_ENEMY_MOVE_DISTANCE * verticalSpace) * movementProgress.get());
-            } else {
-                enemy.setX(enemyXPos + (horizontalMovementDirection.get().equals(HorizontalDirection.LEFT) ? 1 - getMovementProgress() : getMovementProgress()) * (HORIZONTAL_ENEMY_MOVE_DISTANCE * horizontalSpace));
-                enemy.setY(enemyYPos + (VERTICAL_ENEMY_MOVE_DISTANCE * verticalSpace) * verticalMovementIteration.get());
-            }
-        }
+    /**
+     * Sets the current {@link #direction} to the given value.
+     *
+     * @param direction The new {@link #direction}.
+     * @see #direction
+     */
+    public void setDirection(final Direction direction) {
+        this.direction = direction;
     }
 
-    private void nextMovement() {
-        movementProgress.set(0);
-        if (ApplicationSettings.enemyHorizontalMovementProperty().get() && (verticalMovement.get() || !ApplicationSettings.enemyVerticalMovementProperty().get())) {
-            horizontalMovementDirection.set(horizontalMovementDirection.get().equals(HorizontalDirection.LEFT) ? HorizontalDirection.RIGHT : HorizontalDirection.LEFT);
-        } else {
-            verticalMovementIteration.set(verticalMovementIteration.get() + 1);
-        }
-        if (ApplicationSettings.enemyHorizontalMovementProperty().get() && ApplicationSettings.enemyVerticalMovementProperty().get()) {
-            verticalMovement.set(!verticalMovement.get());
-        }
-    }
-
+    /**
+     * Checks whether the bottom was reached.
+     *
+     * @return {@code true} if the bottom was reached, {@code false} otherwise.
+     */
     public boolean bottomWasReached() {
-        return getEnemyController()
-            .getAliveEnemies()
-            .stream()
-            .anyMatch(enemy -> enemy.getY() + enemy.getHeight() > getEnemyController().getGameBoard().getHeight());
+        return bottomWasReached;
     }
 
+    /**
+     * Gets the enemy controller.
+     *
+     * @return The enemy controller.
+     */
     public EnemyController getEnemyController() {
         return enemyController;
+    }
+
+    // --Utility Methods-- //
+
+    /**
+     * Creates a BoundingBox around all alive enemies.
+     *
+     * @return The BoundingBox.
+     */
+    private @Nullable Bounds getEnemyBounds() {
+        final var enemies = getEnemyController().getAliveEnemies();
+        if (enemies.isEmpty()) {
+            return null;
+        }
+        boolean first = true;
+        int lowestxIndex, highestxIndex, lowestyIndex, highestyIndex;
+        lowestxIndex = highestxIndex = lowestyIndex = highestyIndex = 0;
+        Enemy enemyWithLowestXIndex = null, enemyWithLowestYIndex = null, enemyWithHighestXIndex = null, enemyWithHighestYIndex = null;
+        for (final var e : enemies) {
+            if (!e.isAlive()) {
+                continue;
+            }
+            if (first) {
+                lowestxIndex = highestxIndex = e.getxIndex();
+                lowestyIndex = highestyIndex = e.getyIndex();
+                first = false;
+            }
+            lowestxIndex = Math.min(lowestxIndex, e.getxIndex());
+            highestxIndex = Math.max(highestxIndex, e.getxIndex());
+            lowestyIndex = Math.min(lowestyIndex, e.getyIndex());
+            highestyIndex = Math.max(highestyIndex, e.getyIndex());
+            if (e.getxIndex() == lowestxIndex) {
+                enemyWithLowestXIndex = e;
+            }
+            if (e.getyIndex() == lowestyIndex) {
+                enemyWithLowestYIndex = e;
+            }
+            if (e.getxIndex() == highestxIndex) {
+                enemyWithHighestXIndex = e;
+            }
+            if (e.getyIndex() == highestyIndex) {
+                enemyWithHighestYIndex = e;
+            }
+        }
+
+        if (enemyWithLowestXIndex == null || enemyWithLowestYIndex == null || enemyWithHighestXIndex == null || enemyWithHighestYIndex == null) {
+            return null;
+        }
+
+        return new BoundingBox(
+            enemyWithLowestXIndex.getX(),
+            enemyWithLowestYIndex.getY(),
+            enemyWithHighestXIndex.getX() + enemyWithHighestXIndex.getWidth() - enemyWithLowestXIndex.getX(),
+            enemyWithHighestYIndex.getY() + enemyWithHighestYIndex.getHeight() - enemyWithLowestYIndex.getY()
+        );
+    }
+
+    /**
+     * Checks whether the target Position of the current movement iteration is reached.
+     *
+     * @param enemyBounds The BoundingBox of all alive enemies.
+     * @return {@code true} if the target Position of the current movement iteration is reached, {@code false} otherwise.
+     */
+    private boolean targetReached(final Bounds enemyBounds) {
+        return direction == Direction.UP && enemyBounds.getMinY() <= yTarget
+            || direction == Direction.DOWN && enemyBounds.getMaxY() >= yTarget
+            || direction == Direction.LEFT && enemyBounds.getMinX() <= 0
+            || direction == Direction.RIGHT && enemyBounds.getMaxX() >= ORIGINAL_GAME_BOUNDS.getWidth();
+    }
+
+    // --Movement-- //
+
+    @Override
+    public void update(final double elapsedTime) {
+        if (bottomWasReached) {
+            return;
+        }
+
+        final var enemyBounds = getEnemyBounds();
+
+        if (enemyBounds == null) {
+            return;
+        }
+
+        final var deltaX = velocity * elapsedTime * direction.getX();
+        final var deltaY = velocity * elapsedTime * direction.getY();
+
+        final Bounds newBounds = new BoundingBox(
+            enemyBounds.getMinX() + deltaX,
+            enemyBounds.getMinY() + deltaY,
+            enemyBounds.getWidth(),
+            enemyBounds.getHeight());
+
+        if (targetReached(newBounds)) {
+            var newDeltaX = deltaX;
+            var newDeltaY = deltaY;
+            if (newBounds.getMinX() < 0) {
+                newDeltaX -= newBounds.getMinX();
+            }
+            if (newBounds.getMinY() < 0) {
+                newDeltaY -= newBounds.getMinY();
+            }
+            if (newBounds.getMaxX() > ORIGINAL_GAME_BOUNDS.getWidth()) {
+                newDeltaX -= newBounds.getMaxX() - ORIGINAL_GAME_BOUNDS.getWidth();
+            }
+            if (newBounds.getMaxY() > ORIGINAL_GAME_BOUNDS.getHeight()) {
+                bottomWasReached = true;
+                return;
+            }
+            updatePositions(newDeltaX, newDeltaY);
+            nextMovement(enemyBounds);
+        } else {
+            updatePositions(deltaX, deltaY);
+        }
+    }
+
+    /**
+     * Updates the positions of all alive enemies.
+     *
+     * @param deltaX The deltaX.
+     * @param deltaY The deltaY.
+     */
+    private void updatePositions(final double deltaX, final double deltaY) {
+        final var enemies = getEnemyController().getAliveEnemies();
+        for (final var e : enemies) {
+            e.setX(e.getX() + deltaX);
+            e.setY(e.getY() + deltaY);
+        }
+    }
+
+    private void nextMovement(final Bounds enemyBounds) {
+        if (ApplicationSettings.enemyHorizontalMovementProperty().get() && ApplicationSettings.enemyVerticalMovementProperty().get()) {
+            final var oldDirection = direction;
+            direction = switch (direction) {
+                case LEFT, RIGHT -> Direction.DOWN;
+                case DOWN -> previousDirection == Direction.RIGHT ? Direction.LEFT : Direction.RIGHT;
+                default -> Direction.NONE;
+            };
+            previousDirection = oldDirection;
+        } else if (ApplicationSettings.enemyHorizontalMovementProperty().get() || ApplicationSettings.enemyVerticalMovementProperty().get()) {
+            direction = direction.getOpposite();
+        } else {
+            direction = Direction.NONE;
+        }
+        if (direction.isVertical()) {
+            yTarget = enemyBounds.getMaxY() + VERTICAL_ENEMY_MOVE_DISTANCE;
+        }
+        velocity += .3;
     }
 }

@@ -3,30 +3,85 @@ package h13.controller;
 
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import javafx.scene.text.Font;
 
+/**
+ * The GameConstants class contains all the constants that are used in the game.
+ */
 public final class GameConstants {
+    /**
+     * The Bounds of the original game screen.
+     */
     public static final Bounds ORIGINAL_GAME_BOUNDS = new BoundingBox(
         0,
         0,
         256,
         224);
+    /**
+     * The aspect ratio
+     */
     public static final double ASPECT_RATIO = ORIGINAL_GAME_BOUNDS.getWidth() / ORIGINAL_GAME_BOUNDS.getHeight();
-//    public static final Bounds shipSize
-
+    /**
+     * The Amount of enemy rows.
+     */
     public static final int ENEMY_ROWS = 5;
+    /**
+     * The Amount of enemy columns.
+     */
     public static final int ENEMY_COLS = 11;
-
+    public static final double ENEMY_Y_OFFSET = ORIGINAL_GAME_BOUNDS.getHeight() / 20;
+    /**
+     * The relative Amount of padding between the enemies.
+     */
     public static final double SHIP_PADING = 0.01;
+    /**
+     * The relative horizontal movement distance.
+     */
     public static final double HORIZONTAL_ENEMY_MOVE_DISTANCE = 0.1;
-    public static final double VERTICAL_ENEMY_MOVE_DISTANCE = .015;
+    /**
+     * The vertical movement distance.
+     */
+    public static final double VERTICAL_ENEMY_MOVE_DISTANCE = .03 * ORIGINAL_GAME_BOUNDS.getHeight();
+
+    /**
+     * The amount of Pixels that the enemies move horizontally each movement iteration.
+     */
+
+    public static final double HORIZONTAL_ENEMY_MOVE_SPACE = ORIGINAL_GAME_BOUNDS.getWidth() * (1 - HORIZONTAL_ENEMY_MOVE_DISTANCE);
+    /**
+     * The amount of Pixels that the enemies move vertically each movement iteration.
+     */
+    public static final double VERTICAL_ENEMY_MOVE_SPACE = ORIGINAL_GAME_BOUNDS.getHeight() * (1 - VERTICAL_ENEMY_MOVE_DISTANCE);
+    /**
+     * The Space (including padding) each enemy has.
+     */
+    public static final double CHUNK_SIZE = HORIZONTAL_ENEMY_MOVE_SPACE / ENEMY_COLS;
+    /**
+     * The relative ship width.
+     */
     public static final double RELATIVE_SHIP_WIDTH = (1d - HORIZONTAL_ENEMY_MOVE_DISTANCE) / ENEMY_COLS - 2 * SHIP_PADING;
+    /**
+     * The probability that the enemy will shoot a bullet each frame.
+     */
     public static final double ENEMY_SHOOTING_PROBABILITY = 0.0005;
+    /**
+     * The amount of seconds that the horizontal movement will take.
+     */
     public static final double HORIZONTAL_ENEMY_MOVEMENT_DURATION = 3;
+    /**
+     * The amount of seconds that the vertical movement will take.
+     */
     public static final double VERTICAL_ENEMY_MOVEMENT_DURATION = .5;
-    public static final double PLAYER_VELOCITY = 0.9;
-    public static final double BULLET_VELOCITY = 0.75;
-    //font
+    /**
+     * The Player's velocity.
+     */
+    public static final double PLAYER_VELOCITY = 0.9 * ORIGINAL_GAME_BOUNDS.getWidth();
+    /**
+     * The bullet velocity.
+     */
+    public static final double BULLET_VELOCITY = 0.75 * ORIGINAL_GAME_BOUNDS.getWidth();
+    /**
+     * The font path.
+     */
     public static final String STATS_FONT_PATH = "/h13/fonts/PressStart2P-Regular.ttf";
 //    public static final Font FONT = Font.loadFont(GameConstants.class.getResourceAsStream("/h13/fonts/PressStart2P-Regular.ttf"), 20);
 }

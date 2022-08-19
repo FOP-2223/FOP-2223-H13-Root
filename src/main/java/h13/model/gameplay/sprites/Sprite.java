@@ -1,231 +1,71 @@
 package h13.model.gameplay.sprites;
 
 import h13.controller.ApplicationSettings;
-import h13.model.gameplay.GamePlay;
-import h13.model.gameplay.Playable;
-import h13.controller.game.GameController;
-import h13.view.gui.GameBoard;
-import javafx.animation.AnimationTimer;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleLongProperty;
+import h13.controller.scene.game.GameController;
+import h13.model.gameplay.Direction;
+import h13.model.gameplay.Updatable;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class Sprite implements Playable {
+import static h13.controller.GameConstants.ORIGINAL_GAME_BOUNDS;
 
-    // --Variables--//
-    protected final GameController gameController;
-    private final Color color;
-    private final LongProperty lastUpdate = new SimpleLongProperty(0);
-    private final double relativeHeight;
-    private final double relativeWidth;
+/**
+ * A sprite is a game object that can be placed on the game board.
+ */
+public abstract class Sprite implements Updatable {
 
-    protected Image texture;
+    // --Variables-- //
 
-    private final DoubleProperty x;
-    private final DoubleProperty y;
-    private final DoubleProperty velocityX = new SimpleDoubleProperty(0);
-    private final DoubleProperty velocityY = new SimpleDoubleProperty(0);
-    protected int health;
-    protected double velocity;
+    /**
+     * The x-coordinate of the sprite.
+     */
+    private double x;
+    /**
+     * The y-coordinate of the sprite.
+     */
+    private double y;
+    /**
+     * The width of the sprite.
+     */
+    private final double width;
+    /**
+     * the height of the sprite.
+     */
+    private final double height;
+    /**
+     * The movement velocity of the sprite.
+     */
+    private final double velocity;
+    /**
+     * The remaining life of the sprite.
+     */
+    private int health;
+    /**
+     * The current Movement-{@link Direction} of the sprite.
+     */
+    private @NotNull Direction direction = Direction.NONE;
+    /**
+     * whether the sprite is no longer alive.
+     */
     private boolean dead = false;
+    /**
+     * The color of the sprite. (fallback for when the sprite has no texture)
+     */
+    private final Color color;
+    /**
+     * The texture of the sprite.
+     */
+    private Image texture;
+    /**
+     * The GameController that controls the game.
+     */
+    private final GameController gameController;
 
-    private AnimationTimer movementTimer;
-
-    public Sprite(final double x, final double y, final double relativeWidth, final double relativeHeight, final Color color, final double velocity, final int health, final GameController gameController) {
-        this.x = new SimpleDoubleProperty(x);
-        this.y = new SimpleDoubleProperty(y);
-        this.velocity = velocity;
-        this.color = color;
-        this.gameController = gameController;
-        this.relativeWidth = relativeWidth;
-        this.relativeHeight = relativeHeight;
-        this.health = health;
-    }
-
-    protected boolean coordinatesInBounds(final double x, final double y, final double padding) {
-        return x >= padding && x <= getGameBoard().getWidth() - getWidth() - padding
-            && y >= padding && y <= getGameBoard().getHeight() - getHeight() - padding;
-    }
-
-    // --Getters and Setters--//
-
-    public void damage() {
-        damage(1);
-    }
-
-    public void damage(final int damage) {
-        health -= damage;
-        if (health <= 0) {
-            die();
-        }
-    }
-
-    public void die() {
-        health = 0;
-        dead = true;
-        getGameController().removeSprite(this);
-    }
-
-    protected void gameTick(final GameTickParameters tick) {
-        final var newPos = getPaddedPosition(tick.newX(), tick.newY(), 0);
-        setX(newPos.getX());
-        setY(newPos.getY());
-    }
-
-    public GameBoard getGameBoard() {
-        return gameController.getGameBoard();
-    }
-
-    public GameController getGameController() {
-        return gameController;
-    }
-
-    public GamePlay getGamePlay() {
-        return getGameController().getGamePlay();
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public AnimationTimer getMovementTimer() {
-        return movementTimer;
-    }
-
-    protected Point2D getPaddedPosition(final double x, final double y, final double padding) {
-        return new Point2D(
-            Math.max(padding, Math.min(getGameBoard().getWidth() - getWidth() - padding, x)),
-            Math.max(padding, Math.min(getGameBoard().getHeight() - getHeight() - padding, y))
-        );
-    }
-
-    public double getHeight() {
-        return relativeHeight * getGameboardWidth();
-    }
-
-    public double getWidth() {
-        return relativeWidth * getGameboardWidth();
-    }
-
-    public double getRelativeHeight() {
-        return relativeHeight;
-    }
-
-    public double getRelativeWidth() {
-        return relativeWidth;
-    }
-
-    public double getVelocity() {
-        return velocity;
-    }
-
-    public void setVelocity(final int velocity) {
-        this.velocity = velocity;
-    }
-
-    public double getVelocityX() {
-        return velocityX.get();
-    }
-
-    public void setVelocityX(final double velocityX) {
-        this.velocityX.set(velocityX);
-    }
-
-    protected double getGameboardWidth() {
-        return getGameBoard().getWidth();
-    }
-
-    protected double getGameboardHeight() {
-        return getGameBoard().getHeight();
-    }
-
-    public boolean isDead() {
-        return dead;
-    }
-
-    public boolean isAlive() {
-        return !isDead();
-    }
-
-    public void moveDown() {
-        velocityY.set(velocityY.get() + velocity * getGameboardHeight());
-    }
-
-    public void moveLeft() {
-        velocityX.set(velocityX.get() - velocity * getGameboardWidth());
-    }
-
-    public void moveRight() {
-        velocityX.set(velocityX.get() + velocity * getGameboardWidth());
-    }
-
-    public void moveUp() {
-        velocityY.set(velocityY.get() - velocity * getGameboardHeight());
-    }
-
-    public void pause() {
-        movementTimer.stop();
-    }
-
-    @Override
-    public void resume(final long now) {
-        lastUpdate.set(now);
-    }
-
-    public void stop() {
-        velocityX.set(0);
-        velocityY.set(0);
-    }
-
-    @Override
-    public void update(final long now) {
-        // Smooth movement
-        if (lastUpdate.get() > 0) {
-            final double elapsedTime = (now - lastUpdate.get()) / 1_000_000_000.0;
-            final double deltaX = velocityX.get() * elapsedTime;
-            final double deltaY = velocityY.get() * elapsedTime;
-            final double oldX = getX();
-            final double oldY = getY();
-            final double newX = oldX + deltaX;
-            final double newY = oldY + deltaY;
-            gameTick(
-                new GameTickParameters(
-                    getMovementTimer(),
-                    now,
-                    elapsedTime,
-                    deltaX,
-                    deltaY,
-                    oldX,
-                    oldY,
-                    newX,
-                    newY
-                )
-            );
-        }
-        lastUpdate.set(now);
-    }
-
-    public DoubleProperty velocityXProperty() {
-        return velocityX;
-    }
-
-    public DoubleProperty velocityYProperty() {
-        return velocityY;
-    }
-
-    protected record GameTickParameters(
-        AnimationTimer movementTimer,
-        long now,
-        /**
-         * The time elapsed since the last update in seconds.
-         */
+    protected record GameFrameParameters(
         double elapsedTime,
         double deltaX,
         double deltaY,
@@ -236,47 +76,197 @@ public abstract class Sprite implements Playable {
     ) {
     }
 
+    // --Constructors-- //
+
+    /**
+     * Constructs a new Sprite with the given parameters.
+     *
+     * @param x              the x-coordinate of the sprite.
+     * @param y              the y-coordinate of the sprite.
+     * @param width          the width of the sprite.
+     * @param height         the height of the sprite.
+     * @param color          the color of the sprite.
+     * @param velocity       the movement velocity of the sprite.
+     * @param health         the amount of health the sprite should have.
+     * @param gameController the GameController that controls the game.
+     */
+    public Sprite(final double x, final double y, final double width, final double height, final Color color, final double velocity, final int health, final GameController gameController) {
+        this.x = x;
+        this.y = y;
+        this.velocity = velocity;
+        this.color = color;
+        this.gameController = gameController;
+        this.width = width;
+        this.height = height;
+        this.health = health;
+    }
+
+    // --Getters and Setters-- //
+
+    /**
+     * Gets the value of the {@link #x} field.
+     *
+     * @return the value of the {@link #x} field.
+     * @see #x
+     */
     public double getX() {
-        return x.get();
-    }
-
-    public double getY() {
-        return y.get();
-    }
-
-    public void setX(final double x) {
-        this.x.set(x);
-    }
-
-    public void setY(final double y) {
-        this.y.set(y);
-    }
-
-    public DoubleProperty xProperty() {
         return x;
     }
 
-    public DoubleProperty yProperty() {
+    /**
+     * Sets the value of the {@link #x} field to the given value.
+     *
+     * @param x the new value of the {@link #x} field.
+     * @see #x
+     */
+    public void setX(final double x) {
+        this.x = x;
+    }
+
+    /**
+     * Gets the value of the {@link #y} field.
+     *
+     * @return the value of the {@link #y} field.
+     * @see #y
+     */
+    public double getY() {
         return y;
     }
 
-    // getBounds
-    public Bounds getBounds() {
-        return new BoundingBox(getX(), getY(), getWidth(), getHeight());
+    /**
+     * Sets the value of the {@link #y} field to the given value.
+     *
+     * @param y the new value of the {@link #y} field.
+     * @see #y
+     */
+    public void setY(final double y) {
+        this.y = y;
     }
 
+    /**
+     * Gets the value of the {@link #width} field.
+     *
+     * @return the value of the {@link #width} field.
+     * @see #width
+     */
+    public double getWidth() {
+        return width;
+    }
+
+    /**
+     * Gets the value of the {@link #height} field.
+     *
+     * @return the value of the {@link #height} field.
+     * @see #height
+     */
+    public double getHeight() {
+        return height;
+    }
+
+    /**
+     * Gets the value of the {@link #velocity} field.
+     *
+     * @return the value of the {@link #velocity} field.
+     * @see #velocity
+     */
+    public double getVelocity() {
+        return velocity;
+    }
+
+    /**
+     * Gets the value of the {@link #health} field.
+     *
+     * @return the value of the {@link #health} field.
+     * @see #health
+     */
+    public int getHealth() {
+        return health;
+    }
+
+    /**
+     * Sets the value of the {@link #health} field to the given value.
+     *
+     * @param health the new value of the {@link #health} field.
+     * @see #health
+     */
+    public void setHealth(final int health) {
+        this.health = health;
+    }
+
+    /**
+     * Gets the value of the {@link #direction} field.
+     *
+     * @return the value of the {@link #direction} field.
+     * @see #direction
+     */
+    public @NotNull Direction getDirection() {
+        return direction;
+    }
+
+    /**
+     * Sets the value of the {@link #direction} field to the given value.
+     *
+     * @param direction the new value of the {@link #direction} field.
+     * @see #direction
+     */
+    public void setDirection(@NotNull final Direction direction) {
+        this.direction = direction;
+    }
+
+    /**
+     * Returns whether the sprite is no longer alive.
+     *
+     * @return whether the sprite is no longer alive.
+     */
+    public boolean isDead() {
+        return dead;
+    }
+
+    /**
+     * Checks whether the sprite is alive.
+     *
+     * @return whether the sprite is alive.
+     * @see #isDead()
+     */
+    public boolean isAlive() {
+        return !isDead();
+    }
+
+    /**
+     * Gets the value of the {@link #color} field.
+     *
+     * @return the value of the {@link #color} field.
+     * @see #color
+     */
+    public Color getColor() {
+        return color;
+    }
+
+    /**
+     * Gets the value of the {@link #texture} field.
+     *
+     * @return the value of the {@link #texture} field.
+     * @see #texture
+     */
     public Image getTexture() {
         return texture;
     }
 
-    public double getVelocityY() {
-        return velocityY.get();
-    }
-
+    /**
+     * Sets the value of the {@link #texture} field to the given value.
+     *
+     * @param texture the new value of the {@link #texture} field.
+     * @see #texture
+     */
     public void setTexture(final Image texture) {
         this.texture = texture;
     }
 
+    /**
+     * Loads the texture of the sprite from the given path and sets it to the {@link #texture} field.
+     *
+     * @param path the path to the texture.
+     */
     protected void loadTexture(final String path) {
         if (!ApplicationSettings.loadTexturesProperty().get()) {
             return;
@@ -289,11 +279,145 @@ public abstract class Sprite implements Playable {
         }
     }
 
-    public void setHealth(final int health) {
-        this.health = health;
+    /**
+     * Gets the value of the {@link #gameController} field.
+     *
+     * @return the value of the {@link #gameController} field.
+     * @see #gameController
+     */
+    public GameController getGameController() {
+        return gameController;
     }
 
-    public Color getColor() {
-        return color;
+    //--Utility Methods--//
+
+    /**
+     * Gets the {@link Bounds} of the sprite.
+     *
+     * @return the {@link Bounds} of the sprite.
+     */
+    public Bounds getBounds() {
+        return new BoundingBox(getX(), getY(), getWidth(), getHeight());
+    }
+
+    /**
+     * Returns the closest coordinate to the given coordinate that is inside the game bounds.
+     *
+     * @param x the x-coordinate to be clamped.
+     * @param y the y-coordinate to be clamped.
+     * @return the clamped coordinate.
+     * @see <a href="https://en.wikipedia.org/wiki/Clamping_(graphics)">Clamping_(graphics)</a>
+     */
+    protected Point2D clamp(final double x, final double y) {
+        return new Point2D(
+            Math.max(0, Math.min(ORIGINAL_GAME_BOUNDS.getWidth() - getWidth(), x)),
+            Math.max(0, Math.min(ORIGINAL_GAME_BOUNDS.getHeight() - getHeight(), y))
+        );
+    }
+
+    // --movement-- //
+
+    /**
+     * Sets the {@linkplain #direction movement direction} of the sprite to {@link Direction#UP}.
+     */
+    public void moveUp() {
+        setDirection(Direction.UP);
+    }
+
+    /**
+     * Sets the {@linkplain #direction movement direction} of the sprite to {@link Direction#DOWN}.
+     */
+    public void moveDown() {
+        setDirection(Direction.DOWN);
+    }
+
+    /**
+     * Sets the {@linkplain #direction movement direction} of the sprite to {@link Direction#LEFT}.
+     */
+    public void moveLeft() {
+        setDirection(Direction.LEFT);
+    }
+
+    /**
+     * Sets the {@linkplain #direction movement direction} of the sprite to {@link Direction#RIGHT}.
+     */
+    public void moveRight() {
+        setDirection(Direction.RIGHT);
+    }
+
+    /**
+     * Sets the {@linkplain #direction movement direction} of the sprite to {@link Direction#NONE}.
+     */
+    public void stop() {
+        setDirection(Direction.NONE);
+    }
+
+    // --health-- //
+
+    /**
+     * Damages the sprite by the given amount.
+     * <br>
+     * If the sprite's health is less than or equal to 0, the method {@link #die()} is called.
+     *
+     * @param amount the amount to damage the sprite by.
+     */
+    public void damage(final int amount) {
+        health -= amount;
+        if (health <= 0) {
+            die();
+        }
+    }
+
+    /**
+     * Damages the sprite by 1.
+     *
+     * @see #damage(int)
+     */
+    public void damage() {
+        damage(1);
+    }
+
+    /**
+     * Kills the sprite.
+     */
+    public void die() {
+        health = 0;
+        dead = true;
+        getGameController().removeSprite(this);
+    }
+    // --update-- //
+
+    @Override
+    public void update(final double elapsedTime) {
+        // Smooth movement
+        final double deltaX = getDirection().getX() * velocity * elapsedTime;
+        final double deltaY = getDirection().getY() * velocity * elapsedTime;
+        final double oldX = getX();
+        final double oldY = getY();
+        final double newX = oldX + deltaX;
+        final double newY = oldY + deltaY;
+        nextFrame(
+            new GameFrameParameters(
+                elapsedTime,
+                deltaX,
+                deltaY,
+                oldX,
+                oldY,
+                newX,
+                newY
+            )
+        );
+    }
+
+    /**
+     * Processes the next Game Frame.
+     *
+     * @param frame the {@link GameFrameParameters} of the next frame.
+     */
+    protected void nextFrame(final GameFrameParameters frame) {
+        // move the sprite to the new position
+        final var newPos = clamp(frame.newX(), frame.newY());
+        setX(newPos.getX());
+        setY(newPos.getY());
     }
 }

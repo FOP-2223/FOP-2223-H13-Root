@@ -2,16 +2,23 @@ package h13.controller.scene.menu;
 
 import h13.controller.scene.SceneController;
 import javafx.event.ActionEvent;
-import javafx.scene.Node;
-import javafx.stage.Stage;
 
+/**
+ * A {@link SceneController} that manages the "Main Menu" scene.
+ */
 public class MainMenuController extends SceneController {
-    public void quit(final ActionEvent e) {
-        ((Stage) ((Node) e.getSource()).getScene().getWindow()).close();
-    }
 
     @Override
-    public void initStage(final Stage stage) {
-        stage.setTitle("Space Invaders - Main Menu");
+    public String getTitle() {
+        return "Space Invaders - Main Menu";
+    }
+
+    /**
+     * Called when the user clicks the "Quit" button.
+     *
+     * @param e The {@link ActionEvent} that triggered this method.
+     */
+    public void quit(final ActionEvent e) {
+        getStage().close();
     }
 }
