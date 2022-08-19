@@ -7,7 +7,6 @@ import h13.controller.gamelogic.PlayerController;
 import h13.controller.scene.SceneController;
 import h13.controller.scene.SceneSwitcher;
 import h13.model.HighscoreEntry;
-import h13.model.gameplay.Direction;
 import h13.model.gameplay.Updatable;
 import h13.model.gameplay.GameState;
 import h13.model.gameplay.sprites.Sprite;
@@ -326,14 +325,17 @@ public class GameController extends SceneController implements Updatable {
     private void init() {
         // Keyboard input handler
         setGameInputHandler(new GameInputHandler(getGameScene()));
+
         // Player
         setPlayerController(new PlayerController(this));
 
         // Enemies
-        setEnemyController(new EnemyController(this, Direction.RIGHT));
+        setEnemyController(new EnemyController(this));
 
+        // register keybindings for the game scene
         handleKeyboardInputs();
 
+        // start the game loop
         gameLoop.start();
     }
 
@@ -361,26 +363,10 @@ public class GameController extends SceneController implements Updatable {
     }
 
     /**
-     * Handles what happens when all the {@linkplain h13.model.gameplay.sprites.Enemy enemies} are defeated.
+     * Prepares the next level.
      */
-    private void win() {
-        Platform.runLater(() -> {
-            gameLoop.stop();
-//            final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You Won!!!\nContinue?", ButtonType.YES, ButtonType.NO);
-//            alert.showAndWait();
-//
-//            if (alert.getResult() == ButtonType.YES) {
-            final var score = getPlayer().getScore();
-            final var health = getPlayer().getHealth();
-            final var playerXCoordinate = getPlayer().getX();
-            reset();
-            getPlayer().setScore(score);
-            getPlayer().setHealth(health);
-            getPlayer().setX(playerXCoordinate);
-            gameLoop.start();
-            //do stuff
-//            }
-        });
+    public void nextLevel() {
+        enemyController.nextLevel();
     }
 
     /**
@@ -458,6 +444,7 @@ public class GameController extends SceneController implements Updatable {
 
     @Override
     public void update(final double elapsedTime) {
+        // update the game state
         Platform.runLater(() -> {
             if (enemyController != null && enemyController.getEnemyMovement() != null)
                 enemyController.getEnemyMovement().update(elapsedTime);
@@ -467,8 +454,10 @@ public class GameController extends SceneController implements Updatable {
             .filter(Objects::nonNull)
             .forEach(s -> Platform.runLater(() -> s.update(elapsedTime)));
         getGameBoard().update(elapsedTime);
+
+        // check if the player is defeated
         if (getEnemyController() != null && getEnemyController().defeated()) {
-            win();
+            nextLevel();
         }
         if (getPlayer().isDead() || (getEnemyController() != null && getEnemyController().getEnemyMovement().bottomWasReached())) {
             lose();

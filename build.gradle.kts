@@ -40,7 +40,7 @@ dependencies {
     "graderCompileOnly"("org.sourcegrade:jagr-launcher:0.5.0") {
         exclude("org.jetbrains", "annotations")
     }
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
     implementation("com.google.code.gson:gson:2.9.0")
     implementation("org.tudalgo:algoutils-student:0.1.0-SNAPSHOT")
     "graderImplementation"("org.tudalgo:algoutils-tutor:0.1.0-SNAPSHOT")

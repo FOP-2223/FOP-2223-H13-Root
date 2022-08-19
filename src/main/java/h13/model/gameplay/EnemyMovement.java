@@ -27,7 +27,7 @@ public class EnemyMovement implements Updatable {
     /**
      * The current movement speed
      */
-    private double velocity = 10;
+    private double velocity;
     /**
      * The Next y-coordinate to reach
      */
@@ -47,11 +47,10 @@ public class EnemyMovement implements Updatable {
      * Creates a new EnemyMovement.
      *
      * @param enemyController The enemy controller.
-     * @param direction       The current movement direction.
      */
-    public EnemyMovement(final EnemyController enemyController, final Direction direction) {
+    public EnemyMovement(final EnemyController enemyController) {
         this.enemyController = enemyController;
-        this.direction = direction;
+        nextRound();
     }
 
     // --Getters and Setters-- //
@@ -260,5 +259,16 @@ public class EnemyMovement implements Updatable {
             yTarget = enemyBounds.getMaxY() + VERTICAL_ENEMY_MOVE_DISTANCE;
         }
         velocity += .3;
+    }
+
+    /**
+     * Prepares the next round of enemies.
+     * Uses {@link h13.controller.GameConstants#INITIAL_ENEMY_MOVEMENT_DIRECTION} and {@link h13.controller.GameConstants#INITIAL_ENEMY_MOVEMENT_VELOCITY} to set the initial values.
+     */
+    public void nextRound() {
+        direction = INITIAL_ENEMY_MOVEMENT_DIRECTION;
+        velocity = INITIAL_ENEMY_MOVEMENT_VELOCITY;
+        previousDirection = null;
+        yTarget = 0;
     }
 }

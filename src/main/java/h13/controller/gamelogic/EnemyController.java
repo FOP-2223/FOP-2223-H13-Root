@@ -1,9 +1,9 @@
 package h13.controller.gamelogic;
 
 import h13.controller.scene.game.GameController;
-import h13.model.gameplay.Direction;
 import h13.model.gameplay.EnemyMovement;
 import h13.controller.GameConstants;
+import h13.model.gameplay.sprites.Bullet;
 import h13.model.gameplay.sprites.Enemy;
 
 import java.util.HashSet;
@@ -37,15 +37,13 @@ public class EnemyController {
      * Creates a new EnemyController.
      *
      * @param gameController           The game controller.
-     * @param initialMovementDirection The initial movement direction.
      */
     public EnemyController(
-        final GameController gameController,
-        final Direction initialMovementDirection) {
+        final GameController gameController) {
         enemies = new HashSet<>();
         this.gameController = gameController;
-        enemyMovement = new EnemyMovement(this, initialMovementDirection);
-        init();
+        enemyMovement = new EnemyMovement(this);
+        nextLevel();
     }
 
     // --Getters and Setters-- //
@@ -105,10 +103,16 @@ public class EnemyController {
     // --Other Methods-- //
 
     /**
-     * Initializes the enemies.
+     * Initialises the enemies for the next level, clearing the current enemies and adding new ones.
+     * Also resets the {@link #enemyMovement} using {@link EnemyMovement#nextRound()}.
      */
-    private void init() {
-        // enemies
+    public void nextLevel() {
+        // cleanup previous level
+        getEnemies().clear();
+        getGameController().clearSprites(Enemy.class);
+        getGameController().clearSprites(s -> s instanceof Bullet && ((Bullet) s).getOwner() instanceof Enemy);
+
+        // add new enemies
         final var horizontalSpace = ORIGINAL_GAME_BOUNDS.getWidth();
         final var padding = CHUNK_SIZE / 2 - GameConstants.RELATIVE_SHIP_WIDTH * horizontalSpace / 2;
         for (int i = 0; i < ENEMY_COLS; i++) {
@@ -128,6 +132,7 @@ public class EnemyController {
                 enemies.add(enemy);
             }
         }
-
+        // reset enemy movement
+        enemyMovement.nextRound();
     }
 }

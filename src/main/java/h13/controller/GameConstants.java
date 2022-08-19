@@ -1,6 +1,7 @@
 package h13.controller;
 
 
+import h13.model.gameplay.Direction;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 
@@ -28,6 +29,16 @@ public final class GameConstants {
      * The Amount of enemy columns.
      */
     public static final int ENEMY_COLS = 11;
+
+    /**
+     * The initial movement direction of the enemies.
+     */
+    public static final Direction INITIAL_ENEMY_MOVEMENT_DIRECTION = Direction.RIGHT;
+
+    /**
+     * The initial movement speed of the enemies.
+     */
+    public static final double INITIAL_ENEMY_MOVEMENT_VELOCITY = 10;
     public static final double ENEMY_Y_OFFSET = ORIGINAL_GAME_BOUNDS.getHeight() / 20;
     /**
      * The relative Amount of padding between the enemies.
