@@ -1,10 +1,8 @@
-import org.sourcegrade.submitter.submit
-
 plugins {
     java
     application
-    id("org.sourcegrade.style") version "1.3.0"
-    id("org.sourcegrade.submitter") version "0.4.0"
+    id("org.sourcegrade.style") version "2.1.0"
+    id("org.sourcegrade.submitter") version "0.5.2"
     id("org.openjfx.javafxplugin") version "0.0.13"
 }
 

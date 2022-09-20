@@ -14,7 +14,7 @@ import static h13.controller.GameConstants.*;
 /**
  * A PlayerController is responsible for instantiating and updating the players.
  */
-public class PlayerController implements Updatable {
+public class PlayerController {
     // --Variables-- //
 
     /**
@@ -105,10 +105,5 @@ public class PlayerController implements Updatable {
         final var gameInputHandler = getGameController().getGameInputHandler();
         gameInputHandler.addOnKeyPressed(this::playerKeyAction);
         gameInputHandler.addOnKeyReleased(this::playerKeyAction);
-    }
-
-    @Override
-    public void update(final double elapsedTime) {
-
     }
 }
