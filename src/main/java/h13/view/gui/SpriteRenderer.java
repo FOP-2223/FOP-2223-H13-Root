@@ -2,6 +2,7 @@ package h13.view.gui;
 
 import h13.model.gameplay.sprites.Sprite;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Paint;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -22,18 +23,24 @@ public final class SpriteRenderer {
     /**
      * Renders a given {@link Sprite} on a {@link GraphicsContext}.
      *
-     * @param gc    The {@link GraphicsContext} to render the {@link Sprite} on.
-     * @param s     The {@link Sprite} to render.
-     * @param scale The scale factor to use when rendering the {@link Sprite}.
+     * @param gc The {@link GraphicsContext} to render the {@link Sprite} on.
+     * @param s  The {@link Sprite} to render.
      * @see Sprite
      * @see GraphicsContext
      */
-    public static void renderSprite(@NotNull final GraphicsContext gc, @NotNull final Sprite s, final double scale) {
+    public static void renderSprite(@NotNull final GraphicsContext gc, @NotNull final Sprite s) {
         if (s.getTexture() != null) {
-            gc.drawImage(s.getTexture(), s.getX() * scale, s.getY() * scale, s.getWidth() * scale, s.getHeight() * scale);
+            gc.drawImage(s.getTexture(), s.getX(), s.getY(), s.getWidth(), s.getHeight());
         } else {
+            // save original color
+            final Paint originalColor = gc.getFill();
+
+            // set color and draw rectangle
             gc.setFill(s.getColor());
-            gc.fillRect(s.getX() * scale, s.getY() * scale, s.getWidth() * scale, s.getHeight() * scale);
+            gc.fillRect(s.getX(), s.getY(), s.getWidth(), s.getHeight());
+
+            // restore original color
+            gc.setFill(originalColor);
         }
     }
 }

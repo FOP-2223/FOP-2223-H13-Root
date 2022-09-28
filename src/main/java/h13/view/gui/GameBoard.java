@@ -7,11 +7,18 @@ import h13.model.gameplay.Updatable;
 import h13.model.gameplay.sprites.Bullet;
 import h13.model.gameplay.sprites.Enemy;
 import h13.model.gameplay.sprites.Player;
+import h13.model.gameplay.sprites.Sprite;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.Scale;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 import static h13.controller.GameConstants.*;
 
@@ -36,6 +43,7 @@ public class GameBoard extends Canvas implements Updatable {
      * @see Image
      */
     private Image backgroundImage;
+    private final Font gameFont = Font.loadFont(GameConstants.class.getResourceAsStream(GameConstants.STATS_FONT_PATH), 8);
 
     // --Constructors-- //
 
@@ -66,10 +74,9 @@ public class GameBoard extends Canvas implements Updatable {
      *
      * @return The calculated Scale factor.
      */
-    public double getScale() {
+    private double getScale() {
         return getWidth() / ORIGINAL_GAME_BOUNDS.getWidth();
     }
-
 
     /**
      * Gets the {@link GameController} that controls this {@link GameBoard}.
@@ -85,52 +92,111 @@ public class GameBoard extends Canvas implements Updatable {
 
     @Override
     public void update(final double elapsedTime) {
+        final double scale = getScale();
         final var gc = getGraphicsContext2D();
-        final double scale = getWidth() / ORIGINAL_GAME_BOUNDS.getWidth();
+        gc.setTransform(new Affine(new Scale(scale, scale)));
 
+        drawBackground(gc);
+        drawSprites(gc);
+        drawHUD(gc);
+        drawBorder(gc);
+    }
+
+    /**
+     * Draws the background of this {@link GameBoard} to the given {@link GraphicsContext} based on the {@link GameConstants#ORIGINAL_GAME_BOUNDS}.
+     * <br>
+     * If the background is not set, the background is cleared with the {@link GraphicsContext#clearRect(double, double, double, double)} method.
+     *
+     * @param gc The {@link GraphicsContext} to draw the background to.
+     */
+    private void drawBackground(final GraphicsContext gc) {
         // Background
         if (backgroundImage != null) {
-            gc.drawImage(backgroundImage, 0, 0, getWidth(), getHeight());
+            gc.drawImage(backgroundImage, 0, 0, ORIGINAL_GAME_BOUNDS.getWidth(), ORIGINAL_GAME_BOUNDS.getHeight());
         } else {
-            gc.clearRect(0, 0, getWidth(), getHeight());
+            gc.clearRect(0, 0, ORIGINAL_GAME_BOUNDS.getWidth(), ORIGINAL_GAME_BOUNDS.getHeight());
         }
+    }
 
-        // Draw bullets first (behind the player)
-        getGameController().getSprites(Bullet.class).forEach(bullet -> SpriteRenderer.renderSprite(gc, bullet, scale));
+    /**
+     * Draws the sprites of this {@link GameBoard} to the given {@link GraphicsContext} using the {@link SpriteRenderer} class.
+     * <br>
+     * The sprites are drawn in the following order (from bottom to top):
+     * <ol>
+     *     <li>Bullets</li>
+     *     <li>Enemies</li>
+     *     <li>Player</li>
+     *     <li>Others (currently none)</li>
+     * </ol>
+     *
+     * @param gc The {@link GraphicsContext} to draw the sprites to.
+     */
+    private void drawSprites(final GraphicsContext gc) {
+        // define the order in which the sprites are drawn
+        final List<Class<? extends Sprite>> spriteOrder = List.of(Bullet.class, Enemy.class, Player.class);
+        final var sprites = getGameController().getSprites();
 
-        // Draw the enemies
-        getGameController().getSprites(Enemy.class).forEach(enemy -> SpriteRenderer.renderSprite(gc, enemy, scale));
+        // draw privileged sprites
+        spriteOrder.stream()
+            .flatMap(clazz -> sprites.stream().filter(clazz::isInstance))
+            .forEach(sprite -> SpriteRenderer.renderSprite(gc, sprite));
 
-        // Draw the player last (on top of the enemies)
-        SpriteRenderer.renderSprite(gc, getGameController().getPlayer(), scale);
+        // draw other sprites
+        sprites.stream()
+            .filter(sprite -> !spriteOrder.contains(sprite.getClass()))
+            .forEach(sprite -> SpriteRenderer.renderSprite(gc, sprite));
+    }
 
-        // Draw other sprites
-        getGameController().getSprites(s -> !(s instanceof Player) && !(s instanceof Bullet) && !(s instanceof Enemy)).forEach(sprite -> SpriteRenderer.renderSprite(gc, sprite, scale));
+    /**
+     * Draws the Heads-Up-Display (HUD) of this {@link GameBoard} to the given {@link GraphicsContext}.
+     * <br>
+     * The HUD contains the following information:
+     * <ul>
+     *     <li>Player Score (top left)</li>
+     *     <li>Remaining Lives (top right)</li>
+     * </ul>
+     * <br>
+     *
+     * @param gc The {@link GraphicsContext} to draw the HUD to.
+     */
+    private void drawHUD(final GraphicsContext gc) {
+        // save original font and color
+        final Font originalFont = gc.getFont();
+        final Color originalColor = (Color) gc.getFill();
 
-        final Font font = Font.loadFont(GameConstants.class.getResourceAsStream(GameConstants.STATS_FONT_PATH), getWidth() / 30);
-        gc.setFont(font);
-        getGameController().getSprites(Player.class).forEach(player -> {
-            // Draw the score
-            final String score = "Score: " + player.getScore();
-            final Text scoreLabel = new Text(score);
-            scoreLabel.setFont(font);
-            scoreLabel.setFont(font);
-            gc.setFill(Color.WHITE);
-            gc.fillText(score, 0.03 * getWidth(), 0.01 * getWidth() + scoreLabel.getLayoutBounds().getHeight());
+        gc.setFont(gameFont);
+        gc.setFill(Color.WHITE);
+        final var player = getGameController().getPlayer();
 
-            // Draw the lives
-            final String lives = "Lives: " + player.getHealth();
-            final Text livesLabel = new Text(lives);
-            livesLabel.setFont(font);
-            livesLabel.setFont(font);
-            gc.setFill(Color.WHITE);
-            gc.fillText(lives, 0.97 * getWidth() - livesLabel.getLayoutBounds().getWidth(), 0.01 * getWidth() + livesLabel.getLayoutBounds().getHeight());
-        });
+        // Draw the score
+        final String score = "Score: " + player.getScore();
+        final Text scoreLabel = new Text(score);
+        scoreLabel.setFont(gameFont);
+        gc.fillText(
+            score,
+            0.03 * ORIGINAL_GAME_BOUNDS.getWidth(),
+            0.01 * ORIGINAL_GAME_BOUNDS.getWidth() + scoreLabel.getLayoutBounds().getHeight()
+        );
 
+        // Draw the lives
+        final String lives = "Lives: " + player.getHealth();
+        final Text livesLabel = new Text(lives);
+        livesLabel.setFont(gameFont);
+        gc.fillText(
+            lives,
+            0.97 * ORIGINAL_GAME_BOUNDS.getWidth() - livesLabel.getLayoutBounds().getWidth(),
+            0.01 * ORIGINAL_GAME_BOUNDS.getWidth() + livesLabel.getLayoutBounds().getHeight()
+        );
+
+        // restore original font and color
+        gc.setFont(originalFont);
+        gc.setFill(originalColor);
+    }
+
+    private static void drawBorder(final GraphicsContext gc) {
         // Draw borders
         gc.setStroke(Color.PALEGREEN);
         gc.setLineWidth(4);
-        gc.strokeRect(0, 0, getWidth(), getHeight());
+        gc.strokeRect(0, 0, ORIGINAL_GAME_BOUNDS.getWidth(), ORIGINAL_GAME_BOUNDS.getHeight());
     }
-
 }

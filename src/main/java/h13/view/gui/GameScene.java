@@ -82,8 +82,7 @@ public class GameScene extends Scene implements ControlledScene {
      * Initializes the GameBoard, binding its size to the size of the Scene.
      */
     private void initGameboard() {
-        final var scaleFactor = 3;
-        gameBoard = new GameBoard(scaleFactor * ORIGINAL_GAME_BOUNDS.getWidth(), scaleFactor * ORIGINAL_GAME_BOUNDS.getHeight(), this);
+        gameBoard = new GameBoard(ORIGINAL_GAME_BOUNDS.getWidth(), ORIGINAL_GAME_BOUNDS.getHeight(), this);
 
         // Size
         gameBoard.widthProperty().bind(
