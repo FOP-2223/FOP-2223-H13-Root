@@ -39,7 +39,6 @@ public final class GameConstants {
      * The initial movement speed of the enemies.
      */
     public static final double INITIAL_ENEMY_MOVEMENT_VELOCITY = 10;
-    public static final double ENEMY_Y_OFFSET = ORIGINAL_GAME_BOUNDS.getHeight() / 20;
     /**
      * The relative Amount of padding between the enemies.
      */
@@ -83,16 +82,39 @@ public final class GameConstants {
      */
     public static final double VERTICAL_ENEMY_MOVEMENT_DURATION = .5;
     /**
-     * The Player's velocity.
+     * The Player's velocity (in pixels per second).
      */
     public static final double PLAYER_VELOCITY = 0.9 * ORIGINAL_GAME_BOUNDS.getWidth();
     /**
-     * The bullet velocity.
+     * The bullet velocity (in pixels per second).
      */
     public static final double BULLET_VELOCITY = 0.75 * ORIGINAL_GAME_BOUNDS.getWidth();
     /**
-     * The font path.
+     * The HUD font path.
      */
-    public static final String STATS_FONT_PATH = "/h13/fonts/PressStart2P-Regular.ttf";
-//    public static final Font FONT = Font.loadFont(GameConstants.class.getResourceAsStream("/h13/fonts/PressStart2P-Regular.ttf"), 20);
+    public static final String HUD_FONT_PATH = "/h13/fonts/PressStart2P-Regular.ttf";
+    /**
+     * The HUD font size.
+     */
+    public static final double HUD_FONT_SIZE = 0.045 * ORIGINAL_GAME_BOUNDS.getHeight();
+    /**
+     * HUD Padding.
+     */
+    public static final double HUD_PADDING = 0.02 * ORIGINAL_GAME_BOUNDS.getHeight();
+    /**
+     * HUD height.
+     */
+    public static final double HUD_HEIGHT = HUD_FONT_SIZE + 2 * HUD_PADDING;
+    /**
+     * The HUD font.
+     */
+    public static final javafx.scene.text.Font HUD_FONT = javafx.scene.text.Font.loadFont(GameConstants.class.getResourceAsStream(GameConstants.HUD_FONT_PATH), HUD_FONT_SIZE);
+    /**
+     * Border width.
+     */
+    public static final double BORDER_WIDTH = 2;
+    /**
+     * Border Color.
+     */
+    public static final javafx.scene.paint.Color BORDER_COLOR = javafx.scene.paint.Color.PALEGREEN;
 }

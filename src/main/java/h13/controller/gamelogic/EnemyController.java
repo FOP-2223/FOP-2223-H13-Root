@@ -126,7 +126,7 @@ public class EnemyController {
                 );
 
                 enemy.setX(CHUNK_SIZE * i + padding);
-                enemy.setY(CHUNK_SIZE * j + padding + ENEMY_Y_OFFSET);
+                enemy.setY(CHUNK_SIZE * j + padding + HUD_HEIGHT);
 
                 getGameController().addSprite(enemy);
                 enemies.add(enemy);

@@ -18,7 +18,6 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.Scale;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import static h13.controller.GameConstants.*;
 
@@ -43,7 +42,6 @@ public class GameBoard extends Canvas implements Updatable {
      * @see Image
      */
     private Image backgroundImage;
-    private final Font gameFont = Font.loadFont(GameConstants.class.getResourceAsStream(GameConstants.STATS_FONT_PATH), 8);
 
     // --Constructors-- //
 
@@ -164,28 +162,28 @@ public class GameBoard extends Canvas implements Updatable {
         final Font originalFont = gc.getFont();
         final Color originalColor = (Color) gc.getFill();
 
-        gc.setFont(gameFont);
+        gc.setFont(HUD_FONT);
         gc.setFill(Color.WHITE);
         final var player = getGameController().getPlayer();
 
         // Draw the score
         final String score = "Score: " + player.getScore();
         final Text scoreLabel = new Text(score);
-        scoreLabel.setFont(gameFont);
+        scoreLabel.setFont(HUD_FONT);
         gc.fillText(
             score,
-            0.03 * ORIGINAL_GAME_BOUNDS.getWidth(),
-            0.01 * ORIGINAL_GAME_BOUNDS.getWidth() + scoreLabel.getLayoutBounds().getHeight()
+            HUD_PADDING,
+            HUD_PADDING + scoreLabel.getLayoutBounds().getHeight()
         );
 
         // Draw the lives
         final String lives = "Lives: " + player.getHealth();
         final Text livesLabel = new Text(lives);
-        livesLabel.setFont(gameFont);
+        livesLabel.setFont(HUD_FONT);
         gc.fillText(
             lives,
-            0.97 * ORIGINAL_GAME_BOUNDS.getWidth() - livesLabel.getLayoutBounds().getWidth(),
-            0.01 * ORIGINAL_GAME_BOUNDS.getWidth() + livesLabel.getLayoutBounds().getHeight()
+            ORIGINAL_GAME_BOUNDS.getWidth() - HUD_PADDING - livesLabel.getLayoutBounds().getWidth(),
+            HUD_PADDING + livesLabel.getLayoutBounds().getHeight()
         );
 
         // restore original font and color
@@ -195,8 +193,8 @@ public class GameBoard extends Canvas implements Updatable {
 
     private static void drawBorder(final GraphicsContext gc) {
         // Draw borders
-        gc.setStroke(Color.PALEGREEN);
-        gc.setLineWidth(4);
+        gc.setStroke(BORDER_COLOR);
+        gc.setLineWidth(BORDER_WIDTH);
         gc.strokeRect(0, 0, ORIGINAL_GAME_BOUNDS.getWidth(), ORIGINAL_GAME_BOUNDS.getHeight());
     }
 }
