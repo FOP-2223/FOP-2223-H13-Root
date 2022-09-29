@@ -16,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Scale;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class GameBoard extends Canvas implements Updatable {
      *
      * @see Image
      */
-    private Image backgroundImage;
+    private @Nullable Image backgroundImage;
 
     // --Constructors-- //
 
@@ -103,7 +104,7 @@ public class GameBoard extends Canvas implements Updatable {
     /**
      * Draws the background of this {@link GameBoard} to the given {@link GraphicsContext} based on the {@link GameConstants#ORIGINAL_GAME_BOUNDS}.
      * <br>
-     * If the background is not set, the background is cleared with the {@link GraphicsContext#clearRect(double, double, double, double)} method.
+     * If the {@link #backgroundImage} is not set, the background is cleared with the {@link GraphicsContext#clearRect(double, double, double, double)} method.
      *
      * @param gc The {@link GraphicsContext} to draw the background to.
      */
@@ -191,6 +192,15 @@ public class GameBoard extends Canvas implements Updatable {
         gc.setFill(originalColor);
     }
 
+    /**
+     * Draws the border of this {@link GameBoard} to the given {@link GraphicsContext}.
+     * <br>
+     * The border is drawn using the {@link GraphicsContext#strokeRect(double, double, double, double)} method.
+     * <br>
+     * The border has the color {@link GameConstants#BORDER_COLOR} and the width {@link GameConstants#BORDER_WIDTH}.
+     *
+     * @param gc The {@link GraphicsContext} to draw the border to.
+     */
     private static void drawBorder(final GraphicsContext gc) {
         // Draw borders
         gc.setStroke(BORDER_COLOR);
