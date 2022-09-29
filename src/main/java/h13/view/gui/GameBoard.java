@@ -202,9 +202,17 @@ public class GameBoard extends Canvas implements Updatable {
      * @param gc The {@link GraphicsContext} to draw the border to.
      */
     private static void drawBorder(final GraphicsContext gc) {
+        // save original settings
+        var oldStroke = gc.getStroke();
+        var oldLineWidth = gc.getLineWidth();
+
         // Draw borders
         gc.setStroke(BORDER_COLOR);
         gc.setLineWidth(BORDER_WIDTH);
         gc.strokeRect(0, 0, ORIGINAL_GAME_BOUNDS.getWidth(), ORIGINAL_GAME_BOUNDS.getHeight());
+
+        // restore original settings
+        gc.setStroke(oldStroke);
+        gc.setLineWidth(oldLineWidth);
     }
 }
