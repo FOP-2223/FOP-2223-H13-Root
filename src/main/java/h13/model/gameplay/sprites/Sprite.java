@@ -49,10 +49,6 @@ public abstract class Sprite implements Updatable {
      */
     private @NotNull Direction direction = Direction.NONE;
     /**
-     * whether the sprite is no longer alive.
-     */
-    private boolean dead = false;
-    /**
      * The color of the sprite. (fallback for when the sprite has no texture)
      */
     private final Color color;
@@ -64,17 +60,6 @@ public abstract class Sprite implements Updatable {
      * The GameController that controls the game.
      */
     private final GameController gameController;
-
-    protected record GameFrameParameters(
-        double elapsedTime,
-        double deltaX,
-        double deltaY,
-        double oldX,
-        double oldY,
-        double newX,
-        double newY
-    ) {
-    }
 
     // --Constructors-- //
 
@@ -219,7 +204,7 @@ public abstract class Sprite implements Updatable {
      * @return whether the sprite is no longer alive.
      */
     public boolean isDead() {
-        return dead;
+        return health <= 0;
     }
 
     /**
@@ -381,8 +366,6 @@ public abstract class Sprite implements Updatable {
      * Kills the sprite.
      */
     public void die() {
-        health = 0;
-        dead = true;
         getGameController().removeSprite(this);
     }
     // --update-- //
@@ -392,31 +375,22 @@ public abstract class Sprite implements Updatable {
         // Smooth movement
         final double deltaX = getDirection().getX() * velocity * elapsedTime;
         final double deltaY = getDirection().getY() * velocity * elapsedTime;
-        final double oldX = getX();
-        final double oldY = getY();
-        final double newX = oldX + deltaX;
-        final double newY = oldY + deltaY;
-        nextFrame(
-            new GameFrameParameters(
-                elapsedTime,
-                deltaX,
-                deltaY,
-                oldX,
-                oldY,
-                newX,
-                newY
-            )
-        );
+        var newPos = new Point2D(getX() + deltaX, getY() + deltaY);
+        setX(newPos.getX());
+        setY(newPos.getY());
+
+        // Check if the sprite is outside the game bounds
+        if (!ORIGINAL_GAME_BOUNDS.contains(getBounds())) {
+            onOutOfBounds();
+        }
     }
 
     /**
-     * Processes the next Game Frame.
-     *
-     * @param frame the {@link GameFrameParameters} of the next frame.
+     * Called when the sprite is outside the game bounds.
      */
-    protected void nextFrame(final GameFrameParameters frame) {
-        // move the sprite to the new position
-        final var newPos = clamp(frame.newX(), frame.newY());
+    protected void onOutOfBounds() {
+        // clamp position
+        final var newPos = clamp(getX(), getY());
         setX(newPos.getX());
         setY(newPos.getY());
     }

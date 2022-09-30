@@ -2,6 +2,7 @@ package h13.model.gameplay.sprites;
 
 import h13.controller.scene.game.GameController;
 import h13.model.gameplay.Direction;
+import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 
 import java.util.HashSet;
@@ -80,13 +81,14 @@ public class Bullet extends Sprite {
     }
 
     @Override
-    protected void nextFrame(final GameFrameParameters frame) {
-        super.nextFrame(frame);
-
+    protected void onOutOfBounds() {
         // If the bullet reaches the edge of the game Board, remove it.
-        if (!ORIGINAL_GAME_BOUNDS.contains(frame.newX(), frame.newY(), getWidth(), getHeight())) {
-            die();
-        }
+        die();
+    }
+
+    @Override
+    public void update(final double elapsedTime) {
+        super.update(elapsedTime);
 
         // Hit Detection
         final var damaged = getGameController().getSprites().stream()

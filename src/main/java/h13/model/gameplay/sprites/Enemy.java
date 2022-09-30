@@ -2,6 +2,7 @@ package h13.model.gameplay.sprites;
 
 import h13.controller.scene.game.GameController;
 import h13.model.gameplay.Direction;
+import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 
 import static h13.controller.GameConstants.*;
@@ -100,11 +101,11 @@ public class Enemy extends BattleShip {
 
     // --update-- //
     @Override
-    protected void nextFrame(final GameFrameParameters frame) {
-        super.nextFrame(frame);
+    public void update(final double elapsedTime) {
+        super.update(elapsedTime);
 
         // Shoot with a certain probability
-        timeTillNextShot -= frame.elapsedTime();
+        timeTillNextShot -= elapsedTime;
         if (timeTillNextShot <= 0) {
             // Shoot at random intervals
             if (Math.random() < ENEMY_SHOOTING_PROBABILITY) {
