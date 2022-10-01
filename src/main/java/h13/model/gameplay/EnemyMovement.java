@@ -1,11 +1,16 @@
 package h13.model.gameplay;
 
 import h13.controller.ApplicationSettings;
+import h13.controller.GameConstants;
 import h13.controller.gamelogic.EnemyController;
 import h13.model.gameplay.sprites.Enemy;
+import h13.shared.Utils;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Comparator;
 
 import static h13.controller.GameConstants.*;
 
@@ -32,10 +37,7 @@ public class EnemyMovement implements Updatable {
      * The Next y-coordinate to reach
      */
     private double yTarget = 0;
-    /**
-     * Whether the bottom was reached
-     */
-    private boolean bottomWasReached = false;
+
     /**
      * The enemy controller
      */
@@ -101,7 +103,7 @@ public class EnemyMovement implements Updatable {
      * @return {@code true} if the bottom was reached, {@code false} otherwise.
      */
     public boolean bottomWasReached() {
-        return bottomWasReached;
+        return getEnemyBounds().getMaxY() >= ORIGINAL_GAME_BOUNDS.getHeight();
     }
 
     /**
@@ -120,51 +122,14 @@ public class EnemyMovement implements Updatable {
      *
      * @return The BoundingBox.
      */
-    private @Nullable Bounds getEnemyBounds() {
-        final var enemies = getEnemyController().getAliveEnemies();
-        if (enemies.isEmpty()) {
-            return null;
-        }
-        boolean first = true;
-        int lowestxIndex, highestxIndex, lowestyIndex, highestyIndex;
-        lowestxIndex = highestxIndex = lowestyIndex = highestyIndex = 0;
-        Enemy enemyWithLowestXIndex = null, enemyWithLowestYIndex = null, enemyWithHighestXIndex = null, enemyWithHighestYIndex = null;
-        for (final var e : enemies) {
-            if (!e.isAlive()) {
-                continue;
-            }
-            if (first) {
-                lowestxIndex = highestxIndex = e.getxIndex();
-                lowestyIndex = highestyIndex = e.getyIndex();
-                first = false;
-            }
-            lowestxIndex = Math.min(lowestxIndex, e.getxIndex());
-            highestxIndex = Math.max(highestxIndex, e.getxIndex());
-            lowestyIndex = Math.min(lowestyIndex, e.getyIndex());
-            highestyIndex = Math.max(highestyIndex, e.getyIndex());
-            if (e.getxIndex() == lowestxIndex) {
-                enemyWithLowestXIndex = e;
-            }
-            if (e.getyIndex() == lowestyIndex) {
-                enemyWithLowestYIndex = e;
-            }
-            if (e.getxIndex() == highestxIndex) {
-                enemyWithHighestXIndex = e;
-            }
-            if (e.getyIndex() == highestyIndex) {
-                enemyWithHighestYIndex = e;
-            }
-        }
-
-        if (enemyWithLowestXIndex == null || enemyWithLowestYIndex == null || enemyWithHighestXIndex == null || enemyWithHighestYIndex == null) {
-            return null;
-        }
-
+    public Bounds getEnemyBounds() {
         return new BoundingBox(
-            enemyWithLowestXIndex.getX(),
-            enemyWithLowestYIndex.getY(),
-            enemyWithHighestXIndex.getX() + enemyWithHighestXIndex.getWidth() - enemyWithLowestXIndex.getX(),
-            enemyWithHighestYIndex.getY() + enemyWithHighestYIndex.getHeight() - enemyWithLowestYIndex.getY()
+            enemyController.getAliveEnemies().stream().mapToDouble(Enemy::getX).min().orElse(0),
+            enemyController.getAliveEnemies().stream().mapToDouble(Enemy::getY).min().orElse(0),
+            enemyController.getAliveEnemies().stream().mapToDouble(e -> e.getX() + e.getWidth()).max().orElse(0)
+                - enemyController.getAliveEnemies().stream().mapToDouble(Enemy::getX).min().orElse(0),
+            enemyController.getAliveEnemies().stream().mapToDouble(e -> e.getY() + e.getHeight()).max().orElse(0)
+                - enemyController.getAliveEnemies().stream().mapToDouble(Enemy::getY).min().orElse(0)
         );
     }
 
@@ -185,45 +150,22 @@ public class EnemyMovement implements Updatable {
 
     @Override
     public void update(final double elapsedTime) {
-        if (bottomWasReached) {
+        if (bottomWasReached()) {
             return;
         }
 
         final var enemyBounds = getEnemyBounds();
 
-        if (enemyBounds == null) {
-            return;
-        }
-
-        final var deltaX = velocity * elapsedTime * direction.getX();
-        final var deltaY = velocity * elapsedTime * direction.getY();
-
-        final Bounds newBounds = new BoundingBox(
-            enemyBounds.getMinX() + deltaX,
-            enemyBounds.getMinY() + deltaY,
-            enemyBounds.getWidth(),
-            enemyBounds.getHeight());
+        final Bounds newBounds = Utils.getNextPosition(enemyBounds, getVelocity(), direction, elapsedTime);
 
         if (targetReached(newBounds)) {
-            var newDeltaX = deltaX;
-            var newDeltaY = deltaY;
-            if (newBounds.getMinX() < 0) {
-                newDeltaX -= newBounds.getMinX();
-            }
-            if (newBounds.getMinY() < 0) {
-                newDeltaY -= newBounds.getMinY();
-            }
-            if (newBounds.getMaxX() > ORIGINAL_GAME_BOUNDS.getWidth()) {
-                newDeltaX -= newBounds.getMaxX() - ORIGINAL_GAME_BOUNDS.getWidth();
-            }
-            if (newBounds.getMaxY() > ORIGINAL_GAME_BOUNDS.getHeight()) {
-                bottomWasReached = true;
-                return;
-            }
+            var clamped = Utils.clamp(newBounds);
+            var newDeltaX = clamped.getX() - enemyBounds.getMinX();
+            var newDeltaY = clamped.getY() - enemyBounds.getMinY();
             updatePositions(newDeltaX, newDeltaY);
             nextMovement(enemyBounds);
         } else {
-            updatePositions(deltaX, deltaY);
+            updatePositions(newBounds.getMinX()- enemyBounds.getMinX(), newBounds.getMinY() - enemyBounds.getMinY());
         }
     }
 

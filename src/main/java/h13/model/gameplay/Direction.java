@@ -200,4 +200,8 @@ public enum Direction {
         // add the x and y components of this direction and the other direction
         return fromVector(x + other.x, y + other.y);
     }
+
+    public Direction rotate90() {
+        return fromVector(y, -x);
+    }
 }

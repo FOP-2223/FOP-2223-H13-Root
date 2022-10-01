@@ -8,6 +8,7 @@ import h13.model.gameplay.sprites.Enemy;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static h13.controller.GameConstants.*;
 
@@ -17,11 +18,6 @@ import static h13.controller.GameConstants.*;
 public class EnemyController {
 
     // --Variables-- //
-
-    /**
-     * The enemies.
-     */
-    private final Set<Enemy> enemies;
     /**
      * The enemy movement controller.
      */
@@ -40,7 +36,6 @@ public class EnemyController {
      */
     public EnemyController(
         final GameController gameController) {
-        enemies = new HashSet<>();
         this.gameController = gameController;
         enemyMovement = new EnemyMovement(this);
         nextLevel();
@@ -49,13 +44,12 @@ public class EnemyController {
     // --Getters and Setters-- //
 
     /**
-     * Gets the value of {@link #enemies} field.
+     * Gets a {@link Set} of all {@linkplain Enemy enemies}.
      *
-     * @return The value of {@link #enemies} field.
-     * @see #enemies
+     * @return A {@link Set} of all {@linkplain Enemy enemies}.
      */
     public Set<Enemy> getEnemies() {
-        return enemies;
+        return getGameController().getGameState().getSprites().stream().filter(Enemy.class::isInstance).map(Enemy.class::cast).collect(Collectors.toSet());
     }
 
     /**
@@ -87,7 +81,7 @@ public class EnemyController {
      * @see Enemy#isAlive()
      */
     public Set<Enemy> getAliveEnemies() {
-        return enemies.stream().filter(Enemy::isAlive).collect(HashSet::new, HashSet::add, HashSet::addAll);
+        return getGameController().getGameState().getSprites().stream().filter(s -> s instanceof Enemy e && e.isAlive()).map(Enemy.class::cast).collect(Collectors.toSet());
     }
 
     /**
@@ -129,7 +123,6 @@ public class EnemyController {
                 enemy.setY(CHUNK_SIZE * j + padding + HUD_HEIGHT);
 
                 getGameController().getGameState().getSprites().add(enemy);
-                enemies.add(enemy);
             }
         }
         // reset enemy movement

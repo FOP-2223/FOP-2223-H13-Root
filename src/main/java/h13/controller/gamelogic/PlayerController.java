@@ -86,9 +86,9 @@ public class PlayerController {
         boolean shouldKeepShooting = false;
         for (final var keyCode : gameInputHandler.getKeysPressed()) {
             switch (keyCode) {
-                case W, UP -> directions.add(Direction.UP);
+                //case W, UP -> directions.add(Direction.UP);
                 case A, LEFT -> directions.add(Direction.LEFT);
-                case S, DOWN -> directions.add(Direction.DOWN);
+                //case S, DOWN -> directions.add(Direction.DOWN);
                 case D, RIGHT -> directions.add(Direction.RIGHT);
                 case SPACE -> shouldKeepShooting = true;
             }

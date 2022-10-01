@@ -4,6 +4,7 @@ import h13.controller.ApplicationSettings;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
 import h13.model.gameplay.Updatable;
+import h13.shared.Utils;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -285,21 +286,6 @@ public abstract class Sprite implements Updatable {
         return new BoundingBox(getX(), getY(), getWidth(), getHeight());
     }
 
-    /**
-     * Returns the closest coordinate to the given coordinate that is inside the game bounds.
-     *
-     * @param x the x-coordinate to be clamped.
-     * @param y the y-coordinate to be clamped.
-     * @return the clamped coordinate.
-     * @see <a href="https://en.wikipedia.org/wiki/Clamping_(graphics)">Clamping_(graphics)</a>
-     */
-    protected Point2D clamp(final double x, final double y) {
-        return new Point2D(
-            Math.max(0, Math.min(ORIGINAL_GAME_BOUNDS.getWidth() - getWidth(), x)),
-            Math.max(0, Math.min(ORIGINAL_GAME_BOUNDS.getHeight() - getHeight(), y))
-        );
-    }
-
     // --movement-- //
 
     /**
@@ -373,11 +359,9 @@ public abstract class Sprite implements Updatable {
     @Override
     public void update(final double elapsedTime) {
         // Smooth movement
-        final double deltaX = getDirection().getX() * velocity * elapsedTime;
-        final double deltaY = getDirection().getY() * velocity * elapsedTime;
-        var newPos = new Point2D(getX() + deltaX, getY() + deltaY);
-        setX(newPos.getX());
-        setY(newPos.getY());
+        var newPos = Utils.getNextPosition(getBounds(), getVelocity(), getDirection(), elapsedTime);
+        setX(newPos.getMinX());
+        setY(newPos.getMinY());
 
         // Check if the sprite is outside the game bounds
         if (!ORIGINAL_GAME_BOUNDS.contains(getBounds())) {
@@ -390,7 +374,7 @@ public abstract class Sprite implements Updatable {
      */
     protected void onOutOfBounds() {
         // clamp position
-        final var newPos = clamp(getX(), getY());
+        final var newPos = Utils.clamp(getBounds());
         setX(newPos.getX());
         setY(newPos.getY());
     }
