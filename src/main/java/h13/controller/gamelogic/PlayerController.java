@@ -2,7 +2,6 @@ package h13.controller.gamelogic;
 
 import h13.controller.scene.game.GameController;
 import h13.model.gameplay.Direction;
-import h13.model.gameplay.Updatable;
 import h13.model.gameplay.sprites.Player;
 import javafx.scene.input.KeyEvent;
 
@@ -42,8 +41,8 @@ public class PlayerController {
             0,
             ORIGINAL_GAME_BOUNDS.getHeight() - ORIGINAL_GAME_BOUNDS.getWidth() * RELATIVE_SHIP_WIDTH,
             PLAYER_VELOCITY,
-            getGameController());
-        getGameController().addSprite(player);
+            gameController.getGameState());
+        getGameController().getGameState().getSprites().add(player);
         handleKeyboardInputs();
     }
 

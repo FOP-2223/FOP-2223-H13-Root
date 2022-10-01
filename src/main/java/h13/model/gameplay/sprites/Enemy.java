@@ -1,11 +1,10 @@
 package h13.model.gameplay.sprites;
 
-import h13.controller.scene.game.GameController;
 import h13.model.gameplay.Direction;
-import javafx.geometry.Point2D;
+import h13.model.gameplay.GameState;
 import javafx.scene.paint.Color;
 
-import static h13.controller.GameConstants.*;
+import static h13.controller.GameConstants.ENEMY_SHOOTING_PROBABILITY;
 
 /**
  * An Enemy is a BattleShip that is moved by the EnemyController and shoots downwards.
@@ -35,15 +34,15 @@ public class Enemy extends BattleShip {
     /**
      * Creates a new enemy.
      *
-     * @param xIndex         The enemy's X-index of the enemy grid.
-     * @param yIndex         The enemy's Y-index of the enemy grid.
-     * @param velocity       The enemy's velocity.
-     * @param pointsWorth    The amount of points the enemy is worth when it is destroyed.
-     * @param gameController The game controller.
+     * @param xIndex      The enemy's X-index of the enemy grid.
+     * @param yIndex      The enemy's Y-index of the enemy grid.
+     * @param velocity    The enemy's velocity.
+     * @param pointsWorth The amount of points the enemy is worth when it is destroyed.
+     * @param gameState   The game state.
      */
     public Enemy(final int xIndex, final int yIndex, final double velocity, final int pointsWorth,
-                 final GameController gameController) {
-        super(0, 0, velocity, Color.YELLOW, 1, gameController);
+                 final GameState gameState) {
+        super(0, 0, velocity, Color.YELLOW, 1, gameState);
         this.xIndex = xIndex;
         this.yIndex = yIndex;
         this.pointsWorth = pointsWorth;
@@ -91,12 +90,6 @@ public class Enemy extends BattleShip {
      */
     public void shoot() {
         shoot(Direction.DOWN);
-    }
-
-    @Override
-    public void die() {
-        super.die();
-        getGameController().getPlayerController().getPlayer().addPoints(getPointsWorth());
     }
 
     // --update-- //

@@ -109,8 +109,8 @@ public class EnemyController {
     public void nextLevel() {
         // cleanup previous level
         getEnemies().clear();
-        getGameController().clearSprites(Enemy.class);
-        getGameController().clearSprites(s -> s instanceof Bullet && ((Bullet) s).getOwner() instanceof Enemy);
+        getGameController().getGameState().getSprites().removeIf(Enemy.class::isInstance);
+        getGameController().getGameState().getSprites().removeIf(s -> s instanceof Bullet b && b.getOwner() instanceof Enemy);
 
         // add new enemies
         final var horizontalSpace = ORIGINAL_GAME_BOUNDS.getWidth();
@@ -122,13 +122,13 @@ public class EnemyController {
                     j,
                     0,
                     (ENEMY_ROWS - j) * 10,
-                    getGameController()
+                    getGameController().getGameState()
                 );
 
                 enemy.setX(CHUNK_SIZE * i + padding);
                 enemy.setY(CHUNK_SIZE * j + padding + HUD_HEIGHT);
 
-                getGameController().addSprite(enemy);
+                getGameController().getGameState().getSprites().add(enemy);
                 enemies.add(enemy);
             }
         }

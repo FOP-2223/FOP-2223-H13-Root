@@ -1,8 +1,8 @@
 package h13.model.gameplay.sprites;
 
 import h13.controller.ApplicationSettings;
-import h13.controller.scene.game.GameController;
 import h13.model.gameplay.Direction;
+import h13.model.gameplay.GameState;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,9 +30,9 @@ public class BattleShip extends Sprite {
      * @param velocity       The velocity of the BattleShip.
      * @param color          The color of the BattleShip.
      * @param health         The health of the BattleShip.
-     * @param gameController The game controller.
+     * @param gameState The game state.
      */
-    public BattleShip(final double x, final double y, final double velocity, final Color color, final int health, final GameController gameController) {
+    public BattleShip(final double x, final double y, final double velocity, final Color color, final int health, final GameState gameState) {
         super(
             x,
             y,
@@ -41,7 +41,7 @@ public class BattleShip extends Sprite {
             color,
             velocity,
             health,
-            gameController
+            gameState
         );
     }
 
@@ -97,6 +97,7 @@ public class BattleShip extends Sprite {
         return !isFriend(other);
     }
 
+
     /**
      * Shoots a {@link Bullet} from the Center of the Ship in the given {@link Direction}.
      *
@@ -109,9 +110,9 @@ public class BattleShip extends Sprite {
         setBullet(new Bullet(
             getX() + getWidth() / 2,
             getY(),
-            getGameController(),
+            getGameState(),
             this,
             direction));
-        getGameController().addSprite(getBullet());
+        getGameState().getSprites().add(getBullet());
     }
 }

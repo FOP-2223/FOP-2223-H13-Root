@@ -1,15 +1,29 @@
 package h13.model.gameplay;
 
-/**
- * This "enum" class contains the different states JUST for the game
- */
-public enum GameState {
+import h13.model.gameplay.sprites.Sprite;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class GameState {
+
+    // --Variables-- //
     /**
-     * The game is running
+     * The {@link Sprite}s that are present in the game.
+     * This is a set because there is no guarantee that the sprites are not duplicated.
+     * This is not a problem because the set is used to remove duplicates.
+     *
+     * @see #getSprites()
      */
-    PLAYING,
+    private final Set<Sprite> sprites = new HashSet<>();
+
     /**
-     * The game is paused
+     * Gets the value of {@link #sprites} field.
+     *
+     * @return The value of {@link #sprites} field.
+     * @see #sprites
      */
-    PAUSED
+    public Set<Sprite> getSprites() {
+        return sprites;
+    }
 }

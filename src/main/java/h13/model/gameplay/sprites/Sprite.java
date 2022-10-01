@@ -1,8 +1,8 @@
 package h13.model.gameplay.sprites;
 
 import h13.controller.ApplicationSettings;
-import h13.controller.scene.game.GameController;
 import h13.model.gameplay.Direction;
+import h13.model.gameplay.GameState;
 import h13.model.gameplay.Updatable;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -57,9 +57,9 @@ public abstract class Sprite implements Updatable {
      */
     private Image texture;
     /**
-     * The GameController that controls the game.
+     * The {@link GameState} that stores all models.
      */
-    private final GameController gameController;
+    private final GameState gameState;
 
     // --Constructors-- //
 
@@ -73,14 +73,14 @@ public abstract class Sprite implements Updatable {
      * @param color          the color of the sprite.
      * @param velocity       the movement velocity of the sprite.
      * @param health         the amount of health the sprite should have.
-     * @param gameController the GameController that controls the game.
+     * @param gameState the GameController that controls the game.
      */
-    public Sprite(final double x, final double y, final double width, final double height, final Color color, final double velocity, final int health, final GameController gameController) {
+    public Sprite(final double x, final double y, final double width, final double height, final Color color, final double velocity, final int health, final GameState gameState) {
         this.x = x;
         this.y = y;
         this.velocity = velocity;
         this.color = color;
-        this.gameController = gameController;
+        this.gameState = gameState;
         this.width = width;
         this.height = height;
         this.health = health;
@@ -265,13 +265,13 @@ public abstract class Sprite implements Updatable {
     }
 
     /**
-     * Gets the value of the {@link #gameController} field.
+     * Gets the value of the {@link #gameState} field.
      *
-     * @return the value of the {@link #gameController} field.
-     * @see #gameController
+     * @return the value of the {@link #gameState} field.
+     * @see #gameState
      */
-    public GameController getGameController() {
-        return gameController;
+    public GameState getGameState() {
+        return gameState;
     }
 
     //--Utility Methods--//
@@ -366,7 +366,7 @@ public abstract class Sprite implements Updatable {
      * Kills the sprite.
      */
     public void die() {
-        getGameController().removeSprite(this);
+        setHealth(0);
     }
     // --update-- //
 

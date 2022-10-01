@@ -1,15 +1,13 @@
 package h13.model.gameplay.sprites;
 
-import h13.controller.scene.game.GameController;
 import h13.model.gameplay.Direction;
-import javafx.geometry.Point2D;
+import h13.model.gameplay.GameState;
 import javafx.scene.paint.Color;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import static h13.controller.GameConstants.BULLET_VELOCITY;
-import static h13.controller.GameConstants.ORIGINAL_GAME_BOUNDS;
 
 /**
  * A Bullet is a Sprite that can be fired by a BattleShip and can hit other BattleShips.
@@ -37,14 +35,14 @@ public class Bullet extends Sprite {
     /**
      * Creates a new Bullet.
      *
-     * @param x              The initial x-coordinate of the Bullet.
-     * @param y              The initial y-coordinate of the Bullet.
-     * @param gameController The game controller.
-     * @param owner          The owner of the Bullet.
-     * @param direction      The direction the Bullet is travelling towards.
+     * @param x         The initial x-coordinate of the Bullet.
+     * @param y         The initial y-coordinate of the Bullet.
+     * @param gameState The game state.
+     * @param owner     The owner of the Bullet.
+     * @param direction The direction the Bullet is travelling towards.
      */
-    public Bullet(final double x, final double y, final GameController gameController, final BattleShip owner, final Direction direction) {
-        super(x, y, 1, 5, Color.WHITE, BULLET_VELOCITY, 1, gameController);
+    public Bullet(final double x, final double y, final GameState gameState, final BattleShip owner, final Direction direction) {
+        super(x, y, 1, 5, Color.WHITE, BULLET_VELOCITY, 1, gameState);
         this.owner = owner;
         setDirection(direction);
     }
@@ -72,37 +70,25 @@ public class Bullet extends Sprite {
     }
 
     @Override
-    public void die() {
-        super.die();
-        owner.setBullet(null);
-        if (owner instanceof Player p && p.isKeepShooting()) {
-            p.shoot();
-        }
-    }
-
-    @Override
     protected void onOutOfBounds() {
         // If the bullet reaches the edge of the game Board, remove it.
         die();
     }
 
     @Override
-    public void update(final double elapsedTime) {
-        super.update(elapsedTime);
+    public void die() {
+        super.die();
 
-        // Hit Detection
-        final var damaged = getGameController().getSprites().stream()
-            .filter(BattleShip.class::isInstance)
-            .map(BattleShip.class::cast)
-            .filter(sprite -> sprite != owner)
-            .filter(owner::isEnemy)
-            .filter(sprite -> sprite.getBounds().intersects(getBounds()))
-            .filter(sprite -> !hits.contains(sprite))
-            .findFirst().orElse(null);
-        if (damaged != null) {
-            damaged.damage(1);
-            damage();
-            hits.add(damaged);
-        }
+        owner.setBullet(null);
+    }
+
+    /**
+     * Checks if the Bullet can damage the given Sprite.
+     *
+     * @param other The Sprite to check.
+     * @return True if the Bullet can damage the given Sprite.
+     */
+    public boolean hit(BattleShip other) {
+        return owner.isEnemy(other) && other.getBounds().intersects(getBounds()) && hits.add(other);
     }
 }

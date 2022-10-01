@@ -133,7 +133,7 @@ public class GameBoard extends Canvas implements Updatable {
     private void drawSprites(final GraphicsContext gc) {
         // define the order in which the sprites are drawn
         final List<Class<? extends Sprite>> spriteOrder = List.of(Bullet.class, Enemy.class, Player.class);
-        final var sprites = getGameController().getSprites();
+        final var sprites = getGameController().getGameState().getSprites();
 
         // draw privileged sprites
         spriteOrder.stream()

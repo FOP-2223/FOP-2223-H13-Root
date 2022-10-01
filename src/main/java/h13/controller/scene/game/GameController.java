@@ -7,23 +7,19 @@ import h13.controller.gamelogic.PlayerController;
 import h13.controller.scene.SceneController;
 import h13.controller.scene.SceneSwitcher;
 import h13.model.HighscoreEntry;
-import h13.model.gameplay.Updatable;
 import h13.model.gameplay.GameState;
-import h13.model.gameplay.sprites.Sprite;
+import h13.model.gameplay.Updatable;
+import h13.model.gameplay.sprites.*;
 import h13.view.gui.GameBoard;
 import h13.view.gui.GameScene;
-import h13.model.gameplay.sprites.Player;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.Predicate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A {@link SceneController} that controls the {@link GameScene}.
@@ -35,13 +31,9 @@ public class GameController extends SceneController implements Updatable {
     // --Variables-- //
 
     /**
-     * The {@link Sprite}s that are present in the game.
-     * This is a set because there is no guarantee that the sprites are not duplicated.
-     * This is not a problem because the set is used to remove duplicates.
-     *
-     * @see #getSprites()
+     * The {@link GameState} that is our main access point to the model.
      */
-    private final Set<Sprite> sprites = new HashSet<>();
+    private final GameState gameState = new GameState();
 
     /**
      * The {@link GameScene} that is controlled by this {@link GameController}.
@@ -56,11 +48,9 @@ public class GameController extends SceneController implements Updatable {
     private double lastUpdate = 0;
 
     /**
-     * The {@link GameState} of the game.
-     *
-     * @see #gameState
+     * Whether the game is paused.
      */
-    private GameState gameState = GameState.PLAYING;
+    private boolean paused = false;
 
     /**
      * The {@link PlayerController} that controls the {@link Player}.
@@ -113,77 +103,13 @@ public class GameController extends SceneController implements Updatable {
     // --Getters and Setters-- //
 
     /**
-     * Gets the value of {@link #sprites} field.
+     * Gets the value of {@link #gameState} field.
      *
-     * @return The value of {@link #sprites} field.
-     * @see #sprites
+     * @return The value of {@link #gameState} field.
+     * @see #gameState
      */
-    public Set<Sprite> getSprites() {
-        return sprites;
-    }
-
-    /**
-     * Gets all the {@link Sprite}s that are an instance of the given {@link Class}.
-     *
-     * @param clazz The {@link Class} of the {@link Sprite}s that are to be returned.
-     * @param <T>   The type of the {@link Sprite}s that are to be returned.
-     * @return All the {@link Sprite}s that are an instance of the given {@link Class}.
-     */
-    public <T extends Sprite> Set<T> getSprites(final Class<T> clazz) {
-        return getSprites().stream().filter(clazz::isInstance).map(clazz::cast).collect(HashSet::new, Set::add, Set::addAll);
-    }
-
-    /**
-     * Gets all the {@link Sprite}s that fulfill the given {@link Predicate}.
-     *
-     * @param predicate The {@link Predicate} that is used to filter the {@link Sprite}s.
-     * @return All the {@link Sprite}s that fulfill the given {@link Predicate}.
-     */
-    public Set<Sprite> getSprites(final Predicate<Sprite> predicate) {
-        return getSprites().stream().filter(predicate).collect(HashSet::new, Set::add, Set::addAll);
-    }
-
-    /**
-     * Adds the given {@link Sprite} to the {@link #sprites} set.
-     *
-     * @param sprite The {@link Sprite} to be added.
-     */
-    public void addSprite(final Sprite sprite) {
-        getSprites().add(sprite);
-    }
-
-    /**
-     * Removes the given {@link Sprite} from the {@link #sprites} set.
-     *
-     * @param sprite The {@link Sprite} to be removed.
-     */
-    public void removeSprite(final Sprite sprite) {
-        getSprites().remove(sprite);
-    }
-
-    /**
-     * Clears the {@link #sprites} set.
-     */
-    public void clearSprites() {
-        getSprites().clear();
-    }
-
-    /**
-     * Clears all the {@link Sprite}s that are an instance of the given {@link Class} from the {@link #sprites} set.
-     *
-     * @param clazz The {@link Class} of the {@link Sprite}s that are to be removed.
-     */
-    public void clearSprites(final Class<? extends Sprite> clazz) {
-        getSprites().stream().filter(clazz::isInstance).forEach(sprite -> getSprites().remove(sprite));
-    }
-
-    /**
-     * Clears all the {@link Sprite}s that fulfill the given {@link Predicate} from the {@link #sprites} set.
-     *
-     * @param predicate The {@link Predicate} that is used to filter the {@link Sprite}s.
-     */
-    public void clearSprites(final Predicate<Sprite> predicate) {
-        getSprites().stream().filter(predicate).forEach(getSprites()::remove);
+    public GameState getGameState() {
+        return gameState;
     }
 
     /**
@@ -194,16 +120,6 @@ public class GameController extends SceneController implements Updatable {
      */
     public GameScene getGameScene() {
         return gameScene;
-    }
-
-    /**
-     * Gets the value of {@link #gameState} field.
-     *
-     * @return The value of {@link #gameState} field.
-     * @see #gameState
-     */
-    public GameState getGameState() {
-        return gameState;
     }
 
     /**
@@ -300,10 +216,10 @@ public class GameController extends SceneController implements Updatable {
      * Checks whether the game is Paused.
      *
      * @return {code true} if the game is paused, {code false} otherwise.
-     * @see #gameState
+     * @see #paused
      */
     public boolean isPaused() {
-        return getGameState().equals(GameState.PAUSED);
+        return paused;
     }
 
     @Override
@@ -340,33 +256,26 @@ public class GameController extends SceneController implements Updatable {
     }
 
     /**
-     * resumes the object after pausing. This is necessary, when the game resumes after a pause.
-     *
-     * @param now The timestamp of the current frame given in nanoseconds. This value will be the same for all AnimationTimers called during one frame.
-     */
-    public void resume(final long now) {
-        lastUpdate = now;
-    }
-
-    /**
-     * Changes the {@link #gameState} to {@link GameState#PAUSED}.
+     * Changes {@link #paused} to {@code true}.
      */
     public void pause() {
-        gameState = GameState.PAUSED;
+        paused = true;
     }
 
     /**
-     * Changes the {@link #gameState} to {@link GameState#PLAYING}.
+     * Changes {@link #paused} to {@link false}.
      */
     public void resume() {
-        gameState = GameState.PLAYING;
+        paused = false;
     }
 
     /**
-     * Prepares the next level.
+     * Prepares the next level if the current level is finished.
      */
-    public void nextLevel() {
-        enemyController.nextLevel();
+    public void refillEnemiesIfNecessary() {
+        if (getEnemyController() != null && getEnemyController().defeated()) {
+            enemyController.nextLevel();
+        }
     }
 
     /**
@@ -405,7 +314,7 @@ public class GameController extends SceneController implements Updatable {
      * Resets the sprites and starts a new game.
      */
     public void reset() {
-        clearSprites();
+        getGameState().getSprites().clear();
         init();
     }
 
@@ -444,23 +353,71 @@ public class GameController extends SceneController implements Updatable {
 
     @Override
     public void update(final double elapsedTime) {
+        // Movement
+        updateOthers(elapsedTime);
+
+        // Hit detection
+        doCollisions();
+
+        var killed = getGameState().getSprites().stream().filter(Sprite::isDead).collect(Collectors.toList());
+        // check if the player is defeated
+        updatePoints(killed);
+
+        // check loose condition
+        if (killed.contains(getPlayer()) || getEnemyController().getEnemyMovement().bottomWasReached()) {
+            lose();
+        }
+
+        killed.forEach(getGameState().getSprites()::remove);
+
+        refillEnemiesIfNecessary();
+    }
+
+    /**
+     * Updates the {@link Sprite}s and the other Controllers.
+     */
+    private void updateOthers(double elapsedTime) {
         // update the game state
         Platform.runLater(() -> {
             if (enemyController != null && enemyController.getEnemyMovement() != null)
                 enemyController.getEnemyMovement().update(elapsedTime);
         });
-        getSprites()
+        getGameState().getSprites()
             .stream()
             .filter(Objects::nonNull)
+            .filter(Sprite::isAlive)
             .forEach(s -> Platform.runLater(() -> s.update(elapsedTime)));
         getGameBoard().update(elapsedTime);
+    }
 
-        // check if the player is defeated
-        if (getEnemyController() != null && getEnemyController().defeated()) {
-            nextLevel();
-        }
-        if (getPlayer().isDead() || (getEnemyController() != null && getEnemyController().getEnemyMovement().bottomWasReached())) {
-            lose();
+    /**
+     * Calculate the collision between the sprites and damages the collided sprites.
+     */
+    private void doCollisions() {
+        getGameState().getSprites().stream().filter(Bullet.class::isInstance).map(Bullet.class::cast).forEach(b -> {
+            final var damaged = getGameState().getSprites().stream()
+                .filter(Sprite::isAlive)
+                .filter(BattleShip.class::isInstance)
+                .map(BattleShip.class::cast)
+                .filter(b::hit)
+                .findFirst().orElse(null);
+            if (damaged != null) {
+                damaged.damage(1);
+                b.damage();
+            }
+        });
+    }
+
+    /**
+     * Updates the points of the {@linkplain Player player}.
+     *
+     * @param damaged The damaged sprites.
+     */
+    public void updatePoints(final List<Sprite> damaged) {
+        for (final Sprite sprite : damaged) {
+            if (sprite instanceof Enemy e) {
+                getPlayer().addPoints(e.getPointsWorth());
+            }
         }
     }
 }

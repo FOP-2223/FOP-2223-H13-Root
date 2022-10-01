@@ -1,7 +1,7 @@
 package h13.model.gameplay.sprites;
 
-import h13.controller.scene.game.GameController;
 import h13.model.gameplay.Direction;
+import h13.model.gameplay.GameState;
 import javafx.scene.paint.Color;
 
 /**
@@ -28,10 +28,10 @@ public class Player extends BattleShip {
      *
      * @param x              The x-coordinate of the player.
      * @param y              The y-coordinate of the player.
-     * @param gameController The game controller.
+     * @param gameState The game state.
      */
-    public Player(final double x, final double y, final double velocity, final GameController gameController) {
-        super(x, y, velocity, Color.BLUE, 5, gameController);
+    public Player(final double x, final double y, final double velocity, final GameState gameState) {
+        super(x, y, velocity, Color.BLUE, 5, gameState);
         loadTexture("/h13/images/sprites/player.png");
     }
 
@@ -84,9 +84,6 @@ public class Player extends BattleShip {
      */
     public void setKeepShooting(final boolean keepShooting) {
         this.keepShooting = keepShooting;
-        if (this.keepShooting) {
-            shoot();
-        }
     }
 
     // --movement-- //
@@ -110,5 +107,14 @@ public class Player extends BattleShip {
      */
     public void shoot() {
         shoot(Direction.UP);
+    }
+
+    @Override
+    public void update(double elapsedTime) {
+        super.update(elapsedTime);
+
+        if (keepShooting) {
+            shoot();
+        }
     }
 }
