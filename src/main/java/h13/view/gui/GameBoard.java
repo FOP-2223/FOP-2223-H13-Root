@@ -97,9 +97,12 @@ public class GameBoard extends Canvas implements Updatable {
 
         drawBackground(gc);
         drawSprites(gc);
-        var eb = getGameController().getEnemyController().getEnemyMovement().getEnemyBounds();
-        gc.setStroke(Color.RED);
-        gc.strokeRect(eb.getMinX(), eb.getMinY(), eb.getWidth(), eb.getHeight());
+
+        // Draw hitboxes
+//        var eb = getGameController().getEnemyController().getEnemyMovement().getEnemyBounds();
+//        gc.setStroke(Color.RED);
+//        gc.strokeRect(eb.getMinX(), eb.getMinY(), eb.getWidth(), eb.getHeight());
+
         drawHUD(gc);
         drawBorder(gc);
     }

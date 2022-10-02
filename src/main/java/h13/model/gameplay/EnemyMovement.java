@@ -155,18 +155,17 @@ public class EnemyMovement implements Updatable {
         }
 
         final var enemyBounds = getEnemyBounds();
-
-        final Bounds newBounds = Utils.getNextPosition(enemyBounds, getVelocity(), direction, elapsedTime);
+        Bounds newBounds = Utils.getNextPosition(enemyBounds, getVelocity(), direction, elapsedTime);
 
         if (targetReached(newBounds)) {
-            var clamped = Utils.clamp(newBounds);
-            var newDeltaX = clamped.getX() - enemyBounds.getMinX();
-            var newDeltaY = clamped.getY() - enemyBounds.getMinY();
-            updatePositions(newDeltaX, newDeltaY);
+            newBounds = Utils.clamp(newBounds);
             nextMovement(enemyBounds);
-        } else {
-            updatePositions(newBounds.getMinX()- enemyBounds.getMinX(), newBounds.getMinY() - enemyBounds.getMinY());
         }
+
+        updatePositions(
+            newBounds.getMinX() - enemyBounds.getMinX(),
+            newBounds.getMinY() - enemyBounds.getMinY()
+        );
     }
 
     /**

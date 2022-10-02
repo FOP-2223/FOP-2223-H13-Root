@@ -1,5 +1,7 @@
 package h13.model.gameplay;
 
+import javafx.geometry.Point2D;
+
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -201,7 +203,17 @@ public enum Direction {
         return fromVector(x + other.x, y + other.y);
     }
 
-    public Direction rotate90() {
-        return fromVector(y, -x);
+    /**
+     * Returns the direction that is the result of rotating this direction by the given angle in degrees counterclockwise.
+     *
+     * @param angle The angle to rotate this direction by.
+     * @return The direction that is the result of rotating this direction by the given angle in degrees counterclockwise.
+     */
+    public Direction rotate(final double angle) {
+        // convert to radians
+        final var radAngle = Math.toRadians(angle);
+        double cos = Math.cos(radAngle);
+        double sin = Math.sin(radAngle);
+        return fromVector(x * cos - y * sin, x * sin + y * cos);
     }
 }

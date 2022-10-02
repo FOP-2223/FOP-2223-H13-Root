@@ -19,10 +19,12 @@ public class Utils {
      * @return the clamped coordinate.
      * @see <a href="https://en.wikipedia.org/wiki/Clamping_(graphics)">Clamping_(graphics)</a>
      */
-    public static Point2D clamp(final Bounds bounds) {
-        return new Point2D(
+    public static Bounds clamp(final Bounds bounds) {
+        return new BoundingBox(
             Math.max(0, Math.min(ORIGINAL_GAME_BOUNDS.getWidth() - bounds.getWidth(), bounds.getMinX())),
-            Math.max(0, Math.min(ORIGINAL_GAME_BOUNDS.getHeight() - bounds.getHeight(), bounds.getMinY()))
+            Math.max(0, Math.min(ORIGINAL_GAME_BOUNDS.getHeight() - bounds.getHeight(), bounds.getMinY())),
+            bounds.getWidth(),
+            bounds.getHeight()
         );
     }
 

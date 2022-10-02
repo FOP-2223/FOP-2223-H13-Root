@@ -7,7 +7,6 @@ import h13.model.gameplay.Updatable;
 import h13.shared.Utils;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
@@ -67,13 +66,13 @@ public abstract class Sprite implements Updatable {
     /**
      * Constructs a new Sprite with the given parameters.
      *
-     * @param x              the x-coordinate of the sprite.
-     * @param y              the y-coordinate of the sprite.
-     * @param width          the width of the sprite.
-     * @param height         the height of the sprite.
-     * @param color          the color of the sprite.
-     * @param velocity       the movement velocity of the sprite.
-     * @param health         the amount of health the sprite should have.
+     * @param x         the x-coordinate of the sprite.
+     * @param y         the y-coordinate of the sprite.
+     * @param width     the width of the sprite.
+     * @param height    the height of the sprite.
+     * @param color     the color of the sprite.
+     * @param velocity  the movement velocity of the sprite.
+     * @param health    the amount of health the sprite should have.
      * @param gameState the GameController that controls the game.
      */
     public Sprite(final double x, final double y, final double width, final double height, final Color color, final double velocity, final int health, final GameState gameState) {
@@ -359,23 +358,25 @@ public abstract class Sprite implements Updatable {
     @Override
     public void update(final double elapsedTime) {
         // Smooth movement
-        var newPos = Utils.getNextPosition(getBounds(), getVelocity(), getDirection(), elapsedTime);
-        setX(newPos.getMinX());
-        setY(newPos.getMinY());
-
+        var newBounds = Utils.getNextPosition(getBounds(), getVelocity(), getDirection(), elapsedTime);
         // Check if the sprite is outside the game bounds
-        if (!ORIGINAL_GAME_BOUNDS.contains(getBounds())) {
-            onOutOfBounds();
+        if (!ORIGINAL_GAME_BOUNDS.contains(newBounds)) {
+            onOutOfBounds(newBounds);
+            return;
         }
+
+        // Only update the position if the sprite is not outside the game bounds
+        setX(newBounds.getMinX());
+        setY(newBounds.getMinY());
     }
 
     /**
      * Called when the sprite is outside the game bounds.
      */
-    protected void onOutOfBounds() {
+    protected void onOutOfBounds(Bounds newBounds) {
         // clamp position
         final var newPos = Utils.clamp(getBounds());
-        setX(newPos.getX());
-        setY(newPos.getY());
+        setX(newPos.getMinX());
+        setY(newPos.getMinY());
     }
 }
