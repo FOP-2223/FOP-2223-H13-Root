@@ -25,11 +25,11 @@ public class BattleShip extends Sprite {
     /**
      * Creates a new BattleShip.
      *
-     * @param x              The x-coordinate of the BattleShip.
-     * @param y              The y-coordinate of the BattleShip.
-     * @param velocity       The velocity of the BattleShip.
-     * @param color          The color of the BattleShip.
-     * @param health         The health of the BattleShip.
+     * @param x         The x-coordinate of the BattleShip.
+     * @param y         The y-coordinate of the BattleShip.
+     * @param velocity  The velocity of the BattleShip.
+     * @param color     The color of the BattleShip.
+     * @param health    The health of the BattleShip.
      * @param gameState The game state.
      */
     public BattleShip(final double x, final double y, final double velocity, final Color color, final int health, final GameState gameState) {
@@ -112,7 +112,9 @@ public class BattleShip extends Sprite {
             getY(),
             getGameState(),
             this,
-            direction));
-        getGameState().getSprites().add(getBullet());
+            direction
+        ));
+
+        getGameState().getToAdd().add(getBullet());
     }
 }

@@ -72,7 +72,6 @@ public final class EnemyController {
      */
     public void nextLevel() {
         // cleanup previous level
-        getGameController().getGameState().getSprites().removeIf(Enemy.class::isInstance);
         getGameController().getGameState().getSprites().removeIf(s -> s instanceof Bullet b && b.getOwner() instanceof Enemy);
 
         // add new enemies

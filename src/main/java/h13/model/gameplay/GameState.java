@@ -23,6 +23,11 @@ public class GameState {
     private final Set<Sprite> sprites = new HashSet<>();
 
     /**
+     * The {@linkplain Sprite Sprites} that should be added in the next update iteration.
+     */
+    private final Set<Sprite> toAdd = new HashSet<>();
+
+    /**
      * @see EnemyMovement
      */
     private final EnemyMovement enemyMovement = new EnemyMovement(this);
@@ -38,6 +43,16 @@ public class GameState {
      */
     public Set<Sprite> getSprites() {
         return sprites;
+    }
+
+    /**
+     * Gets the value of {@link #toAdd} field.
+     *
+     * @return The value of {@link #toAdd} field.
+     * @see #toAdd
+     */
+    public Set<Sprite> getToAdd() {
+        return toAdd;
     }
 
     /**

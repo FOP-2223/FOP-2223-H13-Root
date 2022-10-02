@@ -282,32 +282,30 @@ public class GameController extends SceneController implements Updatable {
      * Handles what happens when the {@linkplain Player player} is defeated.
      */
     private void lose() {
-        Platform.runLater(() -> {
-            pause();
-            if (getPlayer().getScore() > 0) {
-                ApplicationSettings.getHighscores().add(
-                    new HighscoreEntry(
-                        "getPlayer().getName()",
-                        new Date().toString(),
-                        getPlayer().getScore()
-                    )
-                );
-            }
-            final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You Loose!!!\nContinue?", ButtonType.YES, ButtonType.NO);
-            alert.showAndWait();
+        pause();
+        if (getPlayer().getScore() > 0) {
+            ApplicationSettings.getHighscores().add(
+                new HighscoreEntry(
+                    "getPlayer().getName()",
+                    new Date().toString(),
+                    getPlayer().getScore()
+                )
+            );
+        }
+        final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You Loose!!!\nContinue?", ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
 
-            if (alert.getResult() == ButtonType.YES) {
-                reset();
-                resume();
-                //do stuff
-            } else {
-                try {
-                    SceneSwitcher.loadScene(SceneSwitcher.SceneType.MAIN_MENU, (Stage) getGameScene().getWindow());
-                } catch (final Exception e) {
-                    throw new RuntimeException(e);
-                }
+        if (alert.getResult() == ButtonType.YES) {
+            reset();
+            resume();
+            //do stuff
+        } else {
+            try {
+                SceneSwitcher.loadScene(SceneSwitcher.SceneType.MAIN_MENU, (Stage) getGameScene().getWindow());
+            } catch (final Exception e) {
+                throw new RuntimeException(e);
             }
-        });
+        }
     }
 
     /**
@@ -353,24 +351,30 @@ public class GameController extends SceneController implements Updatable {
 
     @Override
     public void update(final double elapsedTime) {
-        // Movement
-        updateOthers(elapsedTime);
+        Platform.runLater(() -> {
+            // Add new Sprites
+            getGameState().getSprites().addAll(getGameState().getToAdd());
+            getGameState().getToAdd().clear();
 
-        // Hit detection
-        doCollisions();
+            // Movement
+            updateOthers(elapsedTime);
 
-        var killed = getGameState().getSprites().stream().filter(Sprite::isDead).collect(Collectors.toList());
-        // check if the player is defeated
-        updatePoints(killed);
+            // Hit detection
+            doCollisions();
 
-        // check loose condition
-        if (killed.contains(getPlayer()) || getGameState().getEnemyMovement().bottomWasReached()) {
-            lose();
-        }
+            var killed = getGameState().getSprites().stream().filter(Sprite::isDead).collect(Collectors.toList());
+            // check if the player is defeated
+            updatePoints(killed);
 
-        killed.forEach(getGameState().getSprites()::remove);
+            // check loose condition
+            if (killed.contains(getPlayer()) || getGameState().getEnemyMovement().bottomWasReached()) {
+                lose();
+            }
 
-        refillEnemiesIfNecessary();
+            killed.forEach(getGameState().getSprites()::remove);
+
+            refillEnemiesIfNecessary();
+        });
     }
 
     /**
@@ -378,13 +382,9 @@ public class GameController extends SceneController implements Updatable {
      */
     private void updateOthers(double elapsedTime) {
         // update the Enemy Movement
-        Platform.runLater(() -> {
-            getGameState().getEnemyMovement().update(elapsedTime);
-        });
+        getGameState().getEnemyMovement().update(elapsedTime);
         getGameState().getSprites()
-            .stream()
-            .filter(Sprite::isAlive)
-            .forEach(s -> Platform.runLater(() -> s.update(elapsedTime)));
+            .forEach(s -> s.update(elapsedTime));
         getGameBoard().update(elapsedTime);
     }
 

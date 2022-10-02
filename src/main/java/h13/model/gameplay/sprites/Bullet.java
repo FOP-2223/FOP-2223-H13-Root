@@ -73,7 +73,7 @@ public class Bullet extends Sprite {
     @Override
     protected void onOutOfBounds(Bounds newBounds) {
         // If the bullet reaches the edge of the game Board, remove it.
-        die();
+        if(!isDead()) die();
     }
 
     @Override
