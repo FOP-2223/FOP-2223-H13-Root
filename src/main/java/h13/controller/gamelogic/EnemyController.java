@@ -15,13 +15,11 @@ import static h13.controller.GameConstants.*;
 /**
  * An EnemyController is responsible for instantiating and updating the enemies.
  */
-public class EnemyController {
+@SuppressWarnings("ClassCanBeRecord")
+public final class EnemyController {
 
     // --Variables-- //
-    /**
-     * The enemy movement controller.
-     */
-    private final EnemyMovement enemyMovement;
+
     /**
      * The yOffset.
      */
@@ -37,30 +35,10 @@ public class EnemyController {
     public EnemyController(
         final GameController gameController) {
         this.gameController = gameController;
-        enemyMovement = new EnemyMovement(this);
         nextLevel();
     }
 
     // --Getters and Setters-- //
-
-    /**
-     * Gets a {@link Set} of all {@linkplain Enemy enemies}.
-     *
-     * @return A {@link Set} of all {@linkplain Enemy enemies}.
-     */
-    public Set<Enemy> getEnemies() {
-        return getGameController().getGameState().getSprites().stream().filter(Enemy.class::isInstance).map(Enemy.class::cast).collect(Collectors.toSet());
-    }
-
-    /**
-     * Gets the value of {@link #enemyMovement} field.
-     *
-     * @return The value of {@link #enemyMovement} field.
-     * @see #enemyMovement
-     */
-    public EnemyMovement getEnemyMovement() {
-        return enemyMovement;
-    }
 
     /**
      * Gets the value of {@link #gameController} field.
@@ -74,15 +52,7 @@ public class EnemyController {
 
     // --Utility Methods-- //
 
-    /**
-     * Gets all the {@link Enemy}s where {@link Enemy#isAlive()} returns true.
-     *
-     * @return The {@link Enemy}s where {@link Enemy#isAlive()} returns true.
-     * @see Enemy#isAlive()
-     */
-    public Set<Enemy> getAliveEnemies() {
-        return getGameController().getGameState().getSprites().stream().filter(s -> s instanceof Enemy e && e.isAlive()).map(Enemy.class::cast).collect(Collectors.toSet());
-    }
+
 
     /**
      * Checks whether all the {@link Enemy}s are dead.
@@ -91,18 +61,17 @@ public class EnemyController {
      * @see Enemy#isDead()
      */
     public boolean defeated() {
-        return getAliveEnemies().isEmpty();
+        return getGameController().getGameState().getEnemies().isEmpty();
     }
 
     // --Other Methods-- //
 
     /**
      * Initialises the enemies for the next level, clearing the current enemies and adding new ones.
-     * Also resets the {@link #enemyMovement} using {@link EnemyMovement#nextRound()}.
+     * Also resets the {@link EnemyMovement} using {@link EnemyMovement#nextRound()}.
      */
     public void nextLevel() {
         // cleanup previous level
-        getEnemies().clear();
         getGameController().getGameState().getSprites().removeIf(Enemy.class::isInstance);
         getGameController().getGameState().getSprites().removeIf(s -> s instanceof Bullet b && b.getOwner() instanceof Enemy);
 
@@ -126,6 +95,6 @@ public class EnemyController {
             }
         }
         // reset enemy movement
-        enemyMovement.nextRound();
+        getGameController().getGameState().getEnemyMovement().nextRound();
     }
 }

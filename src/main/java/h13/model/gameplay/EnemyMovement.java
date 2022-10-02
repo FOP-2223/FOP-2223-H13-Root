@@ -1,16 +1,12 @@
 package h13.model.gameplay;
 
 import h13.controller.ApplicationSettings;
-import h13.controller.GameConstants;
 import h13.controller.gamelogic.EnemyController;
 import h13.model.gameplay.sprites.Enemy;
 import h13.shared.Utils;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Comparator;
 
 import static h13.controller.GameConstants.*;
 
@@ -41,17 +37,17 @@ public class EnemyMovement implements Updatable {
     /**
      * The enemy controller
      */
-    private final EnemyController enemyController;
+    private final GameState gameState;
 
     // --Constructors-- //
 
     /**
      * Creates a new EnemyMovement.
      *
-     * @param enemyController The enemy controller.
+     * @param gameState The enemy controller.
      */
-    public EnemyMovement(final EnemyController enemyController) {
-        this.enemyController = enemyController;
+    public EnemyMovement(final GameState gameState) {
+        this.gameState = gameState;
         nextRound();
     }
 
@@ -111,8 +107,8 @@ public class EnemyMovement implements Updatable {
      *
      * @return The enemy controller.
      */
-    public EnemyController getEnemyController() {
-        return enemyController;
+    public GameState getGameState() {
+        return gameState;
     }
 
     // --Utility Methods-- //
@@ -123,14 +119,12 @@ public class EnemyMovement implements Updatable {
      * @return The BoundingBox.
      */
     public Bounds getEnemyBounds() {
-        return new BoundingBox(
-            enemyController.getAliveEnemies().stream().mapToDouble(Enemy::getX).min().orElse(0),
-            enemyController.getAliveEnemies().stream().mapToDouble(Enemy::getY).min().orElse(0),
-            enemyController.getAliveEnemies().stream().mapToDouble(e -> e.getX() + e.getWidth()).max().orElse(0)
-                - enemyController.getAliveEnemies().stream().mapToDouble(Enemy::getX).min().orElse(0),
-            enemyController.getAliveEnemies().stream().mapToDouble(e -> e.getY() + e.getHeight()).max().orElse(0)
-                - enemyController.getAliveEnemies().stream().mapToDouble(Enemy::getY).min().orElse(0)
-        );
+        final var minX = gameState.getAliveEnemies().stream().mapToDouble(Enemy::getX).min().orElse(0);
+        final var minY = gameState.getAliveEnemies().stream().mapToDouble(Enemy::getY).min().orElse(0);
+        final var maxX = gameState.getAliveEnemies().stream().mapToDouble(e -> e.getX() + e.getWidth()).max().orElse(0);
+        final var maxY = gameState.getAliveEnemies().stream().mapToDouble(e -> e.getY() + e.getHeight()).max().orElse(0);
+
+        return new BoundingBox(minX, minY, maxX - minX, maxY - minY);
     }
 
     /**
@@ -175,7 +169,7 @@ public class EnemyMovement implements Updatable {
      * @param deltaY The deltaY.
      */
     private void updatePositions(final double deltaX, final double deltaY) {
-        final var enemies = getEnemyController().getAliveEnemies();
+        final var enemies = getGameState().getAliveEnemies();
         for (final var e : enemies) {
             e.setX(e.getX() + deltaX);
             e.setY(e.getY() + deltaY);

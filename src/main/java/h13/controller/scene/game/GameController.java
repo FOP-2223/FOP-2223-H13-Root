@@ -364,7 +364,7 @@ public class GameController extends SceneController implements Updatable {
         updatePoints(killed);
 
         // check loose condition
-        if (killed.contains(getPlayer()) || getEnemyController().getEnemyMovement().bottomWasReached()) {
+        if (killed.contains(getPlayer()) || getGameState().getEnemyMovement().bottomWasReached()) {
             lose();
         }
 
@@ -377,14 +377,12 @@ public class GameController extends SceneController implements Updatable {
      * Updates the {@link Sprite}s and the other Controllers.
      */
     private void updateOthers(double elapsedTime) {
-        // update the game state
+        // update the Enemy Movement
         Platform.runLater(() -> {
-            if (enemyController != null && enemyController.getEnemyMovement() != null)
-                enemyController.getEnemyMovement().update(elapsedTime);
+            getGameState().getEnemyMovement().update(elapsedTime);
         });
         getGameState().getSprites()
             .stream()
-            .filter(Objects::nonNull)
             .filter(Sprite::isAlive)
             .forEach(s -> Platform.runLater(() -> s.update(elapsedTime)));
         getGameBoard().update(elapsedTime);

@@ -144,12 +144,12 @@ public class GameBoard extends Canvas implements Updatable {
         // draw privileged sprites
         spriteOrder.stream()
             .flatMap(clazz -> sprites.stream().filter(clazz::isInstance))
-            .forEach(sprite -> SpriteRenderer.renderSprite(gc, sprite));
+            .forEachOrdered(sprite -> SpriteRenderer.renderSprite(gc, sprite));
 
         // draw other sprites
         sprites.stream()
             .filter(sprite -> !spriteOrder.contains(sprite.getClass()))
-            .forEach(sprite -> SpriteRenderer.renderSprite(gc, sprite));
+            .forEachOrdered(sprite -> SpriteRenderer.renderSprite(gc, sprite));
     }
 
     /**
