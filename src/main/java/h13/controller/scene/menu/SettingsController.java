@@ -69,7 +69,5 @@ public class SettingsController extends SceneController implements Initializable
         loadTexturesCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.loadTexturesProperty());
         loadBackgroundCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.loadBackgroundProperty());
         instantShootingCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.instantShootingProperty());
-        enemyHorizontalMovementCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.enemyHorizontalMovementProperty());
-        enemyVerticalMovementCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.enemyVerticalMovementProperty());
     }
 }

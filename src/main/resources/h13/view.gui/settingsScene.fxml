@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="h13.controller.scene.menu.SettingsController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="h13.controller.scene.menu.SettingsController">
     <bottom>
         <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#loadMainMenuScene" prefHeight="72.0" prefWidth="600.0" text="Go Back" wrapText="true">
             <font>
@@ -28,8 +28,6 @@
                         <VBox alignment="CENTER" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" spacing="10">
                             <children>
                                 <CheckBox fx:id="instantShootingCheckBox" mnemonicParsing="false" text="Instant Shooting" />
-                                <CheckBox fx:id="enemyHorizontalMovementCheckBox" mnemonicParsing="false" selected="true" text="Enemy Horizontal Movement" />
-                                <CheckBox fx:id="enemyVerticalMovementCheckBox" layoutX="209.0" layoutY="28.0" mnemonicParsing="false" selected="true" text="Enemy Vertical Movement" />
                             </children>
                         </VBox>
                     </content>

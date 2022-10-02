@@ -21,14 +21,12 @@ public class EnemyMovement implements Updatable {
      * The current movement direction
      */
     private Direction direction;
-    /**
-     * the previous movement direction
-     */
-    private @Nullable Direction previousDirection;
+
     /**
      * The current movement speed
      */
     private double velocity;
+
     /**
      * The Next y-coordinate to reach
      */
@@ -134,10 +132,14 @@ public class EnemyMovement implements Updatable {
      * @return {@code true} if the target Position of the current movement iteration is reached, {@code false} otherwise.
      */
     private boolean targetReached(final Bounds enemyBounds) {
-        return direction == Direction.UP && enemyBounds.getMinY() <= yTarget
-            || direction == Direction.DOWN && enemyBounds.getMaxY() >= yTarget
-            || direction == Direction.LEFT && enemyBounds.getMinX() <= 0
-            || direction == Direction.RIGHT && enemyBounds.getMaxX() >= ORIGINAL_GAME_BOUNDS.getWidth();
+        return switch (direction) {
+            case NONE -> false;
+            case UP -> enemyBounds.getMinY() <= yTarget;
+            case DOWN -> enemyBounds.getMaxY() >= yTarget;
+            case LEFT -> enemyBounds.getMinX() <= 0;
+            case RIGHT -> enemyBounds.getMaxX() >= ORIGINAL_GAME_BOUNDS.getWidth();
+            default -> throw new IllegalStateException("Unexpected value: " + direction);
+        };
     }
 
     // --Movement-- //
@@ -176,23 +178,19 @@ public class EnemyMovement implements Updatable {
         }
     }
 
+    /**
+     * Starts the next movement iteration.
+     *
+     * @param enemyBounds The BoundingBox of all alive enemies.
+     */
     private void nextMovement(final Bounds enemyBounds) {
-        if (ApplicationSettings.enemyHorizontalMovementProperty().get() && ApplicationSettings.enemyVerticalMovementProperty().get()) {
-            final var oldDirection = direction;
-            direction = switch (direction) {
-                case LEFT, RIGHT -> Direction.DOWN;
-                case DOWN -> previousDirection == Direction.RIGHT ? Direction.LEFT : Direction.RIGHT;
-                default -> Direction.NONE;
-            };
-            previousDirection = oldDirection;
-        } else if (ApplicationSettings.enemyHorizontalMovementProperty().get() || ApplicationSettings.enemyVerticalMovementProperty().get()) {
-            direction = direction.getOpposite();
-        } else {
-            direction = Direction.NONE;
-        }
-        if (direction.isVertical()) {
+        if (direction.isHorizontal()) {
+            direction = Direction.DOWN;
             yTarget = enemyBounds.getMaxY() + VERTICAL_ENEMY_MOVE_DISTANCE;
+        } else {
+            direction = enemyBounds.getMaxX() >= ORIGINAL_GAME_BOUNDS.getWidth() ? Direction.LEFT : Direction.RIGHT;
         }
+
         velocity += .3;
     }
 
@@ -203,7 +201,6 @@ public class EnemyMovement implements Updatable {
     public void nextRound() {
         direction = INITIAL_ENEMY_MOVEMENT_DIRECTION;
         velocity = INITIAL_ENEMY_MOVEMENT_VELOCITY;
-        previousDirection = null;
         yTarget = 0;
     }
 }
