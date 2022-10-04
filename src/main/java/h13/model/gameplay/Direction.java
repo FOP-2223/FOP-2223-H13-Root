@@ -212,8 +212,8 @@ public enum Direction {
     public Direction rotate(final double angle) {
         // convert to radians
         final var radAngle = Math.toRadians(angle);
-        double cos = Math.cos(radAngle);
-        double sin = Math.sin(radAngle);
+        final double cos = Math.cos(radAngle);
+        final double sin = Math.sin(radAngle);
         return fromVector(x * cos - y * sin, x * sin + y * cos);
     }
 }

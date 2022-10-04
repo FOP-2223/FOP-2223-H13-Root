@@ -71,7 +71,7 @@ public class Bullet extends Sprite {
     }
 
     @Override
-    protected void onOutOfBounds(Bounds newBounds) {
+    protected void onOutOfBounds(final Bounds newBounds) {
         // If the bullet reaches the edge of the game Board, remove it.
         if(!isDead()) die();
     }
@@ -89,7 +89,7 @@ public class Bullet extends Sprite {
      * @param other The Sprite to check.
      * @return True if the Bullet can damage the given Sprite.
      */
-    public boolean hit(BattleShip other) {
+    public boolean hit(final BattleShip other) {
         return owner.isEnemy(other) && other.getBounds().intersects(getBounds()) && hits.add(other);
     }
 }

@@ -358,7 +358,7 @@ public abstract class Sprite implements Updatable {
     @Override
     public void update(final double elapsedTime) {
         // Smooth movement
-        var newBounds = Utils.getNextPosition(getBounds(), getVelocity(), getDirection(), elapsedTime);
+        final var newBounds = Utils.getNextPosition(getBounds(), getVelocity(), getDirection(), elapsedTime);
         // Check if the sprite is outside the game bounds
         if (!ORIGINAL_GAME_BOUNDS.contains(newBounds)) {
             onOutOfBounds(newBounds);
@@ -373,7 +373,7 @@ public abstract class Sprite implements Updatable {
     /**
      * Called when the sprite is outside the game bounds.
      */
-    protected void onOutOfBounds(Bounds newBounds) {
+    protected void onOutOfBounds(final Bounds newBounds) {
         // clamp position
         final var newPos = Utils.clamp(getBounds());
         setX(newPos.getMinX());

@@ -362,7 +362,7 @@ public class GameController extends SceneController implements Updatable {
             // Hit detection
             doCollisions();
 
-            var killed = getGameState().getSprites().stream().filter(Sprite::isDead).collect(Collectors.toList());
+            final var killed = getGameState().getSprites().stream().filter(Sprite::isDead).collect(Collectors.toList());
             // check if the player is defeated
             updatePoints(killed);
 
@@ -380,7 +380,7 @@ public class GameController extends SceneController implements Updatable {
     /**
      * Updates the {@link Sprite}s and the other Controllers.
      */
-    private void updateOthers(double elapsedTime) {
+    private void updateOthers(final double elapsedTime) {
         // update the Enemy Movement
         getGameState().getEnemyMovement().update(elapsedTime);
         getGameState().getSprites()
