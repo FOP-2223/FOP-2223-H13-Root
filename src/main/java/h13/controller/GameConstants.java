@@ -108,7 +108,10 @@ public final class GameConstants {
     /**
      * The HUD font.
      */
-    public static final javafx.scene.text.Font HUD_FONT = javafx.scene.text.Font.loadFont(GameConstants.class.getResourceAsStream(GameConstants.HUD_FONT_PATH), HUD_FONT_SIZE);
+    public static final javafx.scene.text.Font HUD_FONT = javafx.scene.text.Font.loadFont(GameConstants.class.getResourceAsStream(GameConstants.HUD_FONT_PATH), HUD_FONT_SIZE); /**
+     * The HUD font.
+     */
+    public static final javafx.scene.text.Font TITLE_FONT = javafx.scene.text.Font.loadFont(GameConstants.class.getResourceAsStream(GameConstants.HUD_FONT_PATH), 30);
     /**
      * Border width.
      */

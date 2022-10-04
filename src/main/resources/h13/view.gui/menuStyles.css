@@ -9,7 +9,7 @@
     -fx-background-color: linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),
     #9d4024,
     #d86e3a,
-    radial-gradient(center 50% 50%, radius 100%, #d86e3a, #c54e2c);
+    radial-gradient(center 50% 50%, radius 100%, #fb8c00, #e65100);
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 4, 0, 0, 1);
     -fx-font-weight: bold;
     -fx-font-size: 1.1em;
@@ -20,7 +20,7 @@
     -fx-background-color: linear-gradient(from 0% 93% to 0% 100%, #a34313 0%, #903b12 100%),
     #9d4024,
     #d86e3a,
-    radial-gradient(center 50% 50%, radius 100%, #ea7f4b, #c54e2c);
+    radial-gradient(center 50% 50%, radius 150%, #ff9800, #e65100);
 }
 
 .button:pressed {
@@ -28,9 +28,8 @@
     -fx-background-insets: 2 0 0 0, 2 0 3 0, 2 0 4 0, 2 0 5 0;
 }
 
-.button Text {
-    -fx-fill: white;
-    -fx-effect: dropshadow(gaussian, #0500a3, 0, 0, 0, 2);
+.button .text {
+    -fx-effect: dropshadow( gaussian , black , 2, 1.0 , 0 , 0 );
 }
 
 .text-area {

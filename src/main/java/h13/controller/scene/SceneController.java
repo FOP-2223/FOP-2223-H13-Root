@@ -50,7 +50,7 @@ public abstract class SceneController {
      *
      * @param e The {@link ActionEvent} that triggered this method.
      */
-    public Scene loadMainMenuScene(final @Nullable ActionEvent e) throws Exception {
+    public Scene loadMainMenuScene(final @Nullable ActionEvent e) {
         return SceneSwitcher.loadScene(SceneSwitcher.SceneType.MAIN_MENU, getStage());
     }
 
@@ -59,7 +59,7 @@ public abstract class SceneController {
      *
      * @param e The {@link ActionEvent} that triggered this method.
      */
-    public Scene loadAboutScene(final @Nullable ActionEvent e) throws Exception {
+    public Scene loadAboutScene(final @Nullable ActionEvent e) {
         return SceneSwitcher.loadScene(SceneSwitcher.SceneType.ABOUT, getStage());
     }
 
@@ -68,7 +68,7 @@ public abstract class SceneController {
      *
      * @param e The {@link ActionEvent} that triggered this method.
      */
-    public Scene loadSettingsScene(final @Nullable ActionEvent e) throws Exception {
+    public Scene loadSettingsScene(final @Nullable ActionEvent e) {
         return SceneSwitcher.loadScene(SceneSwitcher.SceneType.SETTINGS, getStage());
     }
 
@@ -77,7 +77,7 @@ public abstract class SceneController {
      *
      * @param e The {@link ActionEvent} that triggered this method.
      */
-    public Scene loadHighscoreScene(final @Nullable ActionEvent e) throws Exception {
+    public Scene loadHighscoreScene(final @Nullable ActionEvent e) {
         return SceneSwitcher.loadScene(SceneSwitcher.SceneType.HIGHSCORE, getStage());
     }
 
@@ -86,7 +86,7 @@ public abstract class SceneController {
      *
      * @param e The {@link ActionEvent} that triggered this method.
      */
-    public Scene loadGameScene(final @Nullable ActionEvent e) throws Exception {
+    public Scene loadGameScene(final @Nullable ActionEvent e) {
         return SceneSwitcher.loadScene(SceneSwitcher.SceneType.GAME, getStage());
     }
 }

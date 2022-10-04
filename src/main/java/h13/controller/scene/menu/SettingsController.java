@@ -3,16 +3,15 @@ package h13.controller.scene.menu;
 import h13.controller.ApplicationSettings;
 import h13.controller.scene.SceneController;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Slider;
+import javafx.stage.Stage;
 
-import java.net.URL;
-import java.util.ResourceBundle;
 
 /**
  * A {@link SceneController} that manages the "Settings" scene.
  */
-public class SettingsController extends SceneController implements Initializable {
+public class SettingsController extends SceneController {
 
     // --Variables-- //
 
@@ -50,21 +49,41 @@ public class SettingsController extends SceneController implements Initializable
      * The checkbox for the "full screen" setting.
      */
     @FXML
-    private CheckBox fullscreenCheckBox;
+    public CheckBox fullscreenCheckBox;
+
+    /**
+     * The checkbox for the "enable sound" setting.
+     */
+    @FXML
+    public CheckBox enableSoundCheckBox;
+
+    /**
+     * The checkbox for the "enable music" setting.
+     */
+    @FXML
+    public CheckBox enableMusicCheckBox;
+
+    /**
+     * The slider for the "music volume" setting.
+     */
+    @FXML
+    public Slider musicVolumeSlider;
+
+    /**
+     * The slider for the "gameplay volume" setting.
+     */
+    @FXML
+    public Slider gameplayVolumeSlider;
 
     @Override
     public String getTitle() {
         return "Space Invaders - Settings";
     }
 
-    /**
-     * @param location  The location used to resolve relative paths for the root object, or
-     *                  {@code null} if the location is not known.
-     * @param resources The resources used to localize the root object, or {@code null} if
-     *                  the root object was not localized.
-     */
     @Override
-    public void initialize(final URL location, final ResourceBundle resources) {
+    public void initStage(final Stage stage) {
+        super.initStage(stage);
+
         fullscreenCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.fullscreenProperty());
         loadTexturesCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.loadTexturesProperty());
         loadBackgroundCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.loadBackgroundProperty());

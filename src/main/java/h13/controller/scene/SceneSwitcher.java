@@ -1,6 +1,6 @@
 package h13.controller.scene;
 
-import h13.view.gui.GameScene;
+import h13.view.gui.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -27,19 +27,23 @@ public final class SceneSwitcher {
         /**
          * The main menu scene.
          */
-        MAIN_MENU(() -> getFXMLScene("/h13/view.gui/mainMenuScene.fxml")),
+        //MAIN_MENU(() -> getFXMLScene("/h13/view.gui/mainMenuScene.fxml")),
+        MAIN_MENU(() -> SceneAndController.fromScene(new MainMenuScene())),
         /**
          * The about scene.
          */
-        ABOUT(() -> getFXMLScene("/h13/view.gui/aboutScene.fxml")),
+        //ABOUT(() -> getFXMLScene("/h13/view.gui/aboutScene.fxml")),
+        ABOUT(() -> SceneAndController.fromScene(new AboutScene())),
         /**
          * The settings scene.
          */
-        SETTINGS(() -> getFXMLScene("/h13/view.gui/settingsScene.fxml")),
+        //SETTINGS(() -> getFXMLScene("/h13/view.gui/settingsScene.fxml")),
+        SETTINGS(() -> SceneAndController.fromScene(new SettingsScene())),
         /**
          * The highscore scene.
          */
-        HIGHSCORE(() -> getFXMLScene("/h13/view.gui/highscoreScene.fxml")),
+        //HIGHSCORE(() -> getFXMLScene("/h13/view.gui/highscoreScene.fxml")),
+        HIGHSCORE(() -> SceneAndController.fromScene(new HighscoreScene())),
         /**
          * The game scene.
          */
@@ -147,8 +151,13 @@ public final class SceneSwitcher {
      * @throws Exception If the {@link SceneType} could not be loaded.
      * @see #loadScene(SceneAndController, Stage)
      */
-    public static Scene loadScene(final SceneType sceneType, final Stage stage) throws Exception {
-        final var sac = sceneType.getSacGenerator().call();
+    public static Scene loadScene(final SceneType sceneType, final Stage stage) {
+        final SceneAndController sac;
+        try {
+            sac = sceneType.getSacGenerator().call();
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
         return loadScene(sac, stage);
     }
 }

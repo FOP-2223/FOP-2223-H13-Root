@@ -6,18 +6,15 @@ import h13.model.HighscoreEntry;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-
-import java.net.URL;
-import java.util.ResourceBundle;
+import javafx.stage.Stage;
 
 /**
  * A {@link SceneController} that manages the "Highscore" scene.
  */
-public class HighscoreController extends SceneController implements Initializable {
+public class HighscoreController extends SceneController {
 
     // --Variables-- //
 
@@ -50,14 +47,10 @@ public class HighscoreController extends SceneController implements Initializabl
         return "Space Invaders - Highscore";
     }
 
-    /**
-     * @param location  The location used to resolve relative paths for the root object, or
-     *                  {@code null} if the location is not known.
-     * @param resources The resources used to localize the root object, or {@code null} if
-     *                  the root object was not localized.
-     */
     @Override
-    public void initialize(final URL location, final ResourceBundle resources) {
+    public void initStage(final Stage stage) {
+        super.initStage(stage);
+
         playerTableColumn.setCellValueFactory(new PropertyValueFactory<>("playerName"));
         dateTableColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         scoreTableColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
