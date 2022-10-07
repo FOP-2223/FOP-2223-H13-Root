@@ -13,7 +13,7 @@ import static h13.controller.GameConstants.ORIGINAL_GAME_BOUNDS;
 /**
  * A GameScene is a {@link Scene} that contains the {@link GameBoard} and is controlled by a {@link GameController}.
  */
-public class GameScene extends Scene implements ControlledScene {
+public class GameScene extends Scene implements ControlledScene<GameController> {
 
     // --Variables-- //
 
