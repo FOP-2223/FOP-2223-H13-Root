@@ -9,7 +9,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
-public class MainMenuScene extends BaseScene<MainMenuController> {
+/**
+ * The {@link MainMenuScene} is a {@link MenuScene} that displays the main menu of the game.
+ */
+public class MainMenuScene extends MenuScene<MainMenuController> {
 
     /**
      * A Typesafe reference to the root Node of this Scene.
@@ -17,7 +20,7 @@ public class MainMenuScene extends BaseScene<MainMenuController> {
     private final BorderPane root;
 
     /**
-     * Creates a Scene for a specific root Node.
+     * Creates a new {@link MainMenuScene}.
      */
     public MainMenuScene() {
         super(new BorderPane(), new MainMenuController());
@@ -26,6 +29,9 @@ public class MainMenuScene extends BaseScene<MainMenuController> {
         init();
     }
 
+    /**
+     * Initialize the content of the scene.
+     */
     private void init() {
         final Label titleLabel = new Label("Space Invaders");
         titleLabel.setFont(GameConstants.TITLE_FONT);

@@ -5,16 +5,22 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+/**
+ * The {@link SettingsScene} is a {@link SubMenuScene} that displays the settings menu.
+ */
 public class SettingsScene extends SubMenuScene<SettingsController, TabPane> {
 
     /**
-     * Creates a Scene for a specific root Node.
+     * Creates a new {@link SettingsScene}.
      */
     public SettingsScene() {
         super(new TabPane(), new SettingsController(), "Settings");
         init();
     }
 
+    /**
+     * Initialize the content of the scene.
+     */
     private void init() {
         final var tabPane = getContentRoot();
         tabPane.setPrefSize(200, 200);

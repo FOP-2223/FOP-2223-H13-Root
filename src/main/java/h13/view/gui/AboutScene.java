@@ -4,7 +4,10 @@ import h13.controller.scene.menu.AboutController;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Font;
 
-public class AboutScene extends SubMenuScene<AboutController,TextArea> {
+/**
+ * The AboutScene is a SubMenuScene that displays information about the project.
+ */
+public class AboutScene extends SubMenuScene<AboutController, TextArea> {
 
     /**
      * Creates a Scene for a specific root Node.
@@ -14,6 +17,9 @@ public class AboutScene extends SubMenuScene<AboutController,TextArea> {
         init();
     }
 
+    /**
+     * Initialize the content of the scene.
+     */
     private void init() {
         final var textArea = getContentRoot();
         textArea.setEditable(false);
