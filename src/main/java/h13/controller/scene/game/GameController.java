@@ -200,7 +200,7 @@ public class GameController extends SceneController implements Updatable {
      * @return The {@link Player} of the {@link #playerController}.
      */
     public Player getPlayer() {
-        return playerController.getPlayer();
+        return getPlayerController().getPlayer();
     }
 
     /**
@@ -209,7 +209,7 @@ public class GameController extends SceneController implements Updatable {
      * @return The {@link GameBoard} of the {@link #gameScene}.
      */
     public GameBoard getGameBoard() {
-        return gameScene.getGameBoard();
+        return getGameScene().getGameBoard();
     }
 
     /**
@@ -252,7 +252,7 @@ public class GameController extends SceneController implements Updatable {
         handleKeyboardInputs();
 
         // start the game loop
-        gameLoop.start();
+        getGameLoop().start();
     }
 
     /**
@@ -274,7 +274,7 @@ public class GameController extends SceneController implements Updatable {
      */
     public void refillEnemiesIfNecessary() {
         if (getEnemyController() != null && getEnemyController().defeated()) {
-            enemyController.nextLevel();
+            getEnemyController().nextLevel();
         }
     }
 
