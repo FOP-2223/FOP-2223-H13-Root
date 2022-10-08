@@ -61,7 +61,10 @@ public class GameState {
      * @return A {@link Set} of all {@linkplain Enemy enemies}.
      */
     public Set<Enemy> getEnemies() {
-        return getSprites().stream().filter(Enemy.class::isInstance).map(Enemy.class::cast).collect(Collectors.toSet());
+        return getSprites().stream()
+            .filter(Enemy.class::isInstance)
+            .map(Enemy.class::cast)
+            .collect(Collectors.toSet());
     }
 
     /**
@@ -71,7 +74,10 @@ public class GameState {
      * @see Enemy#isAlive()
      */
     public Set<Enemy> getAliveEnemies() {
-        return getSprites().stream().filter(s -> s instanceof Enemy e && e.isAlive()).map(Enemy.class::cast).collect(Collectors.toSet());
+        return getSprites().stream()
+            .filter(s -> s instanceof Enemy e && e.isAlive())
+            .map(Enemy.class::cast)
+            .collect(Collectors.toSet());
     }
 
     /**

@@ -33,7 +33,7 @@ public class EnemyMovement implements Updatable {
     private double yTarget = 0;
 
     /**
-     * The enemy controller
+     * The current {@link GameState}
      */
     private final GameState gameState;
 

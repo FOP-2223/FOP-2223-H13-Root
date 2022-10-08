@@ -92,19 +92,6 @@ public final class SceneSwitcher {
     // --Methods-- //
 
     /**
-     * Retrieve the {@link Stage} from an {@link ActionEvent}.
-     *
-     * @param e The {@link ActionEvent}.
-     * @return The {@link Stage} from the {@link ActionEvent}.
-     */
-    public static Stage getStage(final ActionEvent e) {
-        if (e.getSource() instanceof Node n && n.getScene().getWindow() instanceof Stage s) {
-            return s;
-        }
-        throw new IllegalArgumentException("ActionEvent source is not a Node or does not have a Scene with a Stage");
-    }
-
-    /**
      * Loads an FXML file and creates a {@link SceneAndController} from it.
      *
      * @param sceneName The path to the FXML file.
@@ -112,7 +99,6 @@ public final class SceneSwitcher {
      * @throws IOException If the FXML file could not be loaded.
      * @see FXMLLoader#load(java.io.InputStream)
      */
-
     private static SceneAndController getFXMLScene(final String sceneName) throws IOException {
         final @Nullable var sceneURL = SceneSwitcher.class.getResource(sceneName);
         if (sceneURL == null) {
@@ -148,7 +134,6 @@ public final class SceneSwitcher {
      * @param sceneType The {@link SceneType} to load.
      * @param stage     The {@link Stage} to show the {@link Scene} on.
      * @return The {@link Scene} that was switched to.
-     * @throws Exception If the {@link SceneType} could not be loaded.
      * @see #loadScene(SceneAndController, Stage)
      */
     public static Scene loadScene(final SceneType sceneType, final Stage stage) {

@@ -113,7 +113,7 @@ public class Player extends BattleShip {
     public void update(final double elapsedTime) {
         super.update(elapsedTime);
 
-        if (keepShooting) {
+        if (isKeepShooting()) {
             shoot();
         }
     }

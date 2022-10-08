@@ -12,7 +12,7 @@ import java.util.Date;
  * A Data class that contains the ApplicationSettings.
  * Also handles Saving and Loading of the settings from the filesystem.
  */
-public class ApplicationSettings {
+public final class ApplicationSettings {
     // --Constructors-- //
 
     /**

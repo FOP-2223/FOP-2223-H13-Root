@@ -76,13 +76,6 @@ public class Bullet extends Sprite {
         if(!isDead()) die();
     }
 
-    @Override
-    public void die() {
-        super.die();
-
-        owner.setBullet(null);
-    }
-
     /**
      * Checks if the Bullet can damage the given Sprite.
      *

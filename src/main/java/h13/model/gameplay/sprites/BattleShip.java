@@ -63,7 +63,7 @@ public class BattleShip extends Sprite {
      * @return {@code true} if the Ship has a {@link #bullet}, {@code false} otherwise.
      */
     public boolean hasBullet() {
-        return bullet != null;
+        return getBullet() != null && getBullet().isAlive();
     }
 
     /**

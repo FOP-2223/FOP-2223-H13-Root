@@ -24,38 +24,47 @@ public abstract class Sprite implements Updatable {
      * The x-coordinate of the sprite.
      */
     private double x;
+
     /**
      * The y-coordinate of the sprite.
      */
     private double y;
+
     /**
      * The width of the sprite.
      */
     private final double width;
+
     /**
      * the height of the sprite.
      */
     private final double height;
+
     /**
      * The movement velocity of the sprite.
      */
     private final double velocity;
+
     /**
      * The remaining life of the sprite.
      */
     private int health;
+
     /**
      * The current Movement-{@link Direction} of the sprite.
      */
     private @NotNull Direction direction = Direction.NONE;
+
     /**
      * The color of the sprite. (fallback for when the sprite has no texture)
      */
     private final Color color;
+
     /**
      * The texture of the sprite.
      */
     private Image texture;
+
     /**
      * The {@link GameState} that stores all models.
      */
@@ -333,9 +342,6 @@ public abstract class Sprite implements Updatable {
      */
     public void damage(final int amount) {
         health -= amount;
-        if (health <= 0) {
-            die();
-        }
     }
 
     /**
