@@ -394,7 +394,7 @@ public class GameController extends SceneController implements Updatable {
     private void doCollisions() {
         getGameState().getSprites().stream().filter(Bullet.class::isInstance).map(Bullet.class::cast).forEach(b -> {
             final var damaged = getGameState().getSprites().stream()
-                .filter(Sprite::isAlive)
+                //.filter(Sprite::isAlive)
                 .filter(BattleShip.class::isInstance)
                 .map(BattleShip.class::cast)
                 .filter(b::hit)

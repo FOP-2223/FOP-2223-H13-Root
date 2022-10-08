@@ -83,6 +83,6 @@ public class Bullet extends Sprite {
      * @return True if the Bullet can damage the given Sprite.
      */
     public boolean hit(final BattleShip other) {
-        return owner.isEnemy(other) && other.getBounds().intersects(getBounds()) && hits.add(other);
+        return getOwner().isEnemy(other) && other.getBounds().intersects(getBounds()) && getHits().add(other);
     }
 }

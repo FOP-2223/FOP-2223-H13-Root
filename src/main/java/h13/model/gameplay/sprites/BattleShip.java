@@ -107,13 +107,15 @@ public class BattleShip extends Sprite {
         if (hasBullet() && !ApplicationSettings.instantShootingProperty().get()) {
             return;
         }
-        setBullet(new Bullet(
-            getX() + getWidth() / 2,
-            getY(),
-            getGameState(),
-            this,
-            direction
-        ));
+        setBullet(
+            new Bullet(
+                getX() + getWidth() / 2-.5,
+                getY(),
+                getGameState(),
+                this,
+                direction
+            )
+        );
 
         getGameState().getToAdd().add(getBullet());
     }
