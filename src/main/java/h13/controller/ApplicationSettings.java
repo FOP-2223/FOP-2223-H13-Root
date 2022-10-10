@@ -1,8 +1,7 @@
 package h13.controller;
 
 import h13.model.HighscoreEntry;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -36,6 +35,36 @@ public final class ApplicationSettings {
      */
     public static BooleanProperty fullscreenProperty() {
         return fullscreen;
+    }
+
+    /**
+     * Enemy Shooting Delay in milliseconds.
+     */
+    private static final DoubleProperty enemyShootingDelay = new SimpleDoubleProperty(1000);
+
+    /**
+     * Gets the {@link #enemyShootingDelay}-property.
+     *
+     * @return The {@link #enemyShootingDelay}-property.
+     * @see #enemyShootingDelay
+     */
+    public static DoubleProperty enemyShootingDelayProperty() {
+        return enemyShootingDelay;
+    }
+
+    /**
+     * The probability that an enemy shoots each frame.
+     */
+    public static final DoubleProperty enemyShootingProbability = new SimpleDoubleProperty(0.0005);
+
+    /**
+     * Gets the {@link #enemyShootingProbability}-property.
+     *
+     * @return The {@link #enemyShootingProbability}-property.
+     * @see #enemyShootingProbability
+     */
+    public static DoubleProperty enemyShootingProbabilityProperty() {
+        return enemyShootingProbability;
     }
 
     /**

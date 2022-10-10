@@ -34,6 +34,16 @@ public class SettingsController extends SceneController {
     public CheckBox instantShootingCheckBox;
 
     /**
+     * The Slider that controls the Enemy Shooting delay in milliseconds.
+     */
+    public Slider enemyShootingDelaySlider;
+
+    /**
+     * The Slider that controls the Enemy Shooting Probability.
+     */
+    public Slider enemyShootingProbabilitySlider;
+
+    /**
      * The checkbox for the "enable Horizontal enemy Movement" setting.
      */
     @FXML
@@ -85,6 +95,8 @@ public class SettingsController extends SceneController {
         super.initStage(stage);
 
         fullscreenCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.fullscreenProperty());
+        enemyShootingDelaySlider.valueProperty().bindBidirectional(ApplicationSettings.enemyShootingDelayProperty());
+        enemyShootingProbabilitySlider.valueProperty().bindBidirectional(ApplicationSettings.enemyShootingProbabilityProperty());
         loadTexturesCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.loadTexturesProperty());
         loadBackgroundCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.loadBackgroundProperty());
         instantShootingCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.instantShootingProperty());

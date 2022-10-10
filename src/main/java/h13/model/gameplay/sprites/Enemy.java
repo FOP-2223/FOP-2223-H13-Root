@@ -1,5 +1,6 @@
 package h13.model.gameplay.sprites;
 
+import h13.controller.ApplicationSettings;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
 import javafx.scene.paint.Color;
@@ -27,7 +28,7 @@ public class Enemy extends BattleShip {
     /**
      * The remaining shot cooldown-time of the enemy.
      */
-    private double timeTillNextShot = 2; // 2 seconds
+    private double timeTillNextShot = ApplicationSettings.enemyShootingDelayProperty().get(); // default: 2 seconds
 
     // --Constructors-- //
 
@@ -98,12 +99,12 @@ public class Enemy extends BattleShip {
         super.update(elapsedTime);
 
         // Shoot with a certain probability
-        timeTillNextShot -= elapsedTime;
+        timeTillNextShot -= elapsedTime * 1000;
         if (timeTillNextShot <= 0) {
             // Shoot at random intervals
-            if (Math.random() < ENEMY_SHOOTING_PROBABILITY) {
+            if (Math.random() < ApplicationSettings.enemyShootingProbabilityProperty().get()) {
                 shoot();
-                timeTillNextShot = 2;
+                timeTillNextShot = ApplicationSettings.enemyShootingDelayProperty().get();
             }
         }
     }
