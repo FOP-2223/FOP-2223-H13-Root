@@ -85,6 +85,11 @@ public class SettingsController extends SceneController {
     @FXML
     public Slider gameplayVolumeSlider;
 
+    /**
+     * The checkbox for enabling or disabling autoplay.
+     */
+    public CheckBox autoPlayCheckBox;
+
     @Override
     public String getTitle() {
         return "Space Invaders - Settings";
@@ -100,5 +105,6 @@ public class SettingsController extends SceneController {
         loadTexturesCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.loadTexturesProperty());
         loadBackgroundCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.loadBackgroundProperty());
         instantShootingCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.instantShootingProperty());
+        autoPlayCheckBox.selectedProperty().bindBidirectional(ApplicationSettings.autoPlayProperty());
     }
 }

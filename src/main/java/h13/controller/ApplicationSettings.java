@@ -157,4 +157,19 @@ public final class ApplicationSettings {
     public static ObservableList<HighscoreEntry> getHighscores() {
         return highscores;
     }
+
+    /**
+     * Whether to enable the Bot player.
+     */
+    private static final BooleanProperty autoPlay = new SimpleBooleanProperty(false);
+
+    /**
+     * Gets the {@link #autoPlay}-property.
+     *
+     * @return The {@link #autoPlay}-property.
+     * @see #autoPlay
+     */
+    public static BooleanProperty autoPlayProperty() {
+        return autoPlay;
+    }
 }

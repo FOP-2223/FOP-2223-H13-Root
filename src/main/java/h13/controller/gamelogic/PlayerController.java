@@ -1,5 +1,6 @@
 package h13.controller.gamelogic;
 
+import h13.controller.ApplicationSettings;
 import h13.controller.scene.game.GameController;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.sprites.Player;
@@ -41,9 +42,12 @@ public class PlayerController {
             0,
             ORIGINAL_GAME_BOUNDS.getHeight() - ORIGINAL_GAME_BOUNDS.getWidth() * RELATIVE_SHIP_WIDTH,
             PLAYER_VELOCITY,
-            gameController.getGameState());
+            gameController.getGameState()
+        );
         getGameController().getGameState().getSprites().add(player);
-        handleKeyboardInputs();
+        if (!ApplicationSettings.autoPlayProperty().get()) {
+            handleKeyboardInputs();
+        }
     }
 
     // --Getters and Setters-- //

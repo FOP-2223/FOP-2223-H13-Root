@@ -59,6 +59,9 @@ public class SettingsScene extends SubMenuScene<SettingsController, TabPane> {
         enemyShootingProbabilityLabel.textProperty().bind(enemyShootingProbabilitySlider.valueProperty().asString("Enemy Shooting Probability: %.4f"));
         getController().enemyShootingProbabilitySlider = enemyShootingProbabilitySlider;
         gameplayVBox.getChildren().add(enemyShootingProbabilityHBox);
+        final var autoPlayCheckBox = new CheckBox("Enable Auto Play");
+        getController().autoPlayCheckBox = autoPlayCheckBox;
+        gameplayVBox.getChildren().add(autoPlayCheckBox);
         gameplayTab.setContent(gameplayVBox);
 
         final var graphicsVBox = new VBox();

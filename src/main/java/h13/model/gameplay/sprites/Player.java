@@ -1,9 +1,12 @@
 package h13.model.gameplay.sprites;
 
+import h13.controller.ApplicationSettings;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Comparator;
 
 /**
  * A Player is a BattleShip that can only move horizontally and shoots upwards.
@@ -139,8 +142,48 @@ public class Player extends BattleShip {
     public void update(final double elapsedTime) {
         super.update(elapsedTime);
 
-        if (isKeepShooting()) {
-            shoot();
+        if (!ApplicationSettings.autoPlayProperty().get()) {
+            if (isKeepShooting()) {
+                shoot();
+            }
+        } else {
+            // check if there is an enemy in the way
+            if (getGameState().getEnemies().stream().anyMatch(enemy -> Math.abs(enemy.getX() - getX()) < 1)) {
+                shoot();
+            }
+
+            // find the closest enemy using the euclidean distance
+            final Enemy closestEnemy = getGameState().getEnemies().stream()
+                .min(Comparator.comparingDouble(enemy -> Math.sqrt(Math.pow(enemy.getX() - getX(), 2) + Math.pow(enemy.getY() - getY(), 2))))
+                .orElse(null);
+
+            // move towards the closest enemy
+            if (closestEnemy != null) {
+                if (closestEnemy.getX() > getX()) {
+                    moveRight();
+                } else if (closestEnemy.getX() < getX()) {
+                    moveLeft();
+                }
+            }
+
+            // check for dangerous bullets
+            var dangerousBullet = getGameState().getSprites().stream()
+                .filter(Bullet.class::isInstance)
+                .map(Bullet.class::cast)
+                .filter(bullet -> bullet.getDirection() == Direction.DOWN)
+                .filter(bullet -> bullet.getX() >= getX() - 10 && bullet.getX() + bullet.getWidth() <= getX() + getWidth() + 10)
+                .min(Comparator.comparingDouble(bullet -> Math.sqrt(Math.pow(bullet.getX() - getX(), 2) + Math.pow(bullet.getY() - getY(), 2))))
+                .orElse(null);
+
+            // move away from the dangerous bullet
+            if (dangerousBullet != null) {
+                System.out.println("dodging bullet");
+                if (dangerousBullet.getX() > getX()) {
+                    moveLeft();
+                } else if (dangerousBullet.getX() < getX()) {
+                    moveRight();
+                }
+            }
         }
     }
 }
