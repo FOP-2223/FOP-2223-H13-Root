@@ -6,10 +6,6 @@ import h13.controller.GameConstants;
 import h13.model.gameplay.sprites.Bullet;
 import h13.model.gameplay.sprites.Enemy;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import static h13.controller.GameConstants.*;
 
 /**
@@ -60,7 +56,7 @@ public final class EnemyController {
      * @return {@code true} if all the {@link Enemy}s are dead, {@code false} otherwise.
      * @see Enemy#isDead()
      */
-    public boolean defeated() {
+    public boolean isDefeated() {
         return getGameController().getGameState().getEnemies().isEmpty();
     }
 

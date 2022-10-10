@@ -16,6 +16,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
 
 import java.util.*;
@@ -273,26 +274,36 @@ public class GameController extends SceneController implements Updatable {
      * Prepares the next level if the current level is finished.
      */
     public void refillEnemiesIfNecessary() {
-        if (getEnemyController() != null && getEnemyController().defeated()) {
+        if (getEnemyController() != null && getEnemyController().isDefeated()) {
             getEnemyController().nextLevel();
         }
     }
 
     /**
-     * Handles what happens when the {@linkplain Player player} is defeated.
+     * Handles what happens when the {@linkplain Player player} is isDefeated.
      */
     private void lose() {
         pause();
-        if (getPlayer().getScore() > 0) {
-            ApplicationSettings.getHighscores().add(
-                new HighscoreEntry(
-                    "getPlayer().getName()",
-                    new Date().toString(),
-                    getPlayer().getScore()
-                )
-            );
-        }
-        final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You Loose!!!\nContinue?", ButtonType.YES, ButtonType.NO);
+        TextInputDialog dialog = new TextInputDialog("<CoolPlayerName>");
+        dialog.setTitle("Game Over");
+        dialog.setHeaderText("You Lost!\n Your Score: " + getPlayer().getScore());
+        dialog.setContentText("Please enter your name to add it to the leaderboard:");
+
+        final Optional<String> playerName = dialog.showAndWait();
+        playerName.ifPresent((name) -> {
+            getPlayer().setName(name);
+                ApplicationSettings.getHighscores().add(
+                    new HighscoreEntry(
+                        getPlayer().getName(),
+                        new Date().toString(),
+                        getPlayer().getScore()
+                    )
+                );
+            }
+        );
+
+
+        final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Continue?", ButtonType.YES, ButtonType.NO);
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.YES) {
@@ -301,7 +312,7 @@ public class GameController extends SceneController implements Updatable {
             //do stuff
         } else {
             try {
-                SceneSwitcher.loadScene(SceneSwitcher.SceneType.MAIN_MENU, (Stage) getGameScene().getWindow());
+                SceneSwitcher.loadScene(SceneSwitcher.SceneType.MAIN_MENU, getStage());
             } catch (final Exception e) {
                 throw new RuntimeException(e);
             }
@@ -325,15 +336,11 @@ public class GameController extends SceneController implements Updatable {
             switch (k.getCode()) {
                 case ESCAPE -> Platform.runLater(() -> {
                     pause();
-                    final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Exit to main Menu?", ButtonType.YES, ButtonType.NO);
+                    final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Give Up?", ButtonType.YES, ButtonType.NO);
                     alert.showAndWait();
 
                     if (alert.getResult() == ButtonType.YES) {
-                        try {
-                            SceneSwitcher.loadScene(SceneSwitcher.SceneType.MAIN_MENU, (Stage) getGameScene().getWindow());
-                        } catch (final Exception e) {
-                            throw new RuntimeException(e);
-                        }
+                        lose();
                     } else {
                         resume();
                     }
@@ -341,9 +348,8 @@ public class GameController extends SceneController implements Updatable {
 
                 // F11
                 case F11 -> Platform.runLater(() -> {
-                    final Stage stage = (Stage) getGameScene().getWindow();
-                    stage.setFullScreen(!stage.isFullScreen());
-                    System.out.println("Fullscreen: " + stage.isFullScreen());
+                    getStage().setFullScreen(!getStage().isFullScreen());
+                    System.out.println("Fullscreen: " + getStage().isFullScreen());
                 });
             }
         });
@@ -363,7 +369,7 @@ public class GameController extends SceneController implements Updatable {
             doCollisions();
 
             final var killed = getGameState().getSprites().stream().filter(Sprite::isDead).collect(Collectors.toList());
-            // check if the player is defeated
+            // check if the player is isDefeated
             updatePoints(killed);
 
             // check loose condition
