@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
 import java.util.HashSet;
 import java.util.Set;
 
-import static h13.controller.GameConstants.BULLET_VELOCITY;
+import static h13.controller.GameConstants.*;
 
 /**
  * A Bullet is a Sprite that can be fired by a BattleShip and can canHit other BattleShips.
@@ -43,7 +43,7 @@ public class Bullet extends Sprite {
      * @param direction The direction the Bullet is travelling towards.
      */
     public Bullet(final double x, final double y, final GameState gameState, final BattleShip owner, final Direction direction) {
-        super(x, y, 1, 5, Color.WHITE, BULLET_VELOCITY, 1, gameState);
+        super(x, y, BULLET_WIDTH, BULLET_HEIGHT, Color.WHITE, BULLET_VELOCITY, 1, gameState);
         this.owner = owner;
         setDirection(direction);
     }

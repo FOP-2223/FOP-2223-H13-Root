@@ -6,8 +6,7 @@ import h13.model.gameplay.GameState;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.Nullable;
 
-import static h13.controller.GameConstants.ORIGINAL_GAME_BOUNDS;
-import static h13.controller.GameConstants.RELATIVE_SHIP_WIDTH;
+import static h13.controller.GameConstants.*;
 
 /**
  * A BattleShip is a Sprite that can shoot and be friends or enemies with other BattleShips.
@@ -36,8 +35,8 @@ public class BattleShip extends Sprite {
         super(
             x,
             y,
-            RELATIVE_SHIP_WIDTH * ORIGINAL_GAME_BOUNDS.getWidth(),
-            RELATIVE_SHIP_WIDTH * ORIGINAL_GAME_BOUNDS.getWidth(),
+            SHIP_SIZE,
+            SHIP_SIZE,
             color,
             velocity,
             health,
@@ -109,7 +108,7 @@ public class BattleShip extends Sprite {
         }
         setBullet(
             new Bullet(
-                getX() + getWidth() / 2-.5,
+                getX() + getWidth() / 2 - .5 * BULLET_WIDTH,
                 getY(),
                 getGameState(),
                 this,

@@ -40,7 +40,7 @@ public class PlayerController {
         this.gameController = gameController;
         player = new Player(
             0,
-            ORIGINAL_GAME_BOUNDS.getHeight() - ORIGINAL_GAME_BOUNDS.getWidth() * RELATIVE_SHIP_WIDTH,
+            ORIGINAL_GAME_BOUNDS.getHeight() - SHIP_SIZE,
             PLAYER_VELOCITY,
             gameController.getGameState()
         );
