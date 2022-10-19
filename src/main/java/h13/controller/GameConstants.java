@@ -4,6 +4,7 @@ package h13.controller;
 import h13.model.gameplay.Direction;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.scene.paint.Color;
 
 /**
  * The GameConstants class contains all the constants that are used in the game.
@@ -129,9 +130,15 @@ public final class GameConstants {
     public static final double HUD_HEIGHT = HUD_FONT_SIZE + 2 * HUD_PADDING;
 
     /**
+     * The HUD text color.
+     */
+    public static final Color HUD_TEXT_COLOR = Color.WHITE;
+
+    /**
      * The HUD font.
      */
     public static final javafx.scene.text.Font HUD_FONT = javafx.scene.text.Font.loadFont(GameConstants.class.getResourceAsStream(GameConstants.HUD_FONT_PATH), HUD_FONT_SIZE);
+
     /**
      * The HUD font.
      */

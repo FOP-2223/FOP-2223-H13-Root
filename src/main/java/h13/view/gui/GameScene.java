@@ -85,12 +85,7 @@ public class GameScene extends Scene implements ControlledScene<GameController> 
         gameBoard = new GameBoard(ORIGINAL_GAME_BOUNDS.getWidth(), ORIGINAL_GAME_BOUNDS.getHeight(), this);
 
         // Size
-        gameBoard.widthProperty().bind(
-            Bindings
-                .when(widthProperty().divide(heightProperty()).lessThanOrEqualTo(ASPECT_RATIO))
-                .then(widthProperty())
-                .otherwise(heightProperty().multiply(ASPECT_RATIO))
-        );
+        gameBoard.widthProperty().bind(Bindings.min(widthProperty(), heightProperty().multiply(ASPECT_RATIO)));
         gameBoard.heightProperty().bind(gameBoard.widthProperty().divide(ASPECT_RATIO));
 
         // Positioning

@@ -11,8 +11,6 @@ import h13.model.gameplay.sprites.Sprite;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Scale;
@@ -165,37 +163,37 @@ public class GameBoard extends Canvas implements Updatable {
      * @param gc The {@link GraphicsContext} to draw the HUD to.
      */
     private void drawHUD(final GraphicsContext gc) {
-        // save original font and color
-        final Font originalFont = gc.getFont();
-        final Color originalColor = (Color) gc.getFill();
+        // save the current configuration
+        gc.save();
 
+        // draw the score
+        gc.setFill(HUD_TEXT_COLOR);
         gc.setFont(HUD_FONT);
-        gc.setFill(Color.WHITE);
-        final var player = getGameController().getPlayer();
 
-        // Draw the score
-        final String score = "Score: " + player.getScore();
-        final Text scoreLabel = new Text(score);
+        // draw the score
+        final var score = getGameController().getPlayer().getScore();
+        final var scoreText = String.format("Score: %d", score);
+        final var scoreLabel = new Text(scoreText);
         scoreLabel.setFont(HUD_FONT);
         gc.fillText(
-            score,
+            scoreText,
             HUD_PADDING,
-            HUD_PADDING + scoreLabel.getLayoutBounds().getHeight()
+            HUD_PADDING + scoreLabel.getBoundsInLocal().getHeight()
         );
 
-        // Draw the lives
-        final String lives = "Lives: " + player.getHealth();
-        final Text livesLabel = new Text(lives);
+        // draw the lives
+        final var lives = getGameController().getPlayer().getHealth();
+        final var livesText = String.format("Lives: %d", lives);
+        final var livesLabel = new Text(livesText);
         livesLabel.setFont(HUD_FONT);
         gc.fillText(
-            lives,
-            ORIGINAL_GAME_BOUNDS.getWidth() - HUD_PADDING - livesLabel.getLayoutBounds().getWidth(),
-            HUD_PADDING + livesLabel.getLayoutBounds().getHeight()
+            livesText,
+            ORIGINAL_GAME_BOUNDS.getWidth() - HUD_PADDING - livesLabel.getBoundsInLocal().getWidth(),
+            HUD_PADDING + livesLabel.getBoundsInLocal().getHeight()
         );
 
-        // restore original font and color
-        gc.setFont(originalFont);
-        gc.setFill(originalColor);
+        // restore the previous configuration
+        gc.restore();
     }
 
     /**
@@ -209,8 +207,7 @@ public class GameBoard extends Canvas implements Updatable {
      */
     private static void drawBorder(final GraphicsContext gc) {
         // save original settings
-        final var oldStroke = gc.getStroke();
-        final var oldLineWidth = gc.getLineWidth();
+        gc.save();
 
         // Draw borders
         gc.setStroke(BORDER_COLOR);
@@ -218,7 +215,6 @@ public class GameBoard extends Canvas implements Updatable {
         gc.strokeRect(0, 0, ORIGINAL_GAME_BOUNDS.getWidth(), ORIGINAL_GAME_BOUNDS.getHeight());
 
         // restore original settings
-        gc.setStroke(oldStroke);
-        gc.setLineWidth(oldLineWidth);
+        gc.restore();
     }
 }
