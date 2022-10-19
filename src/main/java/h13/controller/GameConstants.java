@@ -44,6 +44,11 @@ public final class GameConstants {
     public static final double INITIAL_ENEMY_MOVEMENT_VELOCITY = 10;
 
     /**
+     * The amount of speed that the enemies gain per iteration.
+     */
+    public static final double ENEMY_MOVEMENT_SPEED_INCREASE = 0.3;
+
+    /**
      * The relative Amount of padding between the enemies.
      */
     public static final double SHIP_PADING = 0.01;

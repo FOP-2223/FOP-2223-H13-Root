@@ -1,12 +1,9 @@
 package h13.model.gameplay;
 
-import h13.controller.ApplicationSettings;
-import h13.controller.gamelogic.EnemyController;
 import h13.model.gameplay.sprites.Enemy;
 import h13.shared.Utils;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import org.jetbrains.annotations.Nullable;
 
 import static h13.controller.GameConstants.*;
 
@@ -25,7 +22,7 @@ public class EnemyMovement implements Updatable {
     /**
      * The current movement speed
      */
-    private double velocity;
+    private double velocity = INITIAL_ENEMY_MOVEMENT_VELOCITY;
 
     /**
      * The Next y-coordinate to reach
@@ -171,11 +168,10 @@ public class EnemyMovement implements Updatable {
      * @param deltaY The deltaY.
      */
     private void updatePositions(final double deltaX, final double deltaY) {
-        final var enemies = getGameState().getAliveEnemies();
-        for (final var e : enemies) {
-            e.setX(e.getX() + deltaX);
-            e.setY(e.getY() + deltaY);
-        }
+        getGameState().getEnemies().forEach(enemy -> {
+            enemy.setX(enemy.getX() + deltaX);
+            enemy.setY(enemy.getY() + deltaY);
+        });
     }
 
     /**
@@ -191,7 +187,7 @@ public class EnemyMovement implements Updatable {
             direction = enemyBounds.getMaxX() >= ORIGINAL_GAME_BOUNDS.getWidth() ? Direction.LEFT : Direction.RIGHT;
         }
 
-        velocity += .3;
+        setVelocity(getVelocity() + ENEMY_MOVEMENT_SPEED_INCREASE);
     }
 
     /**
@@ -200,7 +196,6 @@ public class EnemyMovement implements Updatable {
      */
     public void nextRound() {
         direction = INITIAL_ENEMY_MOVEMENT_DIRECTION;
-        velocity = INITIAL_ENEMY_MOVEMENT_VELOCITY;
         yTarget = 0;
     }
 }
