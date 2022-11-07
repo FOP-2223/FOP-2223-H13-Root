@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="h13.controller.scene.menu.SettingsController">
+    <bottom>
+        <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#loadMainMenuScene" prefHeight="72.0" prefWidth="600.0" text="Go Back" wrapText="true">
+            <font>
+                <Font size="27.0" />
+            </font>
+        </Button>
+    </bottom>
+    <top>
+        <Label text="Settings" BorderPane.alignment="CENTER">
+            <font>
+                <Font size="41.0" />
+            </font>
+        </Label>
+    </top>
+    <center>
+        <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+            <tabs>
+                <Tab text="Gameplay">
+                    <content>
+                        <VBox alignment="CENTER" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" spacing="10">
+                            <children>
+                                <CheckBox fx:id="instantShootingCheckBox" mnemonicParsing="false" text="Instant Shooting" />
+                            </children>
+                        </VBox>
+                    </content>
+                </Tab>
+                <Tab text="Graphics">
+                    <content>
+                        <VBox alignment="CENTER" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" spacing="10">
+                            <children>
+                                <CheckBox fx:id="loadTexturesCheckBox" mnemonicParsing="false" text="Load Textures" />
+                                <CheckBox fx:id="loadBackgroundCheckBox" mnemonicParsing="false" text="Load Background" />
+                        <CheckBox fx:id="fullscreenCheckBox" mnemonicParsing="false" text="FullScreen" />
+                            </children>
+                        </VBox>
+                    </content>
+                </Tab>
+                <Tab text="Audio">
+                    <content>
+                        <VBox alignment="CENTER" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" spacing="10">
+                            <children>
+                                <CheckBox mnemonicParsing="false" text="Enable Sound" />
+                                <HBox alignment="CENTER">
+                                    <children>
+                                        <Slider />
+                                        <Label text="Music Volume" />
+                                    </children>
+                                </HBox>
+                                <HBox alignment="CENTER" layoutX="10.0" layoutY="94.0">
+                                    <children>
+                                        <Slider />
+                                        <Label text="Gameplay Volume" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
+   <stylesheets>
+      <URL value="@menuStyles.css" />
+      <URL value="@darkMode.css" />
+   </stylesheets>
+</BorderPane>
