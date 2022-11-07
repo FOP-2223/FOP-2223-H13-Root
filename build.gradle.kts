@@ -1,30 +1,41 @@
+@Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
 plugins {
     java
     application
-    id("org.sourcegrade.style") version "2.1.0"
-    id("org.sourcegrade.submitter") version "0.5.2"
-    id("org.openjfx.javafxplugin") version "0.0.13"
+    alias(libs.plugins.style)
+    alias(libs.plugins.jagr.gradle)
+    alias(libs.plugins.javafxplugin)
 }
 
-version = "0.1.0-SNAPSHOT"
-
-repositories {
-    mavenLocal()
-    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-    mavenCentral()
-}
+version = file("version").readLines().first()
 
 javafx {
     version = "17.0.1"
     modules("javafx.controls", "javafx.fxml")
 }
 
-submit {
-    assignmentId = "h13"
-    studentId = "ab12cdef"
-    firstName = "sol_first"
-    lastName = "sol_last"
-    requireTests = false
+jagr {
+    assignmentId.set("h13")
+    submissions {
+        val main by creating {
+            studentId.set("ab12cdef")
+            firstName.set("sol_first")
+            lastName.set("sol_last")
+        }
+    }
+    graders {
+        val graderPublic by creating {
+            graderName.set("FOP-2223-H13-Public")
+            rubricProviderName.set("h00.H13_RubricProvider")
+            configureDependencies {
+                implementation(libs.algoutils.tutor)
+            }
+        }
+        val graderPrivate by creating {
+            parent(graderPublic)
+            graderName.set("FOP-2223-H13-Private")
+        }
+    }
 }
 
 val grader: SourceSet by sourceSets.creating {
@@ -34,14 +45,9 @@ val grader: SourceSet by sourceSets.creating {
 }
 
 dependencies {
-    implementation("org.jetbrains:annotations:23.0.0")
-    "graderCompileOnly"("org.sourcegrade:jagr-launcher:0.5.1") {
-        exclude("org.jetbrains", "annotations")
-    }
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.0")
-    implementation("com.google.code.gson:gson:2.9.0")
-    implementation("org.tudalgo:algoutils-student:0.1.0-SNAPSHOT")
-    "graderImplementation"("org.tudalgo:algoutils-tutor:0.1.0-SNAPSHOT")
+    implementation(libs.annotations)
+    implementation(libs.algoutils.student)
+    testImplementation(libs.junit.core)
 }
 
 application {
@@ -50,7 +56,7 @@ application {
 
 tasks {
     val runDir = File("build/run")
-    named<JavaExec>("run") {
+    withType<JavaExec> {
         doFirst {
             runDir.mkdirs()
         }
@@ -63,62 +69,9 @@ tasks {
         workingDir = runDir
         useJUnitPlatform()
     }
-    val graderTest by creating(Test::class) {
-        group = "verification"
-        doFirst {
-            runDir.mkdirs()
-        }
-        workingDir = runDir
-        testClassesDirs = grader.output.classesDirs
-        classpath = grader.compileClasspath + grader.runtimeClasspath
-        useJUnitPlatform()
-    }
-    named("check") {
-        dependsOn(graderTest)
-    }
-    val graderJar by creating(Jar::class) {
-        group = "build"
-        afterEvaluate {
-            archiveFileName.set("FOP-2223-H13-Root-${project.version}.jar")
-            from(sourceSets.main.get().allSource)
-            from(sourceSets.test.get().allSource)
-            from(grader.allSource)
-        }
-    }
-    val graderLibs by creating(Jar::class) {
-        group = "build"
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-        // don't include Jagr's runtime dependencies
-        val jagrRuntime = configurations["graderCompileClasspath"]
-            .resolvedConfiguration
-            .firstLevelModuleDependencies
-            .first { it.moduleGroup == "org.sourcegrade" && it.moduleName == "jagr-launcher" }
-            .allModuleArtifacts
-            .map { it.file }
-
-        val runtimeDeps = grader.runtimeClasspath.mapNotNull {
-            if (it.path.toLowerCase().contains("h13") || jagrRuntime.contains(it)) {
-                null
-            } else if (it.isDirectory) {
-                it
-            } else {
-                zipTree(it)
-            }
-        }
-        from(runtimeDeps)
-        archiveFileName.set("FOP-2223-H13-Root-${project.version}-libs.jar")
-    }
-    create("graderAll") {
-        group = "build"
-        dependsOn(graderJar, graderLibs)
-    }
     withType<JavaCompile> {
         options.encoding = "UTF-8"
         sourceCompatibility = "17"
         targetCompatibility = "17"
-    }
-    jar {
-        enabled = false
     }
 }
