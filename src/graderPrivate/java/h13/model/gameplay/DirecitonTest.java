@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * The Junit-Tests for the {@link Direction} class.
+ */
 public class DirecitonTest {
     @Test
     public void testOpposite() {

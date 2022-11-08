@@ -1,0 +1,88 @@
+package h13.rubric;
+
+import org.sourcegrade.jagr.api.rubric.Criterion;
+import org.sourcegrade.jagr.api.rubric.GradeResult;
+import org.sourcegrade.jagr.api.rubric.Grader;
+import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
+
+import java.util.List;
+
+/**
+ * Utility class for creating {@link Criterion}s.
+ */
+public class RubricUtils {
+    /**
+     * Creates a new {@link Criterion.Builder} with the given description and test.
+     *
+     * @param description The description of the criterion.
+     * @param testRef     The test reference of the criterion.
+     * @return The newly created criterion builder.
+     */
+    public static Criterion.Builder defaultCriterionBuilder(final String description, final JUnitTestRef testRef) {
+        final var grader = Grader.testAwareBuilder();
+        if (testRef != null) {
+            grader.requirePass(testRef);
+        }
+        grader.pointsFailedMin();
+        grader.pointsPassedMax();
+        return Criterion.builder()
+            .shortDescription(description)
+            .grader(grader.build());
+    }
+
+    /**
+     * Creates a new {@link Criterion} with the given description and test.
+     *
+     * @param description The description of the criterion.
+     * @param testRef     The test reference of the criterion.
+     * @return The newly created criterion.
+     */
+    public static Criterion criterion(final String description, final JUnitTestRef testRef) {
+        return defaultCriterionBuilder(description, testRef).build();
+    }
+
+    /**
+     * Creates a new {@link Criterion} with the given description and test.
+     *
+     * @param description The description of the criterion.
+     * @param testRef     The test reference of the criterion.
+     * @param points      The points of the criterion.
+     * @return The newly created criterion.
+     */
+    public static Criterion criterion(final String description, final JUnitTestRef testRef, final int points) {
+        final var cb = defaultCriterionBuilder(description, testRef);
+        if (points >= 0) {
+            cb.minPoints(0);
+            cb.maxPoints(points);
+        } else {
+            cb.maxPoints(0);
+            cb.minPoints(points);
+        }
+        return cb.build();
+    }
+
+    /**
+     * Creates a {@link Grader} for manual tutor grading.
+     *
+     * @param points The maximum points to be awarded.
+     * @return The newly created grader.
+     */
+    public static Grader manualGrader(final int points) {
+        return (testCycle, criterion) -> new GradeResult() {
+            @Override
+            public int getMinPoints() {
+                return Math.min(points, 0);
+            }
+
+            @Override
+            public int getMaxPoints() {
+                return Math.max(points, 0);
+            }
+
+            @Override
+            public List<String> getComments() {
+                return List.of("Dieses Kriterium wird händisch bewertet.");
+            }
+        };
+    }
+}
