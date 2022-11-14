@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * The Junit-Tests for the {@link Direction} class.
  */
-public class DirecitonTest {
+public class DirectionTest {
     @Test
     public void testOpposite() {
         for (final Direction d : Direction.values()) {
