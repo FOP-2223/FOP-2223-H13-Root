@@ -2,7 +2,7 @@
 plugins {
     java
     application
-    // alias(libs.plugins.style)
+    alias(libs.plugins.style)
     alias(libs.plugins.jagr.gradle)
     alias(libs.plugins.javafxplugin)
 }
@@ -36,12 +36,6 @@ jagr {
             graderName.set("FOP-2223-H13-Private")
         }
     }
-}
-
-val grader: SourceSet by sourceSets.creating {
-    val test = sourceSets.test.get()
-    compileClasspath += test.output + test.compileClasspath
-    runtimeClasspath += output + test.runtimeClasspath
 }
 
 dependencies {
