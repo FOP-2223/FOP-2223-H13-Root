@@ -264,7 +264,7 @@ public class GameController extends SceneController implements Updatable {
     }
 
     /**
-     * Changes {@link #paused} to {@link false}.
+     * Changes {@link #paused} to {@code false}.
      */
     public void resume() {
         paused = false;
