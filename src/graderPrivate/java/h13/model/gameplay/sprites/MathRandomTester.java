@@ -12,6 +12,7 @@ public class MathRandomTester {
      * @see #setDoReplaceRandom(boolean)
      */
     public static double random() {
+        System.out.println("Random intercepted!");
         if (doReplaceRandom) {
             return replaceRandomValue;
         } else {

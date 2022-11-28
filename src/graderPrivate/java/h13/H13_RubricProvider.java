@@ -1,9 +1,8 @@
 package h13;
 
-import org.sourcegrade.jagr.api.rubric.Criterion;
-import org.sourcegrade.jagr.api.rubric.Grader;
-import org.sourcegrade.jagr.api.rubric.Rubric;
-import org.sourcegrade.jagr.api.rubric.RubricProvider;
+import h13.model.gameplay.sprites.EnemyTest;
+import org.sourcegrade.jagr.api.rubric.*;
+import org.sourcegrade.jagr.api.testing.TestCycle;
 
 import static h13.rubric.RubricUtils.*;
 
@@ -84,7 +83,7 @@ public class H13_RubricProvider implements RubricProvider {
                             ),
                             criterion(
                                 "Die Methode update() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.ofMethod(() -> EnemyTest.class.getDeclaredMethod("testUpdateWithFiftyPercentProbability", TestCycle.class))
                             )
                         )
                         .build(),
