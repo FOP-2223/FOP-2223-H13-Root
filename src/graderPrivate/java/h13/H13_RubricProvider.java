@@ -1,6 +1,7 @@
 package h13;
 
 import h13.model.gameplay.sprites.EnemyTest;
+import h13.model.gameplay.sprites.PlayerTest;
 import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.TestCycle;
 
@@ -78,12 +79,21 @@ public class H13_RubricProvider implements RubricProvider {
                         .shortDescription("H1.4 | Klasse Enemy")
                         .addChildCriteria(
                             criterion(
-                                "Ein Enemy feuert beim Aufruf von update() mit der korrekten Wahrscheinlichkeit eine Kugel.",
-                                null
+                                "Ein Enemy feuert beim Aufruf von update() mit der korrekten Wahrscheinlichkeit eine Kugel (ohne ein delay zu beachten).",
+                                JUnitTestRef.and(
+                                    JUnitTestRef.ofMethod(() -> EnemyTest.class.getDeclaredMethod("testUpdateShootCalledWithMaxProbability")),
+                                    JUnitTestRef.ofMethod(() -> EnemyTest.class.getDeclaredMethod("testUpdateWithMinProbability"))
+                                )
                             ),
                             criterion(
                                 "Die Methode update() ist vollständig korrekt.",
-                                JUnitTestRef.ofMethod(() -> EnemyTest.class.getDeclaredMethod("testUpdateWithFiftyPercentProbability", TestCycle.class))
+                                JUnitTestRef.and(
+                                    JUnitTestRef.ofMethod(() -> EnemyTest.class.getDeclaredMethod("testUpdateShootCalledWithMaxProbability")),
+                                    JUnitTestRef.ofMethod(() -> EnemyTest.class.getDeclaredMethod("testUpdateWithMinProbability")),
+                                    JUnitTestRef.ofMethod(() -> EnemyTest.class.getDeclaredMethod("testUpdateWithDelay")),
+                                    JUnitTestRef.ofMethod(() -> EnemyTest.class.getDeclaredMethod("testUpdateWithDelayAndMinProbability")),
+                                    JUnitTestRef.ofMethod(() -> EnemyTest.class.getDeclaredMethod("testUpdateWithFiftyPercentProbability"))
+                                )
                             )
                         )
                         .build(),
@@ -92,7 +102,10 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Methode update() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.and(
+                                    JUnitTestRef.ofMethod(() -> PlayerTest.class.getDeclaredMethod("testUpdateWithKeepShooting")),
+                                    JUnitTestRef.ofMethod(() -> PlayerTest.class.getDeclaredMethod("testUpdateWithoutKeepShooting"))
+                                )
                             )
                         )
                         .build(),
