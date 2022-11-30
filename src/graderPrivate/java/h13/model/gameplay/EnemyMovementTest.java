@@ -8,6 +8,7 @@ import h13.model.gameplay.sprites.Enemy;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
@@ -52,7 +53,7 @@ public class EnemyMovementTest {
         System.out.println("expectedBounds = " + expectedBounds);
         System.out.printf("enemies = %s%n", enemies);
         GameConstants.SHIP_SIZE = SHIP_SIZE;
-        gameState.getEnemies().addAll(enemies.stream().map(JsonEnemy::deserialize).toList());
+        gameState.getSprites().addAll(enemies.stream().map(JsonEnemy::deserialize).toList());
         Bounds actualBounds = enemyMovement.getEnemyBounds();
         var context = Assertions2.contextBuilder()
                 .add("enemies", enemies)
