@@ -1,9 +1,13 @@
 package h13;
 
+import h13.json.JsonBounds;
+import h13.model.gameplay.EnemyMovementTest;
 import h13.model.gameplay.sprites.EnemyTest;
 import h13.model.gameplay.sprites.PlayerTest;
 import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.TestCycle;
+
+import java.util.List;
 
 import static h13.rubric.RubricUtils.*;
 
@@ -114,7 +118,7 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Methode getEnemyBounds() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testGetEnemyBounds", List.class, double.class, JsonBounds.class))
                             ),
                             criterion(
                                 "Die Methode bottomWasReached() ist vollständig korrekt.",

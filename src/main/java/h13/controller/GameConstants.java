@@ -82,7 +82,7 @@ public final class GameConstants {
     /**
      * The ship width.
      */
-    public static final double SHIP_SIZE = ORIGINAL_GAME_BOUNDS.getWidth() * RELATIVE_SHIP_SIZE;
+    public static double SHIP_SIZE = ORIGINAL_GAME_BOUNDS.getWidth() * RELATIVE_SHIP_SIZE;
 
     /**
      * The Bullet width.

@@ -1,0 +1,21 @@
+[
+  {
+    "SHIP_SIZE": 15,
+    "enemies": [
+      {
+        "xIndex": 0,
+        "yIndex": 0,
+        "x": 0,
+        "y": 0,
+        "velocity": 0,
+        "health": 1
+      }
+    ],
+    "expectedBounds": {
+      "x": 0,
+      "y": 0,
+      "width": 15,
+      "height": 15
+    }
+  }
+]
