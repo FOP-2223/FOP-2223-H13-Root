@@ -5,6 +5,7 @@ import h13.controller.ApplicationSettings;
 import h13.controller.GameConstants;
 import h13.json.*;
 import h13.model.gameplay.sprites.Enemy;
+import h13.shared.Utils;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
@@ -75,5 +76,10 @@ public class EnemyMovementTest {
             .add("enemyBounds", enemyBounds.deserialize())
             .build();
         Assertions2.assertEquals(expectedBottomWasReached, actual, context, r -> "The return value is not correct.");
+
+        // mock getNextPosition() from Utils class
+//        var utilsMock = mockStatic(Utils.class);
+//        utilsMock.when(() -> Utils.getNextPosition(any(Bounds.class), anyDouble(), any(Direction.class),anyDouble()))
+//            .thenReturn(new BoundingBox(0, 0, 0, 0));
     }
 }
