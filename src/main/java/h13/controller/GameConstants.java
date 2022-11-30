@@ -13,7 +13,7 @@ public final class GameConstants {
     /**
      * The Bounds of the original game screen.
      */
-    public static final Bounds ORIGINAL_GAME_BOUNDS = new BoundingBox(
+    public static Bounds ORIGINAL_GAME_BOUNDS = new BoundingBox(
         0,
         0,
         256,
