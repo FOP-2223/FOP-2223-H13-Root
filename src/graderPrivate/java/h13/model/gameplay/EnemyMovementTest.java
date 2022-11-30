@@ -22,8 +22,8 @@ import spoon.support.compiler.jdt.ContextBuilder;
 
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
+import static h13.util.PrettyPrinter.prettyPrint;
+import static org.mockito.Mockito.*;
 
 @TestForSubmission
 public class EnemyMovementTest {
@@ -34,33 +34,46 @@ public class EnemyMovementTest {
     public void setup() {
         ApplicationSettings.loadTexturesProperty().set(false);
         gameState = new GameState();
-        enemyMovement = gameState.getEnemyMovement();
+        enemyMovement = spy(gameState.getEnemyMovement());
     }
 
     @ParameterizedTest
     @JsonClasspathSource("h13/model/gameplay/EnemyMovementTestGetEnemyBounds.json")
     void testGetEnemyBounds(
-        @Property("enemies")
-        @ConvertWith(EnemyListConverter.class)
-        List<JsonEnemy> enemies,
-        @Property("SHIP_SIZE")
-        double SHIP_SIZE,
-        @Property("expectedBounds")
-//        @ConvertWith(JsonBoundsConverter.class)
-        JsonBounds expectedBounds
-    ){
-        System.out.println("SHIP_SIZE = " + SHIP_SIZE);
-        System.out.println("expectedBounds = " + expectedBounds);
-        System.out.printf("enemies = %s%n", enemies);
+        @Property("enemies") @ConvertWith(EnemyListConverter.class) final List<JsonEnemy> enemies,
+        @Property("SHIP_SIZE") final double SHIP_SIZE,
+        @Property("enemyBounds") final JsonBounds expectedBounds
+    ) {
         GameConstants.SHIP_SIZE = SHIP_SIZE;
         gameState.getSprites().addAll(enemies.stream().map(JsonEnemy::deserialize).toList());
-        Bounds actualBounds = enemyMovement.getEnemyBounds();
-        var context = Assertions2.contextBuilder()
-                .add("enemies", enemies)
-                .add("SHIP_SIZE", SHIP_SIZE)
-                .add("expectedBounds", expectedBounds)
-                .add("actualBounds", actualBounds)
-                .build();
+        final Bounds actualBounds = enemyMovement.getEnemyBounds();
+        final var context = Assertions2.contextBuilder()
+            .add("enemies", prettyPrint(gameState.getEnemies()))
+            .add("SHIP_SIZE", SHIP_SIZE)
+            .build();
         Assertions2.assertEquals(expectedBounds.deserialize(), actualBounds, context, r -> "Calculated bounds are not correct.");
+    }
+
+    @ParameterizedTest
+    @JsonClasspathSource("h13/model/gameplay/EnemyMovementTestBottomWasReached.json")
+    void testBottomWasReached(
+        @Property("GAME_BOUNDS") final JsonBounds GAME_BOUNDS,
+        @Property("enemies") @ConvertWith(EnemyListConverter.class) final List<JsonEnemy> enemies,
+        @Property("SHIP_SIZE") final double SHIP_SIZE,
+        @Property("enemyBounds") final JsonBounds enemyBounds,
+        @Property("bottomWasReached") final boolean expectedBottomWasReached
+    ) {
+        GameConstants.ORIGINAL_GAME_BOUNDS = GAME_BOUNDS.deserialize();
+        GameConstants.SHIP_SIZE = SHIP_SIZE;
+        gameState.getSprites().addAll(enemies.stream().map(JsonEnemy::deserialize).toList());
+        doReturn(enemyBounds.deserialize()).when(enemyMovement).getEnemyBounds();
+        final var actual = enemyMovement.bottomWasReached();
+        final var context = Assertions2.contextBuilder()
+            .add("GAME_BOUNDS", GAME_BOUNDS.deserialize())
+            .add("enemies", prettyPrint(gameState.getEnemies()))
+            .add("SHIP_SIZE", SHIP_SIZE)
+            .add("enemyBounds", enemyBounds.deserialize())
+            .build();
+        Assertions2.assertEquals(expectedBottomWasReached, actual, context, r -> "The return value is not correct.");
     }
 }

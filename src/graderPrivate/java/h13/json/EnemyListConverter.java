@@ -28,7 +28,7 @@ public class EnemyListConverter implements ArgumentConverter {
         } else if (!(parameterType.isAssignableFrom(List.class))) {
             throw new ArgumentConversionException("Parameter type is not a List type");
         } else {
-            System.out.println(source);
+            //System.out.println(source);
             // stream from the array node
             return StreamSupport.stream(arrayNode.spliterator(), false)
                     // map each element to a JsonEnemy
