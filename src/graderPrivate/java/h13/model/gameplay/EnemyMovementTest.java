@@ -16,6 +16,7 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.BooleanString;
 import org.junitpioneer.jupiter.cartesian.CartesianTest;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
 import org.junitpioneer.jupiter.json.Property;
@@ -291,6 +292,8 @@ public class EnemyMovementTest {
         @Property("direction") final Direction direction,
         @Property("velocity") final double velocity,
         @Property("expectsNextMovementCall") final boolean expectsNextMovementCall,
+        @Property("VERTICAL_ENEMY_MOVE_DISTANCE") final double VERTICAL_ENEMY_MOVE_DISTANCE,
+        @Property("ENEMY_MOVEMENT_SPEED_INCREASE") final double ENEMY_MOVEMENT_SPEED_INCREASE,
         @Property("nextMovementYTarget") final double nextMovementYTarget,
         @Property("nextMovementDirection") final Direction nextMovementDirection,
         @Property("nextMovementVelocity") final double nextMovementVelocity,
@@ -301,6 +304,7 @@ public class EnemyMovementTest {
         @Property("newEnemyBounds") final JsonBounds newEnemyBoundsJson,
         @Property("clampedEnemyBounds") final JsonBounds clampedEnemyBoundsJson
     ) {
+        final boolean mockStudentCode = true;
         final var enemyBounds = enemyBoundsJson.deserialize();
         final var newEnemyBounds = newEnemyBoundsJson.deserialize();
         final var clampedEnemyBounds = clampedEnemyBoundsJson.deserialize();
@@ -315,6 +319,8 @@ public class EnemyMovementTest {
             .add("direction", direction)
             .add("velocity", velocity)
             .add("expectsNextMovementCall", expectsNextMovementCall)
+            .add("VERTICAL_ENEMY_MOVE_DISTANCE", VERTICAL_ENEMY_MOVE_DISTANCE)
+            .add("ENEMY_MOVEMENT_SPEED_INCREASE", ENEMY_MOVEMENT_SPEED_INCREASE)
             .add("nextMovementYTarget", nextMovementYTarget)
             .add("nextMovementDirection", nextMovementDirection)
             .add("nextMovementVelocity", nextMovementVelocity)
@@ -327,40 +333,39 @@ public class EnemyMovementTest {
             .build();
         GameConstants.ORIGINAL_GAME_BOUNDS = GAME_BOUNDS.deserialize();
         GameConstants.SHIP_SIZE = SHIP_SIZE;
-        enemyMovement = spy(mock(EnemyMovement.class, Answers.CALLS_REAL_METHODS));
+        GameConstants.VERTICAL_ENEMY_MOVE_DISTANCE = VERTICAL_ENEMY_MOVE_DISTANCE;
+        GameConstants.ENEMY_MOVEMENT_SPEED_INCREASE = ENEMY_MOVEMENT_SPEED_INCREASE;
         gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds));
-        doReturn(enemyBounds).when(enemyMovement).getEnemyBounds();
-        doReturn(bottomWasReached).when(enemyMovement).bottomWasReached();
-        doReturn(targetReached).when(enemyMovement).targetReached(any(Bounds.class));
-//        doReturn(nextm)
-//        when(EnemyMovementLinks.TARGET_REACHED_METHOD.invoke(enemyMovement, enemyBounds)).thenReturn(targetReached);
-//        Assertions.assertEquals(targetReached, EnemyMovementLinks.TARGET_REACHED_METHOD.invoke(enemyMovement, enemyBounds));
-//        doReturn(targetReached).when(enemyMovement).targetReached(enemyBounds);
+        if (mockStudentCode) {
+            doReturn(enemyBounds).when(enemyMovement).getEnemyBounds();
+            doReturn(bottomWasReached).when(enemyMovement).bottomWasReached();
+            doReturn(targetReached).when(enemyMovement).targetReached(any(Bounds.class));
+        }
         EnemyMovementLinks.Y_TARGET_FIELD.getFieldLink().set(enemyMovement, yTarget);
         EnemyMovementLinks.DIRECTION_FIELD.getFieldLink().set(enemyMovement, direction);
         EnemyMovementLinks.VELOCITY_FIELD.getFieldLink().set(enemyMovement, velocity);
         final var enemies = createEnemiesForBounds(enemyBounds);
         gameState.getSprites().addAll(enemies);
-        try (final var utilsMock = mockStatic(Utils.class)) {
-            utilsMock.when(() -> Utils.getNextPosition(
-                    any(Bounds.class),
-                    anyDouble(),
-                    any(Direction.class),
-                    anyDouble()
-                ))
-                .thenReturn(newEnemyBounds);
-            utilsMock.when(() -> Utils.clamp(any(Bounds.class)))
-                .thenReturn(clampedEnemyBounds);
+        try (final var utilsMock = mockStatic(Utils.class, CALLS_REAL_METHODS)) {
+            if (mockStudentCode) {
+                utilsMock.when(() -> Utils.getNextPosition(
+                        any(Bounds.class),
+                        anyDouble(),
+                        any(Direction.class),
+                        anyDouble()
+                    ))
+                    .thenReturn(newEnemyBounds);
+                utilsMock.when(() -> Utils.clamp(any(Bounds.class)))
+                    .thenReturn(clampedEnemyBounds);
+            }
 
             enemyMovement.update(1);
-            verify(enemyMovement, atLeast(1)).targetReached(enemyBounds);
+            verify(enemyMovement, atLeast(1)).targetReached(newEnemyBounds);
             verify(enemyMovement, expectsNextMovementCall ? atLeast(1) : never())
                 .nextMovement(enemyBounds);
             verify(enemyMovement, expectsUpdatePositionsCall ? atLeast(1) : never())
                 .updatePositions(deltaX, deltaY);
         }
-
-
     }
 
     /**

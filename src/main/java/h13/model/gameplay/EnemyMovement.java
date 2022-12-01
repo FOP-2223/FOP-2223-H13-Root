@@ -148,10 +148,12 @@ public class EnemyMovement implements Updatable {
         }
 
         final var enemyBounds = getEnemyBounds();
+        System.out.println(enemyBounds);
         Bounds newBounds = Utils.getNextPosition(enemyBounds, getVelocity(), direction, elapsedTime);
-
+        System.out.println(newBounds);
         if (targetReached(newBounds)) {
             newBounds = Utils.clamp(newBounds);
+            System.out.println(newBounds);
             nextMovement(enemyBounds);
         }
 
