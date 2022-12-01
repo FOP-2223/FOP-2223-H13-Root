@@ -6,6 +6,7 @@ import h13.json.EnemyListConverter;
 import h13.json.JsonBounds;
 import h13.json.JsonEnemy;
 import h13.model.gameplay.sprites.Enemy;
+import h13.shared.Utils;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -242,7 +243,7 @@ public class EnemyMovementTest {
         );
         final List<Enemy> enemies = List.of(
             new Enemy(0, 0, 0, 0, null),
-        new Enemy(1, 1, 0, 0, null)
+            new Enemy(1, 1, 0, 0, null)
         );
         IntStream.range(0, enemies.size())
             .forEach(i -> {
@@ -283,7 +284,7 @@ public class EnemyMovementTest {
     void testUpdateRegular(
         @Property("GAME_BOUNDS") final JsonBounds GAME_BOUNDS,
         @Property("SHIP_SIZE") final double SHIP_SIZE,
-        @Property("enemyBounds") final JsonBounds enemyBounds,
+        @Property("enemyBounds") final JsonBounds enemyBoundsJson,
         @Property("bottomWasReached") final boolean bottomWasReached,
         @Property("targetReached") final boolean targetReached,
         @Property("yTarget") final double yTarget,
@@ -295,18 +296,69 @@ public class EnemyMovementTest {
         @Property("nextMovementVelocity") final double nextMovementVelocity,
         @Property("expectsUpdatePositionsCall") final boolean expectsUpdatePositionsCall,
         @Property("deltaX") final double deltaX,
-        @Property("deltaY") final double deltaY
-    ){
+        @Property("deltaY") final double deltaY,
+        @Property("elapsedTime") final double elapsedTime,
+        @Property("newEnemyBounds") final JsonBounds newEnemyBoundsJson,
+        @Property("clampedEnemyBounds") final JsonBounds clampedEnemyBoundsJson
+    ) {
+        final var enemyBounds = enemyBoundsJson.deserialize();
+        final var newEnemyBounds = newEnemyBoundsJson.deserialize();
+        final var clampedEnemyBounds = clampedEnemyBoundsJson.deserialize();
+        final var context = Assertions2.contextBuilder()
+            .add("GAME_BOUNDS", GAME_BOUNDS.deserialize())
+            .add("SHIP_SIZE", SHIP_SIZE)
+            .add("enemies", prettyPrint(gameState.getEnemies()))
+            .add("enemyBounds", enemyBounds)
+            .add("bottomWasReached", bottomWasReached)
+            .add("targetReached", targetReached)
+            .add("yTarget", yTarget)
+            .add("direction", direction)
+            .add("velocity", velocity)
+            .add("expectsNextMovementCall", expectsNextMovementCall)
+            .add("nextMovementYTarget", nextMovementYTarget)
+            .add("nextMovementDirection", nextMovementDirection)
+            .add("nextMovementVelocity", nextMovementVelocity)
+            .add("expectsUpdatePositionsCall", expectsUpdatePositionsCall)
+            .add("deltaX", deltaX)
+            .add("deltaY", deltaY)
+            .add("elapsedTime", elapsedTime)
+            .add("newEnemyBounds", newEnemyBounds)
+            .add("clampedEnemyBounds", clampedEnemyBounds)
+            .build();
         GameConstants.ORIGINAL_GAME_BOUNDS = GAME_BOUNDS.deserialize();
         GameConstants.SHIP_SIZE = SHIP_SIZE;
         enemyMovement = spy(mock(EnemyMovement.class, Answers.CALLS_REAL_METHODS));
-                             gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds.deserialize()));
-        doReturn(enemyBounds.deserialize()).when(enemyMovement).getEnemyBounds();
+        gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds));
+        doReturn(enemyBounds).when(enemyMovement).getEnemyBounds();
         doReturn(bottomWasReached).when(enemyMovement).bottomWasReached();
-//        doReturn(targetReached).when(enemyMovement, "targetReached", enemyBounds.deserialize());
-//        when(EnemyMovementLinks.TARGET_REACHED_METHOD.invoke(enemyMovement, enemyBounds.deserialize())).thenReturn(targetReached);
-//        Assertions.assertEquals(targetReached, EnemyMovementLinks.TARGET_REACHED_METHOD.invoke(enemyMovement, enemyBounds.deserialize()));
-//        doReturn(targetReached).when(enemyMovement).targetReached(enemyBounds.deserialize());
+        doReturn(targetReached).when(enemyMovement).targetReached(any(Bounds.class));
+//        doReturn(nextm)
+//        when(EnemyMovementLinks.TARGET_REACHED_METHOD.invoke(enemyMovement, enemyBounds)).thenReturn(targetReached);
+//        Assertions.assertEquals(targetReached, EnemyMovementLinks.TARGET_REACHED_METHOD.invoke(enemyMovement, enemyBounds));
+//        doReturn(targetReached).when(enemyMovement).targetReached(enemyBounds);
+        EnemyMovementLinks.Y_TARGET_FIELD.getFieldLink().set(enemyMovement, yTarget);
+        EnemyMovementLinks.DIRECTION_FIELD.getFieldLink().set(enemyMovement, direction);
+        EnemyMovementLinks.VELOCITY_FIELD.getFieldLink().set(enemyMovement, velocity);
+        final var enemies = createEnemiesForBounds(enemyBounds);
+        gameState.getSprites().addAll(enemies);
+        try (final var utilsMock = mockStatic(Utils.class)) {
+            utilsMock.when(() -> Utils.getNextPosition(
+                    any(Bounds.class),
+                    anyDouble(),
+                    any(Direction.class),
+                    anyDouble()
+                ))
+                .thenReturn(newEnemyBounds);
+            utilsMock.when(() -> Utils.clamp(any(Bounds.class)))
+                .thenReturn(clampedEnemyBounds);
+
+            enemyMovement.update(1);
+            verify(enemyMovement, atLeast(1)).targetReached(enemyBounds);
+            verify(enemyMovement, expectsNextMovementCall ? atLeast(1) : never())
+                .nextMovement(enemyBounds);
+            verify(enemyMovement, expectsUpdatePositionsCall ? atLeast(1) : never())
+                .updatePositions(deltaX, deltaY);
+        }
 
 
     }
