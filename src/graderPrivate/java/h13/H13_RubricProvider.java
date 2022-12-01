@@ -1,6 +1,7 @@
 package h13;
 
 import h13.json.JsonBounds;
+import h13.model.gameplay.Direction;
 import h13.model.gameplay.EnemyMovementTest;
 import h13.model.gameplay.sprites.EnemyTest;
 import h13.model.gameplay.sprites.PlayerTest;
@@ -126,11 +127,11 @@ public class H13_RubricProvider implements RubricProvider {
                             ),
                             criterion(
                                 "Die Methode targetReached() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testTargetReached", JsonBounds.class, double.class, JsonBounds.class, double.class, Direction.class, boolean.class))
                             ),
                             criterion(
                                 "Die Methode nextMovement() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testNextMovement", JsonBounds.class, double.class, JsonBounds.class, double.class, double.class, double.class, Direction.class, Direction.class, double.class, double.class, double.class))
                             ),
                             criterion(
                                 "Die Methode updatePositions() ist vollständig korrekt.",

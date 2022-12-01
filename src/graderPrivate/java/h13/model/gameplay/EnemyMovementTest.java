@@ -6,13 +6,19 @@ import h13.json.EnemyListConverter;
 import h13.json.JsonBounds;
 import h13.json.JsonEnemy;
 import h13.model.gameplay.sprites.Enemy;
+import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
+import org.junitpioneer.jupiter.cartesian.CartesianTest;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
 import org.junitpioneer.jupiter.json.Property;
+import org.junitpioneer.jupiter.params.DoubleRangeSource;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
@@ -20,6 +26,7 @@ import org.tudalgo.algoutils.tutor.general.reflections.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static h13.util.PrettyPrinter.prettyPrint;
@@ -220,6 +227,54 @@ public class EnemyMovementTest {
             context,
             r -> "The return value is not correct."
         );
+    }
+
+    @CartesianTest
+    void testUpdatePositions(
+        @DoubleRangeSource(from = -200, to = 200, step = 50, closed = true) final double deltaX,
+        @DoubleRangeSource(from = -200, to = 200, step = 50, closed = true) final double deltaY
+    ) {
+        GameConstants.ORIGINAL_GAME_BOUNDS = new BoundingBox(0, 0, 1000, 1000);
+        final List<Point2D> enemyPositions = List.of(
+            new Point2D(500, 500),
+            new Point2D(690, 420)
+        );
+        final List<Enemy> enemies = List.of(
+            new Enemy(0, 0, 0, 0, null),
+        new Enemy(1, 1, 0, 0, null)
+        );
+        IntStream.range(0, enemies.size())
+            .forEach(i -> {
+                enemies.get(i).setX(enemyPositions.get(i).getX());
+                enemies.get(i).setY(enemyPositions.get(i).getY());
+            });
+        gameState.getSprites().addAll(enemies);
+
+        final var context = Assertions2.contextBuilder()
+            .add("GAME_BOUNDS", GameConstants.ORIGINAL_GAME_BOUNDS)
+            .add("enemies", prettyPrint(enemies))
+            .add("deltaX", deltaX)
+            .add("deltaY", deltaY)
+            .build();
+        EnemyMovementLinks.UPDATE_POSITIONS_METHOD.invoke(enemyMovement, deltaX, deltaY);
+        IntStream.range(0, enemies.size())
+            .forEachOrdered(i -> {
+                final var enemy = enemies.get(i);
+                final var expectedX = enemyPositions.get(i).getX() + deltaX;
+                final var expectedY = enemyPositions.get(i).getY() + deltaY;
+                Assertions2.assertEquals(
+                    expectedX,
+                    enemy.getX(),
+                    context,
+                    r -> "The x position of enemy " + i + " is not correct."
+                );
+                Assertions2.assertEquals(
+                    expectedY,
+                    enemy.getY(),
+                    context,
+                    r -> "The y position of enemy " + i + " is not correct."
+                );
+            });
     }
 
     /**
