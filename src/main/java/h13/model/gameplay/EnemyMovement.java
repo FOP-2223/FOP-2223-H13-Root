@@ -131,8 +131,8 @@ public class EnemyMovement implements Updatable {
     private boolean targetReached(final Bounds enemyBounds) {
         return switch (direction) {
             case NONE -> false;
-            case UP -> enemyBounds.getMinY() <= yTarget;
-            case DOWN -> enemyBounds.getMaxY() >= yTarget;
+            case UP -> enemyBounds.getMaxY() <= yTarget;
+            case DOWN -> enemyBounds.getMinY() >= yTarget;
             case LEFT -> enemyBounds.getMinX() <= 0;
             case RIGHT -> enemyBounds.getMaxX() >= ORIGINAL_GAME_BOUNDS.getWidth();
             default -> throw new IllegalStateException("Unexpected value: " + direction);
@@ -182,7 +182,7 @@ public class EnemyMovement implements Updatable {
     private void nextMovement(final Bounds enemyBounds) {
         if (direction.isHorizontal()) {
             direction = Direction.DOWN;
-            yTarget = enemyBounds.getMaxY() + VERTICAL_ENEMY_MOVE_DISTANCE;
+            yTarget += VERTICAL_ENEMY_MOVE_DISTANCE;
         } else {
             direction = enemyBounds.getMaxX() >= ORIGINAL_GAME_BOUNDS.getWidth() ? Direction.LEFT : Direction.RIGHT;
         }
@@ -196,6 +196,6 @@ public class EnemyMovement implements Updatable {
      */
     public void nextRound() {
         direction = INITIAL_ENEMY_MOVEMENT_DIRECTION;
-        yTarget = 0;
+        yTarget = HUD_HEIGHT;
     }
 }

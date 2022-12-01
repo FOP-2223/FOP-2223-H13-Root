@@ -125,11 +125,11 @@ public class H13_RubricProvider implements RubricProvider {
                                 JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testBottomWasReached", JsonBounds.class, List.class, double.class, JsonBounds.class, boolean.class))
                             ),
                             criterion(
-                                "Die Methode nextMovement() ist vollständig korrekt.",
+                                "Die Methode targetReached() ist vollständig korrekt.",
                                 null
                             ),
                             criterion(
-                                "Die Methode targetReached() ist vollständig korrekt.",
+                                "Die Methode nextMovement() ist vollständig korrekt.",
                                 null
                             ),
                             criterion(
