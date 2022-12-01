@@ -62,16 +62,16 @@ public class EnemyMovementTest {
             return (FieldLink) link;
         }
 
-        public void invoke(final Object instance, final Object... args) {
-            Assertions2.call(
+        public <T> T invoke(final Object instance, final Object... args) {
+            return Assertions2.callObject(
                 () -> getMethodLink().invoke(instance, args),
                 Assertions2.emptyContext(),
                 result -> "The method " + getMethodLink().name() + " should not throw any exceptions"
             );
         }
 
-        public void invoke(final Context context, final Object instance, final Object... args) {
-            Assertions2.call(
+        public <T> T invoke(final Context context, final Object instance, final Object... args) {
+            return Assertions2.callObject(
                 () -> getMethodLink().invoke(instance, args),
                 context,
                 result -> "The method " + getMethodLink().name() + " should not throw any exceptions"
@@ -181,6 +181,45 @@ public class EnemyMovementTest {
                     r -> "The " + name + " Field is not correct."
                 );
             });
+    }
+
+    // test targetReached
+    @ParameterizedTest
+    @JsonClasspathSource("h13/model/gameplay/EnemyMovementTestTargetReached.json")
+    void testTargetReached(
+        @Property("GAME_BOUNDS") final JsonBounds GAME_BOUNDS,
+        @Property("SHIP_SIZE") final double SHIP_SIZE,
+        @Property("enemyBounds") final JsonBounds enemyBounds,
+        @Property("yTarget") final double yTarget,
+        @Property("direction") final Direction direction,
+        @Property("targetReached") final boolean targetReached
+    ) throws Exception {
+        GameConstants.ORIGINAL_GAME_BOUNDS = GAME_BOUNDS.deserialize();
+        GameConstants.SHIP_SIZE = SHIP_SIZE;
+        gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds.deserialize()));
+        doReturn(enemyBounds.deserialize()).when(enemyMovement).getEnemyBounds();
+        doReturn(false).when(enemyMovement).bottomWasReached();
+        EnemyMovementLinks.Y_TARGET_FIELD.getFieldLink().set(enemyMovement, yTarget);
+        EnemyMovementLinks.DIRECTION_FIELD.getFieldLink().set(enemyMovement, direction);
+
+        final var actual = EnemyMovementLinks.TARGET_REACHED_METHOD
+            .<Boolean>invoke(enemyMovement, enemyBounds.deserialize());
+
+        final var context = Assertions2.contextBuilder()
+            .add("GAME_BOUNDS", GAME_BOUNDS.deserialize())
+            .add("SHIP_SIZE", SHIP_SIZE)
+            .add("enemies", prettyPrint(gameState.getEnemies()))
+            .add("enemyBounds", enemyBounds.deserialize())
+            .add("yTarget", yTarget)
+            .add("direction", direction)
+            .build();
+
+        Assertions2.assertEquals(
+            targetReached,
+            actual,
+            context,
+            r -> "The return value is not correct."
+        );
     }
 
     /**
