@@ -19,6 +19,7 @@ import org.junitpioneer.jupiter.cartesian.CartesianTest;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
 import org.junitpioneer.jupiter.json.Property;
 import org.junitpioneer.jupiter.params.DoubleRangeSource;
+import org.mockito.Answers;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
@@ -30,8 +31,8 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static h13.util.PrettyPrinter.prettyPrint;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.tudalgo.algoutils.tutor.general.match.BasicReflectionMatchers.sameTypes;
 import static org.tudalgo.algoutils.tutor.general.match.BasicStringMatchers.identical;
 
@@ -275,6 +276,39 @@ public class EnemyMovementTest {
                     r -> "The y position of enemy " + i + " is not correct."
                 );
             });
+    }
+
+    @ParameterizedTest
+    @JsonClasspathSource("h13/model/gameplay/EnemyMovementTestUpdateRegular.json")
+    void testUpdateRegular(
+        @Property("GAME_BOUNDS") final JsonBounds GAME_BOUNDS,
+        @Property("SHIP_SIZE") final double SHIP_SIZE,
+        @Property("enemyBounds") final JsonBounds enemyBounds,
+        @Property("bottomWasReached") final boolean bottomWasReached,
+        @Property("targetReached") final boolean targetReached,
+        @Property("yTarget") final double yTarget,
+        @Property("direction") final Direction direction,
+        @Property("velocity") final double velocity,
+        @Property("expectsNextMovementCall") final boolean expectsNextMovementCall,
+        @Property("nextMovementYTarget") final double nextMovementYTarget,
+        @Property("nextMovementDirection") final Direction nextMovementDirection,
+        @Property("nextMovementVelocity") final double nextMovementVelocity,
+        @Property("expectsUpdatePositionsCall") final boolean expectsUpdatePositionsCall,
+        @Property("deltaX") final double deltaX,
+        @Property("deltaY") final double deltaY
+    ){
+        GameConstants.ORIGINAL_GAME_BOUNDS = GAME_BOUNDS.deserialize();
+        GameConstants.SHIP_SIZE = SHIP_SIZE;
+        enemyMovement = spy(mock(EnemyMovement.class, Answers.CALLS_REAL_METHODS));
+                             gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds.deserialize()));
+        doReturn(enemyBounds.deserialize()).when(enemyMovement).getEnemyBounds();
+        doReturn(bottomWasReached).when(enemyMovement).bottomWasReached();
+//        doReturn(targetReached).when(enemyMovement, "targetReached", enemyBounds.deserialize());
+//        when(EnemyMovementLinks.TARGET_REACHED_METHOD.invoke(enemyMovement, enemyBounds.deserialize())).thenReturn(targetReached);
+//        Assertions.assertEquals(targetReached, EnemyMovementLinks.TARGET_REACHED_METHOD.invoke(enemyMovement, enemyBounds.deserialize()));
+//        doReturn(targetReached).when(enemyMovement).targetReached(enemyBounds.deserialize());
+
+
     }
 
     /**
