@@ -7,36 +7,31 @@ import h13.json.JsonBounds;
 import h13.json.JsonEnemy;
 import h13.model.gameplay.sprites.Enemy;
 import h13.shared.Utils;
+import h13.util.ClassFieldLink;
+import h13.util.ClassMethodLink;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ConvertWith;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.BooleanString;
 import org.junitpioneer.jupiter.cartesian.CartesianTest;
 import org.junitpioneer.jupiter.json.JsonClasspathSource;
 import org.junitpioneer.jupiter.json.Property;
 import org.junitpioneer.jupiter.params.DoubleRangeSource;
-import org.mockito.Answers;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
-import org.tudalgo.algoutils.tutor.general.assertions.Context;
 import org.tudalgo.algoutils.tutor.general.reflections.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static h13.model.gameplay.EnemyMovementTest.EnemyMovementLinks.*;
+import static h13.model.gameplay.EnemyMovementTest.EnemyMovementFieldLink.*;
+import static h13.model.gameplay.EnemyMovementTest.EnemyMovementMethodLink.*;
 import static h13.util.PrettyPrinter.prettyPrint;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.tudalgo.algoutils.tutor.general.match.BasicReflectionMatchers.sameTypes;
 import static org.tudalgo.algoutils.tutor.general.match.BasicStringMatchers.identical;
 
 @TestForSubmission
@@ -44,10 +39,7 @@ public class EnemyMovementTest {
     public EnemyMovement enemyMovement;
     public GameState gameState;
 
-    public enum EnemyMovementLinks {
-        Y_TARGET_FIELD(BasicTypeLink.of(EnemyMovement.class).getField(identical("yTarget"))),
-        VELOCITY_FIELD(BasicTypeLink.of(EnemyMovement.class).getField(identical("velocity"))),
-        DIRECTION_FIELD(BasicTypeLink.of(EnemyMovement.class).getField(identical("direction"))),
+    public enum EnemyMovementMethodLink implements ClassMethodLink {
         GET_ENEMY_BOUNDS_METHOD(BasicTypeLink.of(EnemyMovement.class).getMethod(identical("getEnemyBounds"))),
         TARGET_REACHED_METHOD(BasicTypeLink.of(EnemyMovement.class).getMethod(identical("targetReached"))),
         UPDATE_POSITIONS_METHOD(BasicTypeLink.of(EnemyMovement.class).getMethod(identical("updatePositions"))),
@@ -56,38 +48,48 @@ public class EnemyMovementTest {
         UPDATE_METHOD(BasicTypeLink.of(EnemyMovement.class).getMethod(identical("update"))),
         BOTTOM_WAS_REACHED_METHOD(BasicTypeLink.of(EnemyMovement.class).getMethod(identical("bottomWasReached"))),
         ;
-        private final Link link;
+        /**
+         * The {@link MethodLink} representing the specified method.
+         */
+        private final MethodLink link;
 
-        EnemyMovementLinks(final Link link) {
+        /**
+         * Creates a new {@link ClassMethodLink}.
+         *
+         * @param link The {@link MethodLink} representing the specified method.
+         */
+        EnemyMovementMethodLink(final MethodLink link) {
             this.link = link;
         }
 
-        public Link getLink() {
+        @Override
+        public MethodLink getLink() {
             return link;
         }
+    }
 
-        public MethodLink getMethodLink() {
-            return (MethodLink) link;
+    public enum EnemyMovementFieldLink implements ClassFieldLink {
+        Y_TARGET_FIELD(BasicTypeLink.of(EnemyMovement.class).getField(identical("yTarget"))),
+        VELOCITY_FIELD(BasicTypeLink.of(EnemyMovement.class).getField(identical("velocity"))),
+        DIRECTION_FIELD(BasicTypeLink.of(EnemyMovement.class).getField(identical("direction"))),
+        ;
+
+        /**
+         * The {@link FieldLink} representing the specified field.
+         */
+        private final FieldLink link;
+
+        /**
+         * Creates a new {@link ClassMethodLink}.
+         * @param link The {@link FieldLink} representing the specified field.
+         */
+        EnemyMovementFieldLink(final FieldLink link) {
+            this.link = link;
         }
 
-        public FieldLink getFieldLink() {
-            return (FieldLink) link;
-        }
-
-        public <T> T invoke(final Object instance, final Object... args) {
-            return Assertions2.callObject(
-                () -> getMethodLink().invoke(instance, args),
-                Assertions2.emptyContext(),
-                result -> "The method " + getMethodLink().name() + " should not throw any exceptions"
-            );
-        }
-
-        public <T> T invoke(final Context context, final Object instance, final Object... args) {
-            return Assertions2.callObject(
-                () -> getMethodLink().invoke(instance, args),
-                context,
-                result -> "The method " + getMethodLink().name() + " should not throw any exceptions"
-            );
+        @Override
+        public FieldLink getLink() {
+            return link;
         }
     }
 
@@ -121,19 +123,20 @@ public class EnemyMovementTest {
         @Property("GAME_BOUNDS") final JsonBounds GAME_BOUNDS,
         @Property("enemies") @ConvertWith(EnemyListConverter.class) final List<JsonEnemy> enemies,
         @Property("SHIP_SIZE") final double SHIP_SIZE,
-        @Property("enemyBounds") final JsonBounds enemyBounds,
+        @Property("enemyBounds") final JsonBounds enemyBoundsJson,
         @Property("bottomWasReached") final boolean expectedBottomWasReached
     ) {
         GameConstants.ORIGINAL_GAME_BOUNDS = GAME_BOUNDS.deserialize();
         GameConstants.SHIP_SIZE = SHIP_SIZE;
+        final var enemyBounds = enemyBoundsJson.deserialize();
         gameState.getSprites().addAll(enemies.stream().map(JsonEnemy::deserialize).toList());
-        doReturn(enemyBounds.deserialize()).when(enemyMovement).getEnemyBounds();
+        GET_ENEMY_BOUNDS_METHOD.doReturn(enemyMovement, enemyBounds);
         final var actual = enemyMovement.bottomWasReached();
         final var context = Assertions2.contextBuilder()
             .add("GAME_BOUNDS", GAME_BOUNDS.deserialize())
             .add("enemies", prettyPrint(gameState.getEnemies()))
             .add("SHIP_SIZE", SHIP_SIZE)
-            .add("enemyBounds", enemyBounds.deserialize())
+            .add("enemyBounds", enemyBounds)
             .build();
         Assertions2.assertEquals(expectedBottomWasReached, actual, context, r -> "The return value is not correct.");
     }
@@ -143,7 +146,7 @@ public class EnemyMovementTest {
     void testNextMovement(
         @Property("GAME_BOUNDS") final JsonBounds GAME_BOUNDS,
         @Property("SHIP_SIZE") final double SHIP_SIZE,
-        @Property("enemyBounds") final JsonBounds enemyBounds,
+        @Property("enemyBounds") final JsonBounds enemyBoundsJson,
         @Property("VERTICAL_ENEMY_MOVE_DISTANCE") final double VERTICAL_ENEMY_MOVE_DISTANCE,
         @Property("oldYtarget") final double oldYtarget,
         @Property("newYtarget") final double newYtarget,
@@ -157,38 +160,39 @@ public class EnemyMovementTest {
         GameConstants.SHIP_SIZE = SHIP_SIZE;
         GameConstants.ENEMY_MOVEMENT_SPEED_INCREASE = ENEMY_MOVEMENT_SPEED_INCREASE;
         GameConstants.VERTICAL_ENEMY_MOVE_DISTANCE = VERTICAL_ENEMY_MOVE_DISTANCE;
-        gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds.deserialize()));
-        doReturn(enemyBounds.deserialize()).when(enemyMovement).getEnemyBounds();
-        doReturn(false).when(enemyMovement).bottomWasReached();
-        EnemyMovementLinks.Y_TARGET_FIELD.getFieldLink().set(enemyMovement, oldYtarget);
-        EnemyMovementLinks.DIRECTION_FIELD.getFieldLink().set(enemyMovement, oldDirection);
-        EnemyMovementLinks.VELOCITY_FIELD.getFieldLink().set(enemyMovement, oldVelocity);
+        final var enemyBounds = enemyBoundsJson.deserialize();
+        gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds));
+        GET_ENEMY_BOUNDS_METHOD.doReturn(enemyMovement, enemyBounds);
+        BOTTOM_WAS_REACHED_METHOD.doReturn(enemyMovement, false);
+        Y_TARGET_FIELD.set(enemyMovement, oldYtarget);
+        DIRECTION_FIELD.set(enemyMovement, oldDirection);
+        VELOCITY_FIELD.set(enemyMovement, oldVelocity);
 
-        EnemyMovementLinks.NEXT_MOVEMENT_METHOD
-            .invoke(enemyMovement, enemyBounds.deserialize());
+        NEXT_MOVEMENT_METHOD
+            .invoke(enemyMovement, enemyBounds);
 
         final var context = Assertions2.contextBuilder()
-            .add("GAME_BOUNDS", GAME_BOUNDS.deserialize())
+            .add("GAME_BOUNDS", GAME_BOUNDS)
             .add("SHIP_SIZE", SHIP_SIZE)
             .add("enemies", prettyPrint(gameState.getEnemies()))
-            .add("enemyBounds", enemyBounds.deserialize())
+            .add("enemyBounds", enemyBounds)
             .add("oldYtarget", oldYtarget)
             .add("oldDirection", oldDirection)
             .add("ENEMY_MOVEMENT_SPEED_INCREASE", ENEMY_MOVEMENT_SPEED_INCREASE)
             .add("oldVelocity", oldVelocity)
             .build();
         Stream.of(
-                List.of("new yTarget", newYtarget, EnemyMovementLinks.Y_TARGET_FIELD),
-                List.of("new direction", newDirection, EnemyMovementLinks.DIRECTION_FIELD),
-                List.of("new velocity", newVelocity, EnemyMovementLinks.VELOCITY_FIELD)
+                List.of("new yTarget", newYtarget, Y_TARGET_FIELD),
+                List.of("new direction", newDirection, DIRECTION_FIELD),
+                List.of("new velocity", newVelocity, VELOCITY_FIELD)
             )
             .forEach(list -> {
                 final var name = (String) list.get(0);
                 final var expected = list.get(1);
-                final var fieldLink = (EnemyMovementLinks) list.get(2);
+                final var fieldLink = (EnemyMovementFieldLink) list.get(2);
                 Assertions2.assertEquals(
                     expected,
-                    fieldLink.getFieldLink().get(enemyMovement),
+                    fieldLink.get(enemyMovement),
                     context,
                     r -> "The " + name + " Field is not correct."
                 );
@@ -201,26 +205,27 @@ public class EnemyMovementTest {
     void testTargetReached(
         @Property("GAME_BOUNDS") final JsonBounds GAME_BOUNDS,
         @Property("SHIP_SIZE") final double SHIP_SIZE,
-        @Property("enemyBounds") final JsonBounds enemyBounds,
+        @Property("enemyBounds") final JsonBounds enemyBoundsJson,
         @Property("yTarget") final double yTarget,
         @Property("direction") final Direction direction,
         @Property("targetReached") final boolean targetReached
     ) throws Exception {
         GameConstants.ORIGINAL_GAME_BOUNDS = GAME_BOUNDS.deserialize();
         GameConstants.SHIP_SIZE = SHIP_SIZE;
-        gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds.deserialize()));
-        doReturn(enemyBounds.deserialize()).when(enemyMovement).getEnemyBounds();
-        doReturn(false).when(enemyMovement).bottomWasReached();
-        Y_TARGET_FIELD.getFieldLink().set(enemyMovement, yTarget);
-        DIRECTION_FIELD.getFieldLink().set(enemyMovement, direction);
+        final var enemyBounds = enemyBoundsJson.deserialize();
+        gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds));
+        GET_ENEMY_BOUNDS_METHOD.doReturn(enemyMovement, enemyBounds);
+        BOTTOM_WAS_REACHED_METHOD.doReturn(enemyMovement, false);
+        Y_TARGET_FIELD.set(enemyMovement, yTarget);
+        DIRECTION_FIELD.set(enemyMovement, direction);
 
-        final var actual = TARGET_REACHED_METHOD.<Boolean>invoke(enemyMovement, enemyBounds.deserialize());
+        final var actual = TARGET_REACHED_METHOD.<Boolean>invoke(enemyMovement, enemyBounds);
 
         final var context = Assertions2.contextBuilder()
             .add("GAME_BOUNDS", GAME_BOUNDS.deserialize())
             .add("SHIP_SIZE", SHIP_SIZE)
             .add("enemies", prettyPrint(gameState.getEnemies()))
-            .add("enemyBounds", enemyBounds.deserialize())
+            .add("enemyBounds", enemyBounds)
             .add("yTarget", yTarget)
             .add("direction", direction)
             .build();
@@ -339,13 +344,13 @@ public class EnemyMovementTest {
         GameConstants.ENEMY_MOVEMENT_SPEED_INCREASE = ENEMY_MOVEMENT_SPEED_INCREASE;
         gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds));
         if (mockStudentCode) {
-            GET_ENEMY_BOUNDS_METHOD.invoke(doReturn(enemyBounds).when(enemyMovement));
-            BOTTOM_WAS_REACHED_METHOD.invoke(doReturn(bottomWasReached).when(enemyMovement));
-            TARGET_REACHED_METHOD.invoke(doReturn(targetReached).when(enemyMovement), any(Bounds.class));
+            GET_ENEMY_BOUNDS_METHOD.doReturn(enemyMovement, enemyBounds);
+            BOTTOM_WAS_REACHED_METHOD.doReturn(enemyMovement, bottomWasReached);
+            TARGET_REACHED_METHOD.doReturn(enemyMovement, targetReached, enemyBounds);
         }
-        Y_TARGET_FIELD.getFieldLink().set(enemyMovement, yTarget);
-        DIRECTION_FIELD.getFieldLink().set(enemyMovement, direction);
-        VELOCITY_FIELD.getFieldLink().set(enemyMovement, velocity);
+        Y_TARGET_FIELD.set(enemyMovement, yTarget);
+        DIRECTION_FIELD.set(enemyMovement, direction);
+        VELOCITY_FIELD.set(enemyMovement, velocity);
         final var enemies = createEnemiesForBounds(enemyBounds);
         gameState.getSprites().addAll(enemies);
         try (final var utilsMock = mockStatic(Utils.class, CALLS_REAL_METHODS)) {
@@ -362,9 +367,25 @@ public class EnemyMovementTest {
             }
 
             UPDATE_METHOD.invoke(enemyMovement, 1);
-            TARGET_REACHED_METHOD.invoke(verify(enemyMovement, atLeast(1)), newEnemyBounds);
-            NEXT_MOVEMENT_METHOD.invoke(verify(enemyMovement, expectsNextMovementCall ? atLeast(1) : never()), enemyBounds);
-            UPDATE_POSITIONS_METHOD.invoke(verify(enemyMovement, expectsUpdatePositionsCall ? atLeast(1) : never()), deltaX, deltaY);
+            TARGET_REACHED_METHOD.verify(
+                context,
+                enemyMovement,
+                atLeast(1),
+                newEnemyBounds
+            );
+            NEXT_MOVEMENT_METHOD.verify(
+                context,
+                enemyMovement,
+                expectsNextMovementCall ? atLeast(1) : never(),
+                enemyBounds
+            );
+            UPDATE_POSITIONS_METHOD.verify(
+                context,
+                enemyMovement,
+                expectsUpdatePositionsCall ? atLeast(1) : never(),
+                deltaX,
+                deltaY
+            );
         }
     }
 

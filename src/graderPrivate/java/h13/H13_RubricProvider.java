@@ -6,7 +6,9 @@ import h13.model.gameplay.EnemyMovementTest;
 import h13.model.gameplay.sprites.EnemyTest;
 import h13.model.gameplay.sprites.PlayerTest;
 import org.sourcegrade.jagr.api.rubric.*;
+import org.sourcegrade.jagr.api.testing.RubricConfiguration;
 import org.sourcegrade.jagr.api.testing.TestCycle;
+import org.tudalgo.algoutils.transform.AccessTransformer;
 
 import java.util.List;
 
@@ -284,5 +286,10 @@ public class H13_RubricProvider implements RubricProvider {
     @Override
     public Rubric getRubric() {
         return RUBRIC;
+    }
+
+    @Override
+    public void configure(final RubricConfiguration configuration) {
+        configuration.addTransformer(new AccessTransformer());
     }
 }

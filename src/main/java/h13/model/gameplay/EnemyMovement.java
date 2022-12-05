@@ -128,7 +128,7 @@ public class EnemyMovement implements Updatable {
      * @param enemyBounds The BoundingBox of all alive enemies.
      * @return {@code true} if the target Position of the current movement iteration is reached, {@code false} otherwise.
      */
-    public boolean targetReached(final Bounds enemyBounds) {
+    private boolean targetReached(final Bounds enemyBounds) {
         return switch (direction) {
             case NONE -> false;
             case UP -> enemyBounds.getMaxY() <= yTarget;
@@ -169,7 +169,7 @@ public class EnemyMovement implements Updatable {
      * @param deltaX The deltaX.
      * @param deltaY The deltaY.
      */
-    public void updatePositions(final double deltaX, final double deltaY) {
+    private void updatePositions(final double deltaX, final double deltaY) {
         getGameState().getEnemies().forEach(enemy -> {
             enemy.setX(enemy.getX() + deltaX);
             enemy.setY(enemy.getY() + deltaY);
@@ -181,7 +181,7 @@ public class EnemyMovement implements Updatable {
      *
      * @param enemyBounds The BoundingBox of all alive enemies.
      */
-    public void nextMovement(final Bounds enemyBounds) {
+    private void nextMovement(final Bounds enemyBounds) {
         if (direction.isHorizontal()) {
             direction = Direction.DOWN;
             yTarget += VERTICAL_ENEMY_MOVE_DISTANCE;
