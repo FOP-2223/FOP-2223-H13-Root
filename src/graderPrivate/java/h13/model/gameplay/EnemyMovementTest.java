@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static h13.model.gameplay.EnemyMovementTest.EnemyMovementLinks.*;
 import static h13.util.PrettyPrinter.prettyPrint;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -53,6 +54,7 @@ public class EnemyMovementTest {
         NEXT_MOVEMENT_METHOD(BasicTypeLink.of(EnemyMovement.class).getMethod(identical("nextMovement"))),
         NEXT_ROUND_METHOD(BasicTypeLink.of(EnemyMovement.class).getMethod(identical("nextRound"))),
         UPDATE_METHOD(BasicTypeLink.of(EnemyMovement.class).getMethod(identical("update"))),
+        BOTTOM_WAS_REACHED_METHOD(BasicTypeLink.of(EnemyMovement.class).getMethod(identical("bottomWasReached"))),
         ;
         private final Link link;
 
@@ -209,11 +211,10 @@ public class EnemyMovementTest {
         gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds.deserialize()));
         doReturn(enemyBounds.deserialize()).when(enemyMovement).getEnemyBounds();
         doReturn(false).when(enemyMovement).bottomWasReached();
-        EnemyMovementLinks.Y_TARGET_FIELD.getFieldLink().set(enemyMovement, yTarget);
-        EnemyMovementLinks.DIRECTION_FIELD.getFieldLink().set(enemyMovement, direction);
+        Y_TARGET_FIELD.getFieldLink().set(enemyMovement, yTarget);
+        DIRECTION_FIELD.getFieldLink().set(enemyMovement, direction);
 
-        final var actual = EnemyMovementLinks.TARGET_REACHED_METHOD
-            .<Boolean>invoke(enemyMovement, enemyBounds.deserialize());
+        final var actual = TARGET_REACHED_METHOD.<Boolean>invoke(enemyMovement, enemyBounds.deserialize());
 
         final var context = Assertions2.contextBuilder()
             .add("GAME_BOUNDS", GAME_BOUNDS.deserialize())
@@ -259,7 +260,7 @@ public class EnemyMovementTest {
             .add("deltaX", deltaX)
             .add("deltaY", deltaY)
             .build();
-        EnemyMovementLinks.UPDATE_POSITIONS_METHOD.invoke(enemyMovement, deltaX, deltaY);
+        UPDATE_POSITIONS_METHOD.invoke(enemyMovement, deltaX, deltaY);
         IntStream.range(0, enemies.size())
             .forEachOrdered(i -> {
                 final var enemy = enemies.get(i);
@@ -331,19 +332,20 @@ public class EnemyMovementTest {
             .add("newEnemyBounds", newEnemyBounds)
             .add("clampedEnemyBounds", clampedEnemyBounds)
             .build();
+
         GameConstants.ORIGINAL_GAME_BOUNDS = GAME_BOUNDS.deserialize();
         GameConstants.SHIP_SIZE = SHIP_SIZE;
         GameConstants.VERTICAL_ENEMY_MOVE_DISTANCE = VERTICAL_ENEMY_MOVE_DISTANCE;
         GameConstants.ENEMY_MOVEMENT_SPEED_INCREASE = ENEMY_MOVEMENT_SPEED_INCREASE;
         gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds));
         if (mockStudentCode) {
-            doReturn(enemyBounds).when(enemyMovement).getEnemyBounds();
-            doReturn(bottomWasReached).when(enemyMovement).bottomWasReached();
-            doReturn(targetReached).when(enemyMovement).targetReached(any(Bounds.class));
+            GET_ENEMY_BOUNDS_METHOD.invoke(doReturn(enemyBounds).when(enemyMovement));
+            BOTTOM_WAS_REACHED_METHOD.invoke(doReturn(bottomWasReached).when(enemyMovement));
+            TARGET_REACHED_METHOD.invoke(doReturn(targetReached).when(enemyMovement), any(Bounds.class));
         }
-        EnemyMovementLinks.Y_TARGET_FIELD.getFieldLink().set(enemyMovement, yTarget);
-        EnemyMovementLinks.DIRECTION_FIELD.getFieldLink().set(enemyMovement, direction);
-        EnemyMovementLinks.VELOCITY_FIELD.getFieldLink().set(enemyMovement, velocity);
+        Y_TARGET_FIELD.getFieldLink().set(enemyMovement, yTarget);
+        DIRECTION_FIELD.getFieldLink().set(enemyMovement, direction);
+        VELOCITY_FIELD.getFieldLink().set(enemyMovement, velocity);
         final var enemies = createEnemiesForBounds(enemyBounds);
         gameState.getSprites().addAll(enemies);
         try (final var utilsMock = mockStatic(Utils.class, CALLS_REAL_METHODS)) {
@@ -359,12 +361,10 @@ public class EnemyMovementTest {
                     .thenReturn(clampedEnemyBounds);
             }
 
-            enemyMovement.update(1);
-            verify(enemyMovement, atLeast(1)).targetReached(newEnemyBounds);
-            verify(enemyMovement, expectsNextMovementCall ? atLeast(1) : never())
-                .nextMovement(enemyBounds);
-            verify(enemyMovement, expectsUpdatePositionsCall ? atLeast(1) : never())
-                .updatePositions(deltaX, deltaY);
+            UPDATE_METHOD.invoke(enemyMovement, 1);
+            TARGET_REACHED_METHOD.invoke(verify(enemyMovement, atLeast(1)), newEnemyBounds);
+            NEXT_MOVEMENT_METHOD.invoke(verify(enemyMovement, expectsNextMovementCall ? atLeast(1) : never()), enemyBounds);
+            UPDATE_POSITIONS_METHOD.invoke(verify(enemyMovement, expectsUpdatePositionsCall ? atLeast(1) : never()), deltaX, deltaY);
         }
     }
 
