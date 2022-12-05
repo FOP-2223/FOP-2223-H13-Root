@@ -92,6 +92,14 @@ public interface ClassMethodLink extends LinkHolder {
         );
     }
 
+    default void verify(
+        final Object instance,
+        final org.mockito.verification.VerificationMode mode,
+        final Object... args
+    ) {
+        verify(Assertions2.emptyContext(), instance, mode, args);
+    }
+
     default void assertNeverInvokedWithParams(
         final @NotNull Context context,
         final Object instance,

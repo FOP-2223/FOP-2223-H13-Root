@@ -7,8 +7,6 @@ import h13.json.JsonBounds;
 import h13.json.JsonEnemy;
 import h13.model.gameplay.sprites.Enemy;
 import h13.shared.Utils;
-import h13.util.ClassFieldLink;
-import h13.util.ClassMethodLink;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -21,77 +19,22 @@ import org.junitpioneer.jupiter.json.Property;
 import org.junitpioneer.jupiter.params.DoubleRangeSource;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
-import org.tudalgo.algoutils.tutor.general.reflections.*;
 
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static h13.model.gameplay.EnemyMovementTest.EnemyMovementFieldLink.*;
-import static h13.model.gameplay.EnemyMovementTest.EnemyMovementMethodLink.*;
+import static h13.util.StudentLinks.EnemyMovementLinks.EnemyMovementFieldLink.*;
+import static h13.util.StudentLinks.EnemyMovementLinks.EnemyMovementMethodLink.*;
+import static h13.util.StudentLinks.EnemyMovementLinks.*;
 import static h13.util.PrettyPrinter.prettyPrint;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.tudalgo.algoutils.tutor.general.match.BasicStringMatchers.identical;
 
 @TestForSubmission
 public class EnemyMovementTest {
     public EnemyMovement enemyMovement;
     public GameState gameState;
-
-    public enum EnemyMovementMethodLink implements ClassMethodLink {
-        GET_ENEMY_BOUNDS_METHOD(BasicTypeLink.of(EnemyMovement.class).getMethod(identical("getEnemyBounds"))),
-        TARGET_REACHED_METHOD(BasicTypeLink.of(EnemyMovement.class).getMethod(identical("targetReached"))),
-        UPDATE_POSITIONS_METHOD(BasicTypeLink.of(EnemyMovement.class).getMethod(identical("updatePositions"))),
-        NEXT_MOVEMENT_METHOD(BasicTypeLink.of(EnemyMovement.class).getMethod(identical("nextMovement"))),
-        NEXT_ROUND_METHOD(BasicTypeLink.of(EnemyMovement.class).getMethod(identical("nextRound"))),
-        UPDATE_METHOD(BasicTypeLink.of(EnemyMovement.class).getMethod(identical("update"))),
-        BOTTOM_WAS_REACHED_METHOD(BasicTypeLink.of(EnemyMovement.class).getMethod(identical("bottomWasReached"))),
-        ;
-        /**
-         * The {@link MethodLink} representing the specified method.
-         */
-        private final MethodLink link;
-
-        /**
-         * Creates a new {@link ClassMethodLink}.
-         *
-         * @param link The {@link MethodLink} representing the specified method.
-         */
-        EnemyMovementMethodLink(final MethodLink link) {
-            this.link = link;
-        }
-
-        @Override
-        public MethodLink getLink() {
-            return link;
-        }
-    }
-
-    public enum EnemyMovementFieldLink implements ClassFieldLink {
-        Y_TARGET_FIELD(BasicTypeLink.of(EnemyMovement.class).getField(identical("yTarget"))),
-        VELOCITY_FIELD(BasicTypeLink.of(EnemyMovement.class).getField(identical("velocity"))),
-        DIRECTION_FIELD(BasicTypeLink.of(EnemyMovement.class).getField(identical("direction"))),
-        ;
-
-        /**
-         * The {@link FieldLink} representing the specified field.
-         */
-        private final FieldLink link;
-
-        /**
-         * Creates a new {@link ClassMethodLink}.
-         * @param link The {@link FieldLink} representing the specified field.
-         */
-        EnemyMovementFieldLink(final FieldLink link) {
-            this.link = link;
-        }
-
-        @Override
-        public FieldLink getLink() {
-            return link;
-        }
-    }
 
     @BeforeEach
     public void setup() {
