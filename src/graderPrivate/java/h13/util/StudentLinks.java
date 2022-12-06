@@ -499,7 +499,7 @@ public class StudentLinks {
 
     @Test
     public void collectStudentLinks() {
-        final var clazz = Utils.class;
+        final var clazz = GameConstants.class;
 
         final var output = collectClassLinks(clazz);
         System.out.println(output);

@@ -20,7 +20,7 @@ public record JsonEnemy(int xIndex, int yIndex, int x, int y, int velocity, int 
      * @param node The JSON node to deserialize.
      * @return The deserialized JSON enemy.
      */
-    public static JsonEnemy fromJsonNode(JsonNode node) {
+    public static JsonEnemy fromJsonNode(final JsonNode node) {
         return new JsonEnemy(
                 node.get("xIndex").asInt(),
                 node.get("yIndex").asInt(),

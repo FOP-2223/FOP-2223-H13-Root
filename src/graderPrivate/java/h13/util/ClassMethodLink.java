@@ -125,13 +125,18 @@ public interface ClassMethodLink extends LinkHolder {
         verify(context, instance, Mockito.times(times).description(context.toString()), args);
     }
 
-    default void doReturn(final Object instance, final Object value, final Object... args) {
+    default void doReturn(final Context context, final Object instance, final Object value, final Object... args) {
         if(MOCK_STUDENT_CODE) {
             invoke(
+                context,
                 Mockito.doReturn(value).when(instance),
                 args
             );
         }
+    }
+
+    default void doReturn(final Object instance, final Object value, final Object... args) {
+        doReturn(Assertions2.emptyContext(), instance, value, args);
     }
 
     default void doReturn(final Object instance, final Object value) {

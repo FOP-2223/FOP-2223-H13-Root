@@ -1,10 +1,9 @@
 package h13.model.gameplay;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import h13.controller.ApplicationSettings;
 import h13.controller.GameConstants;
-import h13.json.EnemyListConverter;
-import h13.json.JsonBounds;
-import h13.json.JsonEnemy;
+import h13.json.*;
 import h13.model.gameplay.sprites.Enemy;
 import h13.shared.Utils;
 import javafx.geometry.BoundingBox;
@@ -12,15 +11,13 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.converter.ConvertWith;
 import org.junitpioneer.jupiter.cartesian.CartesianTest;
-import org.junitpioneer.jupiter.json.JsonClasspathSource;
-import org.junitpioneer.jupiter.json.Property;
 import org.junitpioneer.jupiter.params.DoubleRangeSource;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
 
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -44,90 +41,63 @@ public class EnemyMovementTest {
     }
 
     @ParameterizedTest
-    @JsonClasspathSource("h13/model/gameplay/EnemyMovementTestGetEnemyBounds.json")
-    void testGetEnemyBounds(
-        @Property("enemies") @ConvertWith(EnemyListConverter.class) final List<JsonEnemy> enemies,
-        @Property("SHIP_SIZE") final double SHIP_SIZE,
-        @Property("enemyBounds") final JsonBounds expectedBounds
-    ) {
-        GameConstants.SHIP_SIZE = SHIP_SIZE;
-        gameState.getSprites().addAll(enemies.stream().map(JsonEnemy::deserialize).toList());
-        final Bounds actualBounds = enemyMovement.getEnemyBounds();
-        final var context = Assertions2.contextBuilder()
-            .add("enemies", prettyPrint(gameState.getEnemies()))
-            .add("SHIP_SIZE", SHIP_SIZE)
-            .build();
-        Assertions2.assertEquals(expectedBounds.deserialize(), actualBounds, context, r -> "Calculated bounds are not correct.");
+    @JsonParameterSetTest(value = "EnemyMovementTestGetEnemyBounds.json")
+    void testGetEnemyBounds(final JsonParameterSet params) {
+        GameConstants.SHIP_SIZE = params.getDouble("SHIP_SIZE");
+        final var context = params.toContext("enemyBounds");
+        gameState.getSprites().addAll(params.get("enemies"));
+        final Bounds actualBounds = GET_ENEMY_BOUNDS_METHOD.invoke(context, enemyMovement);
+        Assertions2.assertEquals(
+            params.get("enemyBounds"),
+            actualBounds,
+            context,
+            r -> "Calculated bounds are not correct."
+        );
     }
 
     @ParameterizedTest
-    @JsonClasspathSource("h13/model/gameplay/EnemyMovementTestBottomWasReached.json")
-    void testBottomWasReached(
-        @Property("GAME_BOUNDS") final JsonBounds GAME_BOUNDS,
-        @Property("enemies") @ConvertWith(EnemyListConverter.class) final List<JsonEnemy> enemies,
-        @Property("SHIP_SIZE") final double SHIP_SIZE,
-        @Property("enemyBounds") final JsonBounds enemyBoundsJson,
-        @Property("bottomWasReached") final boolean expectedBottomWasReached
-    ) {
-        GameConstants.ORIGINAL_GAME_BOUNDS = GAME_BOUNDS.deserialize();
-        GameConstants.SHIP_SIZE = SHIP_SIZE;
-        final var enemyBounds = enemyBoundsJson.deserialize();
-        gameState.getSprites().addAll(enemies.stream().map(JsonEnemy::deserialize).toList());
-        GET_ENEMY_BOUNDS_METHOD.doReturn(enemyMovement, enemyBounds);
-        final var actual = enemyMovement.bottomWasReached();
-        final var context = Assertions2.contextBuilder()
-            .add("GAME_BOUNDS", GAME_BOUNDS.deserialize())
-            .add("enemies", prettyPrint(gameState.getEnemies()))
-            .add("SHIP_SIZE", SHIP_SIZE)
-            .add("enemyBounds", enemyBounds)
-            .build();
-        Assertions2.assertEquals(expectedBottomWasReached, actual, context, r -> "The return value is not correct.");
+    @JsonParameterSetTest("EnemyMovementTestBottomWasReached.json")
+    void testBottomWasReached(final JsonParameterSet params) {
+        GameConstants.ORIGINAL_GAME_BOUNDS = params.get("GAME_BOUNDS");
+        GameConstants.SHIP_SIZE = params.getDouble("SHIP_SIZE");
+        final var enemyBounds = params.get("enemyBounds");
+        gameState.getSprites().addAll(params.get("enemies"));
+        final var context = params.toContext("bottomWasReached");
+        GET_ENEMY_BOUNDS_METHOD.doReturn(context, enemyMovement, enemyBounds);
+        final var actual = BOTTOM_WAS_REACHED_METHOD.invoke(context, enemyMovement);
+        Assertions2.assertEquals(
+            params.getBoolean("bottomWasReached"),
+            actual,
+            context,
+            r -> "The return value is not correct."
+        );
     }
 
     @ParameterizedTest
-    @JsonClasspathSource("h13/model/gameplay/EnemyMovementTestNextMovement.json")
+    @JsonParameterSetTest("EnemyMovementTestNextMovement.json")
     void testNextMovement(
-        @Property("GAME_BOUNDS") final JsonBounds GAME_BOUNDS,
-        @Property("SHIP_SIZE") final double SHIP_SIZE,
-        @Property("enemyBounds") final JsonBounds enemyBoundsJson,
-        @Property("VERTICAL_ENEMY_MOVE_DISTANCE") final double VERTICAL_ENEMY_MOVE_DISTANCE,
-        @Property("oldYtarget") final double oldYtarget,
-        @Property("newYtarget") final double newYtarget,
-        @Property("oldDirection") final Direction oldDirection,
-        @Property("newDirection") final Direction newDirection,
-        @Property("ENEMY_MOVEMENT_SPEED_INCREASE") final double ENEMY_MOVEMENT_SPEED_INCREASE,
-        @Property("oldVelocity") final double oldVelocity,
-        @Property("newVelocity") final double newVelocity
+        final JsonParameterSet params
     ) throws Exception {
-        GameConstants.ORIGINAL_GAME_BOUNDS = GAME_BOUNDS.deserialize();
-        GameConstants.SHIP_SIZE = SHIP_SIZE;
-        GameConstants.ENEMY_MOVEMENT_SPEED_INCREASE = ENEMY_MOVEMENT_SPEED_INCREASE;
-        GameConstants.VERTICAL_ENEMY_MOVE_DISTANCE = VERTICAL_ENEMY_MOVE_DISTANCE;
-        final var enemyBounds = enemyBoundsJson.deserialize();
+        GameConstants.ORIGINAL_GAME_BOUNDS = params.get("GAME_BOUNDS");
+        GameConstants.SHIP_SIZE = params.getDouble("SHIP_SIZE");
+        GameConstants.ENEMY_MOVEMENT_SPEED_INCREASE = params.getDouble("ENEMY_MOVEMENT_SPEED_INCREASE");
+        GameConstants.VERTICAL_ENEMY_MOVE_DISTANCE = params.getDouble("VERTICAL_ENEMY_MOVE_DISTANCE");
+        final Bounds enemyBounds = params.get("enemyBounds");
+        final var context = params.toContext("newYtarget", "newDirection", "newVelocity");
         gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds));
-        GET_ENEMY_BOUNDS_METHOD.doReturn(enemyMovement, enemyBounds);
-        BOTTOM_WAS_REACHED_METHOD.doReturn(enemyMovement, false);
-        Y_TARGET_FIELD.set(enemyMovement, oldYtarget);
-        DIRECTION_FIELD.set(enemyMovement, oldDirection);
-        VELOCITY_FIELD.set(enemyMovement, oldVelocity);
+        GET_ENEMY_BOUNDS_METHOD.doReturn(context, enemyMovement, enemyBounds);
+        BOTTOM_WAS_REACHED_METHOD.doReturn(context, enemyMovement, false);
+        Y_TARGET_FIELD.set(context, enemyMovement, params.getDouble("oldYtarget"));
+        DIRECTION_FIELD.set(context, enemyMovement, params.get("oldDirection"));
+        VELOCITY_FIELD.set(context, enemyMovement, params.getDouble("oldVelocity"));
 
         NEXT_MOVEMENT_METHOD
-            .invoke(enemyMovement, enemyBounds);
+            .invoke(context, enemyMovement, enemyBounds);
 
-        final var context = Assertions2.contextBuilder()
-            .add("GAME_BOUNDS", GAME_BOUNDS)
-            .add("SHIP_SIZE", SHIP_SIZE)
-            .add("enemies", prettyPrint(gameState.getEnemies()))
-            .add("enemyBounds", enemyBounds)
-            .add("oldYtarget", oldYtarget)
-            .add("oldDirection", oldDirection)
-            .add("ENEMY_MOVEMENT_SPEED_INCREASE", ENEMY_MOVEMENT_SPEED_INCREASE)
-            .add("oldVelocity", oldVelocity)
-            .build();
         Stream.of(
-                List.of("new yTarget", newYtarget, Y_TARGET_FIELD),
-                List.of("new direction", newDirection, DIRECTION_FIELD),
-                List.of("new velocity", newVelocity, VELOCITY_FIELD)
+                List.of("new yTarget", params.getDouble("newYtarget"), Y_TARGET_FIELD),
+                List.of("new direction", params.get("newDirection"), DIRECTION_FIELD),
+                List.of("new velocity", params.getDouble("newVelocity"), VELOCITY_FIELD)
             )
             .forEach(list -> {
                 final var name = (String) list.get(0);
@@ -144,37 +114,22 @@ public class EnemyMovementTest {
 
     // test targetReached
     @ParameterizedTest
-    @JsonClasspathSource("h13/model/gameplay/EnemyMovementTestTargetReached.json")
-    void testTargetReached(
-        @Property("GAME_BOUNDS") final JsonBounds GAME_BOUNDS,
-        @Property("SHIP_SIZE") final double SHIP_SIZE,
-        @Property("enemyBounds") final JsonBounds enemyBoundsJson,
-        @Property("yTarget") final double yTarget,
-        @Property("direction") final Direction direction,
-        @Property("targetReached") final boolean targetReached
-    ) throws Exception {
-        GameConstants.ORIGINAL_GAME_BOUNDS = GAME_BOUNDS.deserialize();
-        GameConstants.SHIP_SIZE = SHIP_SIZE;
-        final var enemyBounds = enemyBoundsJson.deserialize();
+    @JsonParameterSetTest("EnemyMovementTestTargetReached.json")
+    void testTargetReached(final JsonParameterSet params) throws Exception {
+        GameConstants.ORIGINAL_GAME_BOUNDS = params.get("GAME_BOUNDS");
+        GameConstants.SHIP_SIZE = params.getDouble("SHIP_SIZE");
+        final Bounds enemyBounds = params.get("enemyBounds");
         gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds));
-        GET_ENEMY_BOUNDS_METHOD.doReturn(enemyMovement, enemyBounds);
-        BOTTOM_WAS_REACHED_METHOD.doReturn(enemyMovement, false);
-        Y_TARGET_FIELD.set(enemyMovement, yTarget);
-        DIRECTION_FIELD.set(enemyMovement, direction);
+        final var context = params.toContext("targetReached");
+        GET_ENEMY_BOUNDS_METHOD.doReturn(context, enemyMovement, enemyBounds);
+        BOTTOM_WAS_REACHED_METHOD.doReturn(context, enemyMovement, false);
+        Y_TARGET_FIELD.set(context, enemyMovement, params.getDouble("yTarget"));
+        DIRECTION_FIELD.set(context, enemyMovement, params.get("direction"));
 
-        final var actual = TARGET_REACHED_METHOD.<Boolean>invoke(enemyMovement, enemyBounds);
-
-        final var context = Assertions2.contextBuilder()
-            .add("GAME_BOUNDS", GAME_BOUNDS.deserialize())
-            .add("SHIP_SIZE", SHIP_SIZE)
-            .add("enemies", prettyPrint(gameState.getEnemies()))
-            .add("enemyBounds", enemyBounds)
-            .add("yTarget", yTarget)
-            .add("direction", direction)
-            .build();
+        final boolean actual = TARGET_REACHED_METHOD.invoke(context, enemyMovement, enemyBounds);
 
         Assertions2.assertEquals(
-            targetReached,
+            params.getBoolean("targetReached"),
             actual,
             context,
             r -> "The return value is not correct."
@@ -208,7 +163,7 @@ public class EnemyMovementTest {
             .add("deltaX", deltaX)
             .add("deltaY", deltaY)
             .build();
-        UPDATE_POSITIONS_METHOD.invoke(enemyMovement, deltaX, deltaY);
+        UPDATE_POSITIONS_METHOD.invoke(context,enemyMovement, deltaX, deltaY);
         IntStream.range(0, enemies.size())
             .forEachOrdered(i -> {
                 final var enemy = enemies.get(i);
@@ -230,61 +185,26 @@ public class EnemyMovementTest {
     }
 
     @ParameterizedTest
-    @JsonClasspathSource("h13/model/gameplay/EnemyMovementTestUpdateRegular.json")
+    @JsonParameterSetTest("/h13/model/gameplay/EnemyMovementTestUpdateRegular.json")
     void testUpdateRegular(
-        @Property("GAME_BOUNDS") final JsonBounds GAME_BOUNDS,
-        @Property("SHIP_SIZE") final double SHIP_SIZE,
-        @Property("enemyBounds") final JsonBounds enemyBoundsJson,
-        @Property("bottomWasReached") final boolean bottomWasReached,
-        @Property("targetReached") final boolean targetReached,
-        @Property("yTarget") final double yTarget,
-        @Property("direction") final Direction direction,
-        @Property("velocity") final double velocity,
-        @Property("expectsNextMovementCall") final boolean expectsNextMovementCall,
-        @Property("VERTICAL_ENEMY_MOVE_DISTANCE") final double VERTICAL_ENEMY_MOVE_DISTANCE,
-        @Property("ENEMY_MOVEMENT_SPEED_INCREASE") final double ENEMY_MOVEMENT_SPEED_INCREASE,
-        @Property("nextMovementYTarget") final double nextMovementYTarget,
-        @Property("nextMovementDirection") final Direction nextMovementDirection,
-        @Property("nextMovementVelocity") final double nextMovementVelocity,
-        @Property("expectsUpdatePositionsCall") final boolean expectsUpdatePositionsCall,
-        @Property("deltaX") final double deltaX,
-        @Property("deltaY") final double deltaY,
-        @Property("elapsedTime") final double elapsedTime,
-        @Property("newEnemyBounds") final JsonBounds newEnemyBoundsJson,
-        @Property("clampedEnemyBounds") final JsonBounds clampedEnemyBoundsJson
+        final JsonParameterSet params
     ) {
         final boolean mockStudentCode = true;
-        final var enemyBounds = enemyBoundsJson.deserialize();
-        final var newEnemyBounds = newEnemyBoundsJson.deserialize();
-        final var clampedEnemyBounds = clampedEnemyBoundsJson.deserialize();
-        final var context = Assertions2.contextBuilder()
-            .add("GAME_BOUNDS", GAME_BOUNDS.deserialize())
-            .add("SHIP_SIZE", SHIP_SIZE)
-            .add("enemies", prettyPrint(gameState.getEnemies()))
-            .add("enemyBounds", enemyBounds)
-            .add("bottomWasReached", bottomWasReached)
-            .add("targetReached", targetReached)
-            .add("yTarget", yTarget)
-            .add("direction", direction)
-            .add("velocity", velocity)
-            .add("expectsNextMovementCall", expectsNextMovementCall)
-            .add("VERTICAL_ENEMY_MOVE_DISTANCE", VERTICAL_ENEMY_MOVE_DISTANCE)
-            .add("ENEMY_MOVEMENT_SPEED_INCREASE", ENEMY_MOVEMENT_SPEED_INCREASE)
-            .add("nextMovementYTarget", nextMovementYTarget)
-            .add("nextMovementDirection", nextMovementDirection)
-            .add("nextMovementVelocity", nextMovementVelocity)
-            .add("expectsUpdatePositionsCall", expectsUpdatePositionsCall)
-            .add("deltaX", deltaX)
-            .add("deltaY", deltaY)
-            .add("elapsedTime", elapsedTime)
-            .add("newEnemyBounds", newEnemyBounds)
-            .add("clampedEnemyBounds", clampedEnemyBounds)
-            .build();
+        final var context = params.toContext();
+        final var gameBounds = params.<Bounds>get("GAME_BOUNDS");
+        final var enemyBounds = params.<Bounds>get("enemyBounds");
+        final var newEnemyBounds = params.<Bounds>get("newEnemyBounds");
+        final var clampedEnemyBounds = params.<Bounds>get("clampedEnemyBounds");
+        final boolean bottomWasReached = params.get("bottomWasReached");
+        final boolean targetReached = params.get("targetReached");
+        final double yTarget = params.get("yTarget", Double.class);
+        final Direction direction = params.get("direction");
+        final double velocity = params.get("velocity", Double.class);
 
-        GameConstants.ORIGINAL_GAME_BOUNDS = GAME_BOUNDS.deserialize();
-        GameConstants.SHIP_SIZE = SHIP_SIZE;
-        GameConstants.VERTICAL_ENEMY_MOVE_DISTANCE = VERTICAL_ENEMY_MOVE_DISTANCE;
-        GameConstants.ENEMY_MOVEMENT_SPEED_INCREASE = ENEMY_MOVEMENT_SPEED_INCREASE;
+        GameConstants.ORIGINAL_GAME_BOUNDS = gameBounds;
+        GameConstants.SHIP_SIZE = params.get("SHIP_SIZE", Double.class);
+        GameConstants.VERTICAL_ENEMY_MOVE_DISTANCE = params.get("VERTICAL_ENEMY_MOVE_DISTANCE", Double.class);
+        GameConstants.ENEMY_MOVEMENT_SPEED_INCREASE = params.get("ENEMY_MOVEMENT_SPEED_INCREASE", Double.class);
         gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds));
         if (mockStudentCode) {
             GET_ENEMY_BOUNDS_METHOD.doReturn(enemyMovement, enemyBounds);
@@ -319,15 +239,15 @@ public class EnemyMovementTest {
             NEXT_MOVEMENT_METHOD.verify(
                 context,
                 enemyMovement,
-                expectsNextMovementCall ? atLeast(1) : never(),
+                params.get("expectsNextMovementCall") ? atLeast(1) : never(),
                 enemyBounds
             );
             UPDATE_POSITIONS_METHOD.verify(
                 context,
                 enemyMovement,
-                expectsUpdatePositionsCall ? atLeast(1) : never(),
-                deltaX,
-                deltaY
+                params.get("expectsUpdatePositionsCall") ? atLeast(1) : never(),
+                params.get("deltaX"),
+                params.get("deltaY")
             );
         }
     }

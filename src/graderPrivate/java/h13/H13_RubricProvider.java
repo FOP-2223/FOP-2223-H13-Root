@@ -1,16 +1,12 @@
 package h13;
 
-import h13.json.JsonBounds;
-import h13.model.gameplay.Direction;
+import h13.json.JsonParameterSet;
 import h13.model.gameplay.EnemyMovementTest;
 import h13.model.gameplay.sprites.EnemyTest;
 import h13.model.gameplay.sprites.PlayerTest;
 import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
-import org.sourcegrade.jagr.api.testing.TestCycle;
 import org.tudalgo.algoutils.transform.AccessTransformer;
-
-import java.util.List;
 
 import static h13.rubric.RubricUtils.*;
 
@@ -121,27 +117,27 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Methode getEnemyBounds() ist vollständig korrekt.",
-                                JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testGetEnemyBounds", List.class, double.class, JsonBounds.class))
+                                JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testGetEnemyBounds", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die Methode bottomWasReached() ist vollständig korrekt.",
-                                JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testBottomWasReached", JsonBounds.class, List.class, double.class, JsonBounds.class, boolean.class))
+                                JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testBottomWasReached", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die Methode targetReached() ist vollständig korrekt.",
-                                JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testTargetReached", JsonBounds.class, double.class, JsonBounds.class, double.class, Direction.class, boolean.class))
+                                JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testTargetReached", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die Methode nextMovement() ist vollständig korrekt.",
-                                JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testNextMovement", JsonBounds.class, double.class, JsonBounds.class, double.class, double.class, double.class, Direction.class, Direction.class, double.class, double.class, double.class))
+                                JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testNextMovement", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die Methode updatePositions() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testUpdatePositions", double.class, double.class))
                             ),
                             criterion(
                                 "Die Methode update() bewegt die Gegner korrekt in die gewünschte Richtung.",
-                                null
+                                JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testUpdateRegular", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die Methode update() ist vollständig korrekt.",
