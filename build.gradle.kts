@@ -30,6 +30,7 @@ jagr {
             configureDependencies {
                 implementation(libs.algoutils.tutor)
                 implementation(libs.junit.pioneer)
+                implementation("org.mockito:mockito-inline:4.9.0")
             }
         }
         val graderPrivate by creating {
