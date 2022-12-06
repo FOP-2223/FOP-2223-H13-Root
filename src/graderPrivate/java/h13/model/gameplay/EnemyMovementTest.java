@@ -41,7 +41,7 @@ public class EnemyMovementTest {
     }
 
     @ParameterizedTest
-    @JsonParameterSetTest(value = "EnemyMovementTestGetEnemyBounds.json")
+    @JsonParameterSetTest("EnemyMovementTestGetEnemyBounds.json")
     void testGetEnemyBounds(final JsonParameterSet params) {
         GameConstants.SHIP_SIZE = params.getDouble("SHIP_SIZE");
         final var context = params.toContext("enemyBounds");
@@ -185,7 +185,7 @@ public class EnemyMovementTest {
     }
 
     @ParameterizedTest
-    @JsonParameterSetTest("/h13/model/gameplay/EnemyMovementTestUpdateRegular.json")
+    @JsonParameterSetTest("EnemyMovementTestUpdateRegular.json")
     void testUpdateRegular(
         final JsonParameterSet params
     ) {
@@ -207,9 +207,9 @@ public class EnemyMovementTest {
         GameConstants.ENEMY_MOVEMENT_SPEED_INCREASE = params.get("ENEMY_MOVEMENT_SPEED_INCREASE", Double.class);
         gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds));
         if (mockStudentCode) {
-            GET_ENEMY_BOUNDS_METHOD.doReturn(enemyMovement, enemyBounds);
-            BOTTOM_WAS_REACHED_METHOD.doReturn(enemyMovement, bottomWasReached);
-            TARGET_REACHED_METHOD.doReturn(enemyMovement, targetReached, enemyBounds);
+            GET_ENEMY_BOUNDS_METHOD.doReturn(context,enemyMovement, enemyBounds);
+            BOTTOM_WAS_REACHED_METHOD.doReturn(context,enemyMovement, bottomWasReached);
+            TARGET_REACHED_METHOD.doReturn(context,enemyMovement, targetReached, enemyBounds);
         }
         Y_TARGET_FIELD.set(enemyMovement, yTarget);
         DIRECTION_FIELD.set(enemyMovement, direction);

@@ -1,6 +1,7 @@
 package h13.util;
 
 import h13.model.gameplay.sprites.Enemy;
+import h13.model.gameplay.sprites.Sprite;
 import org.tudalgo.algoutils.tutor.general.conversion.AbstractArrayNodeConversion;
 import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
 
@@ -10,7 +11,8 @@ import java.util.function.Function;
 public class PrettyPrinter {
 
     private static final Map<Class<?>, Function> CONVERSION_MAP = Map.ofEntries(
-        Map.entry(Enemy.class, (Function<Enemy, String>) PrettyPrinter::prettyPrintEnemy)
+        Map.entry(Enemy.class, (Function<Enemy, String>) PrettyPrinter::prettyPrintEnemy),
+        Map.entry(Sprite.class, (Function<Sprite, String>) PrettyPrinter::prettyPrintSprite)
     );
 
     public static <T> String prettyPrint(T object) {
@@ -56,5 +58,9 @@ public class PrettyPrinter {
 
     public static String prettyPrintEnemy(Enemy enemy) {
         return String.format("[x=%s, y=%s, width=%s, height=%s]", enemy.getX(), enemy.getY(), enemy.getWidth(), enemy.getHeight());
+    }
+
+    private static String prettyPrintSprite(Sprite sprite) {
+        return String.format("[x=%s, y=%s, width=%s, height=%s]", sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
     }
 }
