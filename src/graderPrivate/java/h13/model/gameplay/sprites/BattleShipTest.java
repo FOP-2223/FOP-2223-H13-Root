@@ -1,19 +1,14 @@
 package h13.model.gameplay.sprites;
 
 import h13.controller.ApplicationSettings;
-import h13.controller.GameConstants;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.paint.Color;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.junitpioneer.jupiter.cartesian.ArgumentSets;
 import org.junitpioneer.jupiter.cartesian.CartesianTest;
-import org.mockito.Mockito;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
 import java.util.List;
@@ -29,7 +24,6 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertN
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertTrue;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.context;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.contextBuilder;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.fail;
 
 public class BattleShipTest {
 
@@ -56,16 +50,16 @@ public class BattleShipTest {
 
     @ParameterizedTest
     @EnumSource(value = Direction.class)
-    public void shoot_hasBullet_noInstant(Direction direction){
+    public void shoot_hasBullet(Direction direction){
         BattleShip ship = spy(new BattleShip(0, 0, 0, mock(Color.class), 1, mock(GameState.class)));
 
-        ApplicationSettings.instantShooting = new SimpleBooleanProperty(false);
+        ApplicationSettings.instantShooting.setValue(false);
         ship.setBullet(mock(Bullet.class));
         ship.shoot(direction);
 
         verify(ship, atMostOnce()).setBullet(any());
 
-        ApplicationSettings.instantShooting = new SimpleBooleanProperty(true);
+        ApplicationSettings.instantShooting.setValue(true);
         ship.shoot(direction);
 
         verify(ship, times(2)).setBullet(any());
@@ -84,12 +78,16 @@ public class BattleShipTest {
 
         assertNotNull(bullet, context, r -> "Bullet was not created or not added to Ship");
         assertEquals(direction, bullet.getDirection(), context, r -> "Bullet Direction did not match expected");
-        assertTrue(state.getToAdd().contains(bullet), context, r -> "GameState toAdd list does not Contain created Bullet");
+        assertTrue(state.getToAdd().contains(bullet), context, r -> "GameState toAdd list does not contain created Bullet");
 
         assertEquals(ship.getBounds().getCenterX(), bullet.getBounds().getCenterX(), context, r -> "Bullet is not correctly centered on BattleShip. X coordinate is not Correct");
         assertEquals(ship.getBounds().getCenterY(), bullet.getBounds().getCenterY(), context, r -> "Bullet is not correctly centered on BattleShip. Y coordinate is not Correct");
     }
 
+    /**
+     * Generates the Arguments used for the tests for isFriend.
+     * @return a ArgumentSets containing all arguments for the test
+     */
     private static ArgumentSets provideIsFriend(){
         List<BattleShip> ships = List.of(
             new BattleShip(0,0,0, Color.AQUA,1, mock(GameState.class)),

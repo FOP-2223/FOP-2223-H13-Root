@@ -4,14 +4,10 @@ import h13.controller.GameConstants;
 import h13.model.gameplay.Direction;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.cartesian.ArgumentSets;
 import org.junitpioneer.jupiter.cartesian.CartesianTest;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
-import org.tudalgo.algoutils.tutor.general.match.Matcher;
-import org.tudalgo.algoutils.tutor.general.reflections.BasicFieldLink;
-import org.tudalgo.algoutils.tutor.general.reflections.BasicTypeLink;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,6 +101,10 @@ class UtilsTest {
         assertEquals(boundsFromBox(bounds), actual, context, r -> String.format("Next Position does not match expected! Expected %s but was %s", expected, actual));
     }
 
+    /**
+     * This Method generates a List of Parameters to test clamping of Sprites
+     * @return the created ArgumentSet containing all Parameters for testing.
+     */
     public static ArgumentSets provideClamp(){
         List<Box> worldBox = new ArrayList<>();
 
@@ -130,10 +130,22 @@ class UtilsTest {
         return argumentSets;
     }
 
+    /**
+     * This method creates a BoundingBox from the given Box record
+     * @param box the Box to construct a BoundingBox from
+     * @return the newly created BoundingBox
+     */
     public static Bounds boundsFromBox(Box box){
         return new BoundingBox(box.x, box.y, box.width, box.height);
     }
 
+    /**
+     * This method returns a BoundingBox that is moved my x and y. The returned Object is a copy
+     * @param bounds the BoundingBox
+     * @param x the distance to move in x direction
+     * @param y the distance to move in y direction
+     * @return the resulting BoundingBox
+     */
     public static Bounds move(Bounds bounds, double x, double y){
         return new BoundingBox(bounds.getMinX() + x, bounds.getMinY() + y, bounds.getWidth(), bounds.getHeight());
     }

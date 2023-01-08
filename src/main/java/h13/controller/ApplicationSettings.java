@@ -100,7 +100,7 @@ public final class ApplicationSettings {
     /**
      * Whether to enable instant shooting.
      */
-    public static BooleanProperty instantShooting = new SimpleBooleanProperty(false);
+    public static final BooleanProperty instantShooting = new SimpleBooleanProperty(false);
 
     /**
      * Gets the {@link #instantShooting}-property.

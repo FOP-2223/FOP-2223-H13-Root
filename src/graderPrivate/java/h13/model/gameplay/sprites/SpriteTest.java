@@ -1,7 +1,6 @@
 package h13.model.gameplay.sprites;
 
 import h13.controller.GameConstants;
-import h13.model.gameplay.Direction;
 import h13.shared.Utils;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -11,23 +10,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
-import org.mockito.MockSettings;
 import org.mockito.Mockito;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
-import static spoon.testing.Assert.assertThat;
 
 @TestForSubmission
 public class SpriteTest {
@@ -126,11 +119,11 @@ public class SpriteTest {
             ArgumentCaptor<Double> argumentSetY = ArgumentCaptor.forClass(Double.class);
             verify(sprite).setX(argumentSetY.capture());
 
-            assertTrue(argumentSetX.getValue() < GameConstants.ORIGINAL_GAME_BOUNDS.getWidth(), context, r -> String.format(""));
-            assertTrue(argumentSetY.getValue() < GameConstants.ORIGINAL_GAME_BOUNDS.getHeight(), context, r -> String.format(""));
+            assertTrue(argumentSetX.getAllValues().stream().noneMatch(d -> isOutOfBounds(sprite, d, true)), context, r -> String.format("SetX was called with out of bounds coordinates. Called Values: %s", argumentSetX.getAllValues()));
+            assertTrue(argumentSetY.getAllValues().stream().noneMatch(d -> isOutOfBounds(sprite, d, false)), context, r -> String.format("SetY was called with out of bounds coordinates. Called Values: %s", argumentSetY.getAllValues()));
 
-            assertEquals(destination.getMinX(), sprite.getX(), context, r-> String.format(""));
-            assertEquals(destination.getMinY(), sprite.getY(), context, r-> String.format(""));
+            assertEquals(destination.getMinX(), sprite.getX(), context, r-> "Sprite was not clamped to the correct X-Coordinate");
+            assertEquals(destination.getMinY(), sprite.getY(), context, r-> "Sprite was not clamped to the correct Y-Coordinate");
         }
     }
 
@@ -153,6 +146,7 @@ public class SpriteTest {
                     anyDouble()
                 ))
                 .thenReturn(destination);
+
             utilsMock.when(() -> Utils.clamp(
                     any(Bounds.class)
                 ))
@@ -178,14 +172,37 @@ public class SpriteTest {
             ArgumentCaptor<Double> argumentSetY = ArgumentCaptor.forClass(Double.class);
             verify(sprite).setX(argumentSetY.capture());
 
-            assertTrue(argumentSetX.getAllValues().stream().allMatch(d -> d < GameConstants.ORIGINAL_GAME_BOUNDS.getWidth()), context, r -> "SetX was called with out of bounds coordinates");
-            assertTrue(argumentSetY.getAllValues().stream().allMatch(d -> d < GameConstants.ORIGINAL_GAME_BOUNDS.getHeight()), context, r -> "SetY was called with out of bounds coordinates");
+            assertTrue(argumentSetX.getAllValues().stream().noneMatch(d -> isOutOfBounds(sprite, d, true)), context, r -> String.format("SetX was called with out of bounds coordinates. Called Values: %s", argumentSetX.getAllValues()));
+            assertTrue(argumentSetY.getAllValues().stream().noneMatch(d -> isOutOfBounds(sprite, d, false)), context, r -> String.format("SetY was called with out of bounds coordinates. Called Values: %s", argumentSetY.getAllValues()));
 
-            assertEquals(clampedDestination.getMinX(), sprite.getX(), context, r-> String.format(""));
-            assertEquals(clampedDestination.getMinY(), sprite.getY(), context, r-> String.format(""));
+            assertEquals(clampedDestination.getMinX(), sprite.getX(), context, r-> "Sprite was not clamped to the correct X-Coordinate");
+            assertEquals(clampedDestination.getMinY(), sprite.getY(), context, r-> "Sprite was not clamped to the correct Y-Coordinate");
         }
     }
 
+    /**
+     * Checks whether a coordinate is out of bounds or not
+     * @param sprite the sprite to check the coordinate for
+     * @param coordinate the coordinate the sprite is placed at
+     * @param isX if the coordinate is the x coordinate of the sprite. false otherwise
+     * @return true if the sprite is out of bounds
+     */
+    private static boolean isOutOfBounds(Sprite sprite, double coordinate, boolean isX){
+        if (coordinate < 0){
+            return true;
+        }
+        if (isX){
+            return coordinate > GameConstants.ORIGINAL_GAME_BOUNDS.getWidth() - sprite.getWidth();
+        } else {
+            return coordinate > GameConstants.ORIGINAL_GAME_BOUNDS.getHeight() - sprite.getHeight();
+        }
+    }
+
+    /**
+     * Creates a Sprite with the given heath
+     * @param health the health the Sprite should have after creation
+     * @return the newly created sprite
+     */
     private static Sprite createSprite(int health){
         Sprite s = mock(Sprite.class, Mockito.CALLS_REAL_METHODS);
         s.setHealth(health);
