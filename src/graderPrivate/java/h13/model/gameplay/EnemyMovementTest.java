@@ -1,9 +1,9 @@
 package h13.model.gameplay;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import h13.controller.ApplicationSettings;
 import h13.controller.GameConstants;
-import h13.json.*;
+import h13.json.JsonParameterSet;
+import h13.json.JsonParameterSetTest;
 import h13.model.gameplay.sprites.Enemy;
 import h13.shared.Utils;
 import javafx.geometry.BoundingBox;
@@ -16,15 +16,14 @@ import org.junitpioneer.jupiter.params.DoubleRangeSource;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
 
-import java.util.*;
-import java.util.function.Function;
+import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static h13.util.PrettyPrinter.prettyPrint;
+import static h13.util.StudentLinks.EnemyMovementLinks.EnemyMovementFieldLink;
 import static h13.util.StudentLinks.EnemyMovementLinks.EnemyMovementFieldLink.*;
 import static h13.util.StudentLinks.EnemyMovementLinks.EnemyMovementMethodLink.*;
-import static h13.util.StudentLinks.EnemyMovementLinks.*;
-import static h13.util.PrettyPrinter.prettyPrint;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -77,7 +76,7 @@ public class EnemyMovementTest {
     @JsonParameterSetTest("EnemyMovementTestNextMovement.json")
     void testNextMovement(
         final JsonParameterSet params
-    ) throws Exception {
+    ) {
         GameConstants.ORIGINAL_GAME_BOUNDS = params.get("GAME_BOUNDS");
         GameConstants.SHIP_SIZE = params.getDouble("SHIP_SIZE");
         GameConstants.ENEMY_MOVEMENT_SPEED_INCREASE = params.getDouble("ENEMY_MOVEMENT_SPEED_INCREASE");
@@ -115,7 +114,7 @@ public class EnemyMovementTest {
     // test targetReached
     @ParameterizedTest
     @JsonParameterSetTest("EnemyMovementTestTargetReached.json")
-    void testTargetReached(final JsonParameterSet params) throws Exception {
+    void testTargetReached(final JsonParameterSet params) {
         GameConstants.ORIGINAL_GAME_BOUNDS = params.get("GAME_BOUNDS");
         GameConstants.SHIP_SIZE = params.getDouble("SHIP_SIZE");
         final Bounds enemyBounds = params.get("enemyBounds");
@@ -163,7 +162,7 @@ public class EnemyMovementTest {
             .add("deltaX", deltaX)
             .add("deltaY", deltaY)
             .build();
-        UPDATE_POSITIONS_METHOD.invoke(context,enemyMovement, deltaX, deltaY);
+        UPDATE_POSITIONS_METHOD.invoke(context, enemyMovement, deltaX, deltaY);
         IntStream.range(0, enemies.size())
             .forEachOrdered(i -> {
                 final var enemy = enemies.get(i);
@@ -184,12 +183,7 @@ public class EnemyMovementTest {
             });
     }
 
-    @ParameterizedTest
-    @JsonParameterSetTest("EnemyMovementTestUpdateRegular.json")
-    void testUpdateRegular(
-        final JsonParameterSet params
-    ) {
-        final boolean mockStudentCode = true;
+    void testUpdate(final JsonParameterSet params, final boolean mockStudentCode) {
         final var context = params.toContext();
         final var gameBounds = params.<Bounds>get("GAME_BOUNDS");
         final var enemyBounds = params.<Bounds>get("enemyBounds");
@@ -207,9 +201,9 @@ public class EnemyMovementTest {
         GameConstants.ENEMY_MOVEMENT_SPEED_INCREASE = params.get("ENEMY_MOVEMENT_SPEED_INCREASE", Double.class);
         gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds));
         if (mockStudentCode) {
-            GET_ENEMY_BOUNDS_METHOD.doReturn(context,enemyMovement, enemyBounds);
-            BOTTOM_WAS_REACHED_METHOD.doReturn(context,enemyMovement, bottomWasReached);
-            TARGET_REACHED_METHOD.doReturn(context,enemyMovement, targetReached, enemyBounds);
+            GET_ENEMY_BOUNDS_METHOD.doReturn(context, enemyMovement, enemyBounds);
+            BOTTOM_WAS_REACHED_METHOD.doReturn(context, enemyMovement, bottomWasReached);
+            TARGET_REACHED_METHOD.doReturn(context, enemyMovement, targetReached, enemyBounds);
         }
         Y_TARGET_FIELD.set(enemyMovement, yTarget);
         DIRECTION_FIELD.set(enemyMovement, direction);
@@ -239,7 +233,7 @@ public class EnemyMovementTest {
             NEXT_MOVEMENT_METHOD.verify(
                 context,
                 enemyMovement,
-                params.get("expectsNextMovementCall") ? atLeast(1) : never(),
+                params.getBoolean("expectsNextMovementCall") ? atLeast(1) : never(),
                 enemyBounds
             );
             UPDATE_POSITIONS_METHOD.verify(
@@ -250,6 +244,22 @@ public class EnemyMovementTest {
                 params.get("deltaY")
             );
         }
+    }
+
+    @ParameterizedTest
+    @JsonParameterSetTest("EnemyMovementTestUpdateRegular.json")
+    void testUpdateRegular(
+        final JsonParameterSet params
+    ) {
+        testUpdate(params, true);
+    }
+
+    @ParameterizedTest
+    @JsonParameterSetTest("EnemyMovementTestUpdateCompletelyCorrect.json")
+    void testUpdateCompletelyCorrect(
+        final JsonParameterSet params
+    ) {
+        testUpdate(params, true);
     }
 
     /**
