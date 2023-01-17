@@ -1,11 +1,11 @@
 [versions]
-algoutils = "0.6.2"
+algoutils = "0.6.3"
 
 [libraries]
-annotations = "org.jetbrains:annotations:23.0.0"
+annotations = "org.jetbrains:annotations:23.1.0"
 algoutils-student = { module = "org.tudalgo:algoutils-student", version.ref = "algoutils" }
 algoutils-tutor = { module = "org.tudalgo:algoutils-tutor", version.ref = "algoutils" }
-junit-core = { module = "org.junit.jupiter:junit-jupiter", version = "5.9.1" }
+junit-core = { module = "org.junit.jupiter:junit-jupiter", version = "5.9.2" }
 
 [plugins]
 style = { id = "org.sourcegrade.style", version = "2.1.0" }

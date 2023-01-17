@@ -225,6 +225,7 @@ public class EnemyMovementTest {
 
             UPDATE_METHOD.invoke(enemyMovement, 1);
             TARGET_REACHED_METHOD.verify(
+
                 context,
                 enemyMovement,
                 atLeast(1),
