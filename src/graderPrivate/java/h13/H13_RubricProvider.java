@@ -4,6 +4,7 @@ import h13.json.JsonParameterSet;
 import h13.model.gameplay.EnemyMovementTest;
 import h13.model.gameplay.sprites.EnemyTest;
 import h13.model.gameplay.sprites.PlayerTest;
+import h13.view.gui.GameSceneTest;
 import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
 import org.tudalgo.algoutils.transform.AccessTransformer;
@@ -155,7 +156,7 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Größe des GameBoards ist korrekt beim originalen Seitenverhältnis.",
-                                null
+                                JUnitTestRef.ofMethod(() -> GameSceneTest.class.getDeclaredMethod("testSizeCorrectWithOriginalAspectRatio"))
                             ),
                             criterion(
                                 "Die Größe des GameBoards ist stets vollständig korrekt.",

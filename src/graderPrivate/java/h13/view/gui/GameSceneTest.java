@@ -1,48 +1,29 @@
 package h13.view.gui;
 
-import com.sun.javafx.logging.PlatformLogger;
-import h13.controller.ApplicationSettings;
-import h13.model.gameplay.EnemyMovement;
-import h13.model.gameplay.GameState;
-import javafx.application.ConditionalFeature;
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
 import javafx.geometry.BoundingBox;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.SceneAntialiasing;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.ByteBuddyAgent;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.description.type.TypeDescription;
 import net.bytebuddy.dynamic.DynamicType;
-import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
-import net.bytebuddy.utility.nullability.MaybeNull;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Answers;
-import org.mockito.internal.creation.MockSettingsImpl;
+import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
 
 import java.security.ProtectionDomain;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static h13.util.StudentLinks.GameConstantsLinks.GameConstantsFieldLink.ORIGINAL_GAME_BOUNDS_FIELD;
-import static h13.util.StudentLinks.GameSceneLinks.GameSceneFieldLink.ROOT_FIELD;
 import static h13.util.StudentLinks.GameSceneLinks.GameSceneMethodLink.*;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
+@TestForSubmission
 public class GameSceneTest extends ApplicationTest {
     public Stage stage;
     public GameScene gameScene;
@@ -94,7 +75,7 @@ public class GameSceneTest extends ApplicationTest {
     }
 
     @Test
-    public void testSizeCorrentWithOriginalAspectRatio() throws InterruptedException {
+    public void testSizeCorrectWithOriginalAspectRatio() throws InterruptedException {
         setSize(256, 224);
         INIT_GAMEBOARD_METHOD.invoke(gameScene);
         gameBoard = gameScene.getGameBoard();
