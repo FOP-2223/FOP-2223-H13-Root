@@ -1,5 +1,7 @@
 package h13.view.gui;
 
+import h13.controller.ApplicationSettings;
+import h13.util.StudentLinks;
 import javafx.geometry.BoundingBox;
 import javafx.stage.Stage;
 import net.bytebuddy.ByteBuddy;
@@ -36,6 +38,7 @@ public class GameSceneTest extends ApplicationTest {
     @Override
     public void start(final Stage stage) throws Exception {
         ORIGINAL_GAME_BOUNDS_FIELD.setStatic(new BoundingBox(0, 0, 256, 224));
+        ApplicationSettings.loadBackgroundProperty().set(false);
 
         // use bytebuddy to intercept init() call when gameScene is constructed
         new AgentBuilder.Default()
