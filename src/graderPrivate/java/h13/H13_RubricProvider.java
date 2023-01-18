@@ -156,11 +156,11 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Größe des GameBoards ist korrekt beim originalen Seitenverhältnis.",
-                                JUnitTestRef.ofMethod(() -> GameSceneTest.class.getDeclaredMethod("testSizeCorrectWithOriginalAspectRatio"))
+                                JUnitTestRef.ofMethod(() -> GameSceneTest.class.getDeclaredMethod("testSizeCorrectWithOriginalAspectRatio", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die Größe des GameBoards ist stets vollständig korrekt.",
-                                null
+                                JUnitTestRef.ofMethod(() -> GameSceneTest.class.getDeclaredMethod("testSizeCorrectWithDifferentAspectRatio", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Das GameBoard wird korrekt zentriert.",
@@ -226,10 +226,14 @@ public class H13_RubricProvider implements RubricProvider {
                                 "Die Methode handleKeyboardInputs() ist vollständig korrekt.",
                                 null
                             ),
-                            criterion(
-                                "Die Methode lose() ist vollständig korrekt.",
-                                null
-                            ),
+                            Criterion.builder()
+                                .shortDescription("Die Methode lose() ist vollständig korrekt.")
+                                .minPoints(0)
+                                .maxPoints(1)
+                                .grader(
+                                    manualGrader(1)
+                                )
+                                .build(),
                             criterion(
                                 "Die Klasse GameController ist vollständig korrekt.",
                                 null

@@ -9,7 +9,7 @@
     "gameSceneBounds": {
       "x": 0,
       "y": 0,
-      "width": 256,
+      "width": 400,
       "height": 224
     },
     "expectedGameBoardBounds": {
@@ -31,14 +31,14 @@
     "gameSceneBounds": {
       "x": 0,
       "y": 0,
-      "width": 512,
-      "height": 448
+      "width": 256,
+      "height": 400
     },
     "expectedGameBoardBounds": {
       "x": 0,
       "y": 0,
-      "width": 512,
-      "height": 448
+      "width": 256,
+      "height": 224
     },
     "checkSize": true,
     "checkPosition": false
@@ -47,20 +47,20 @@
     "GAME_BOUNDS": {
       "x": 0,
       "y": 0,
-      "width": 24,
-      "height": 12
+      "width": 256,
+      "height": 224
     },
     "gameSceneBounds": {
       "x": 0,
       "y": 0,
-      "width": 48,
-      "height": 24
+      "width": 400,
+      "height": 400
     },
     "expectedGameBoardBounds": {
       "x": 0,
       "y": 0,
-      "width": 48,
-      "height": 24
+      "width": 400,
+      "height": 350
     },
     "checkSize": true,
     "checkPosition": false
@@ -69,20 +69,20 @@
     "GAME_BOUNDS": {
       "x": 0,
       "y": 0,
-      "width": 12,
-      "height": 24
+      "width": 224,
+      "height": 256
     },
     "gameSceneBounds": {
       "x": 0,
       "y": 0,
-      "width": 24,
-      "height": 48
+      "width": 400,
+      "height": 400
     },
     "expectedGameBoardBounds": {
       "x": 0,
       "y": 0,
-      "width": 24,
-      "height": 48
+      "width": 350,
+      "height": 400
     },
     "checkSize": true,
     "checkPosition": false

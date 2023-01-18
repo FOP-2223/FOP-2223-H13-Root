@@ -1,5 +1,6 @@
 package h13.util;
 
+import h13.model.gameplay.sprites.Sprite;
 import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 import org.tudalgo.algoutils.tutor.general.reflections.FieldLink;
@@ -80,5 +81,9 @@ public interface ClassFieldLink extends LinkHolder {
      */
     default <T> T get(final Object instance) {
         return get(Assertions2.emptyContext(), instance);
+    }
+
+    default <T> T getStatic(){
+        return get(Assertions2.emptyContext(), null);
     }
 }
