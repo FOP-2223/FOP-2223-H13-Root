@@ -6,7 +6,9 @@ import h13.model.gameplay.Direction;
 import h13.model.gameplay.EnemyMovement;
 import h13.model.gameplay.sprites.*;
 import h13.shared.Utils;
+import h13.view.gui.GameScene;
 import javafx.geometry.Bounds;
+import javafx.scene.Scene;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.tudalgo.algoutils.tutor.general.reflections.BasicMethodLink;
@@ -400,6 +402,52 @@ public class StudentLinks {
         }
     }
 
+    public static class GameSceneLinks {
+        public enum GameSceneFieldLink implements ClassFieldLink {
+            ROOT_FIELD(BasicTypeLink.of(GameScene.class).getField(identical("root"))),
+            GAME_BOARD_FIELD(BasicTypeLink.of(GameScene.class).getField(identical("gameBoard"))),
+            GAME_CONTROLLER_FIELD(BasicTypeLink.of(GameScene.class).getField(identical("gameController"))),
+            ;
+            private final FieldLink link;
+            GameSceneFieldLink(final FieldLink link) {
+                this.link = link;
+            }
+            @Override
+            public FieldLink getLink() {
+                return link;
+            }
+        }
+        public enum GameSceneMethodLink implements ClassMethodLink {
+            INIT_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameScene.class.getDeclaredMethod("init")
+            ))),
+            INIT_GAMEBOARD_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameScene.class.getDeclaredMethod("initGameboard")
+            ))),
+            GET_CONTROLLER_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameScene.class.getDeclaredMethod("getController")
+            ))),
+            GET_GAME_BOARD_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameScene.class.getDeclaredMethod("getGameBoard")
+            ))),
+            SET_WIDTH_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> Scene.class.getDeclaredMethod("setWidth", double.class)
+            ))),
+            SET_HEIGHT_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> Scene.class.getDeclaredMethod("setHeight", double.class)
+            ))),
+            ;
+            private final MethodLink link;
+            GameSceneMethodLink(final MethodLink link) {
+                this.link = link;
+            }
+            @Override
+            public MethodLink getLink() {
+                return link;
+            }
+        }
+    }
+
     @Test
     public void testLinks() {
         // get all the fields and methods in the class
@@ -499,7 +547,7 @@ public class StudentLinks {
 
     @Test
     public void collectStudentLinks() {
-        final var clazz = GameConstants.class;
+        final var clazz = GameScene.class;
 
         final var output = collectClassLinks(clazz);
         System.out.println(output);

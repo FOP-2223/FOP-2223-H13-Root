@@ -42,6 +42,23 @@ public interface ClassFieldLink extends LinkHolder {
     }
 
     /**
+     * <p>Sets the object statically</p>
+     * @param context The context
+     * @param value  the new value
+     */
+    default void setStatic(final Context context, final Object value) {
+        set(context, null, value);
+    }
+
+    /**
+     * <p>Sets the object statically</p>
+     * @param value  the new value
+     */
+    default void setStatic(final Object value) {
+        setStatic(Assertions2.emptyContext(), value);
+    }
+
+    /**
      * <p>Returns the object assigned to the given instance.</p>
      * <p>This field is required to be an instance field.</p>
      *
