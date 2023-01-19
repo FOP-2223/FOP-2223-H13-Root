@@ -2,6 +2,10 @@ package h13.util;
 
 import com.google.common.base.CaseFormat;
 import h13.controller.GameConstants;
+import h13.controller.gamelogic.EnemyController;
+import h13.controller.gamelogic.GameInputHandler;
+import h13.controller.gamelogic.PlayerController;
+import h13.controller.scene.game.GameController;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.EnemyMovement;
 import h13.model.gameplay.sprites.*;
@@ -9,6 +13,8 @@ import h13.shared.Utils;
 import h13.view.gui.GameScene;
 import javafx.geometry.Bounds;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.tudalgo.algoutils.tutor.general.reflections.BasicMethodLink;
@@ -17,6 +23,7 @@ import org.tudalgo.algoutils.tutor.general.reflections.FieldLink;
 import org.tudalgo.algoutils.tutor.general.reflections.MethodLink;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.tudalgo.algoutils.tutor.general.match.BasicStringMatchers.identical;
@@ -177,14 +184,17 @@ public class StudentLinks {
             TIME_TILL_NEXT_SHOT_FIELD(BasicTypeLink.of(Enemy.class).getField(identical("timeTillNextShot"))),
             ;
             private final FieldLink link;
+
             EnemyFieldLink(final FieldLink link) {
                 this.link = link;
             }
+
             @Override
             public FieldLink getLink() {
                 return link;
             }
         }
+
         public enum EnemyMethodLink implements ClassMethodLink {
             UPDATE_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
                 () -> Enemy.class.getDeclaredMethod("update", double.class)
@@ -203,9 +213,11 @@ public class StudentLinks {
             ))),
             ;
             private final MethodLink link;
+
             EnemyMethodLink(final MethodLink link) {
                 this.link = link;
             }
+
             @Override
             public MethodLink getLink() {
                 return link;
@@ -220,14 +232,17 @@ public class StudentLinks {
             KEEP_SHOOTING_FIELD(BasicTypeLink.of(Player.class).getField(identical("keepShooting"))),
             ;
             private final FieldLink link;
+
             PlayerFieldLink(final FieldLink link) {
                 this.link = link;
             }
+
             @Override
             public FieldLink getLink() {
                 return link;
             }
         }
+
         public enum PlayerMethodLink implements ClassMethodLink {
             GET_NAME_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
                 () -> Player.class.getDeclaredMethod("getName")
@@ -264,9 +279,11 @@ public class StudentLinks {
             ))),
             ;
             private final MethodLink link;
+
             PlayerMethodLink(final MethodLink link) {
                 this.link = link;
             }
+
             @Override
             public MethodLink getLink() {
                 return link;
@@ -280,14 +297,17 @@ public class StudentLinks {
             HITS_FIELD(BasicTypeLink.of(Bullet.class).getField(identical("hits"))),
             ;
             private final FieldLink link;
+
             BulletFieldLink(final FieldLink link) {
                 this.link = link;
             }
+
             @Override
             public FieldLink getLink() {
                 return link;
             }
         }
+
         public enum BulletMethodLink implements ClassMethodLink {
             GET_OWNER_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
                 () -> Bullet.class.getDeclaredMethod("getOwner")
@@ -306,9 +326,11 @@ public class StudentLinks {
             ))),
             ;
             private final MethodLink link;
+
             BulletMethodLink(final MethodLink link) {
                 this.link = link;
             }
+
             @Override
             public MethodLink getLink() {
                 return link;
@@ -348,21 +370,26 @@ public class StudentLinks {
             BORDER_COLOR_FIELD(BasicTypeLink.of(GameConstants.class).getField(identical("BORDER_COLOR"))),
             ;
             private final FieldLink link;
+
             GameConstantsFieldLink(final FieldLink link) {
                 this.link = link;
             }
+
             @Override
             public FieldLink getLink() {
                 return link;
             }
         }
+
         public enum GameConstantsMethodLink implements ClassMethodLink {
             ,
             ;
             private final MethodLink link;
+
             GameConstantsMethodLink(final MethodLink link) {
                 this.link = link;
             }
+
             @Override
             public MethodLink getLink() {
                 return link;
@@ -375,14 +402,17 @@ public class StudentLinks {
             ,
             ;
             private final FieldLink link;
+
             UtilsFieldLink(final FieldLink link) {
                 this.link = link;
             }
+
             @Override
             public FieldLink getLink() {
                 return link;
             }
         }
+
         public enum UtilsMethodLink implements ClassMethodLink {
             CLAMP_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
                 () -> Utils.class.getDeclaredMethod("clamp", Bounds.class)
@@ -392,9 +422,11 @@ public class StudentLinks {
             ))),
             ;
             private final MethodLink link;
+
             UtilsMethodLink(final MethodLink link) {
                 this.link = link;
             }
+
             @Override
             public MethodLink getLink() {
                 return link;
@@ -409,14 +441,17 @@ public class StudentLinks {
             GAME_CONTROLLER_FIELD(BasicTypeLink.of(GameScene.class).getField(identical("gameController"))),
             ;
             private final FieldLink link;
+
             GameSceneFieldLink(final FieldLink link) {
                 this.link = link;
             }
+
             @Override
             public FieldLink getLink() {
                 return link;
             }
         }
+
         public enum GameSceneMethodLink implements ClassMethodLink {
             INIT_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
                 () -> GameScene.class.getDeclaredMethod("init")
@@ -438,9 +473,208 @@ public class StudentLinks {
             ))),
             ;
             private final MethodLink link;
+
             GameSceneMethodLink(final MethodLink link) {
                 this.link = link;
             }
+
+            @Override
+            public MethodLink getLink() {
+                return link;
+            }
+        }
+    }
+
+    public static class GameControllerLinks {
+        public enum GameControllerFieldLink implements ClassFieldLink {
+            GAME_STATE_FIELD(BasicTypeLink.of(GameController.class).getField(identical("gameState"))),
+            GAME_SCENE_FIELD(BasicTypeLink.of(GameController.class).getField(identical("gameScene"))),
+            LAST_UPDATE_FIELD(BasicTypeLink.of(GameController.class).getField(identical("lastUpdate"))),
+            PAUSED_FIELD(BasicTypeLink.of(GameController.class).getField(identical("paused"))),
+            PLAYER_CONTROLLER_FIELD(BasicTypeLink.of(GameController.class).getField(identical("playerController"))),
+            ENEMY_CONTROLLER_FIELD(BasicTypeLink.of(GameController.class).getField(identical("enemyController"))),
+            GAME_INPUT_HANDLER_FIELD(BasicTypeLink.of(GameController.class).getField(identical("gameInputHandler"))),
+            GAME_LOOP_FIELD(BasicTypeLink.of(GameController.class).getField(identical("gameLoop"))),
+            ;
+            private final FieldLink link;
+
+            GameControllerFieldLink(final FieldLink link) {
+                this.link = link;
+            }
+
+            @Override
+            public FieldLink getLink() {
+                return link;
+            }
+        }
+
+        public enum GameControllerMethodLink implements ClassMethodLink {
+            UPDATE_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("update", double.class)
+            ))),
+            INIT_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("init")
+            ))),
+            RESUME_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("resume")
+            ))),
+            RESET_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("reset")
+            ))),
+            GET_GAME_SCENE_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("getGameScene")
+            ))),
+            GET_GAME_BOARD_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("getGameBoard")
+            ))),
+            INIT_STAGE_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("initStage", Stage.class)
+            ))),
+            SET_GAME_INPUT_HANDLER_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("setGameInputHandler", GameInputHandler.class)
+            ))),
+            SET_PLAYER_CONTROLLER_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("setPlayerController", PlayerController.class)
+            ))),
+            SET_ENEMY_CONTROLLER_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("setEnemyController", EnemyController.class)
+            ))),
+            HANDLE_KEYBOARD_INPUTS_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("handleKeyboardInputs")
+            ))),
+            GET_GAME_LOOP_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("getGameLoop")
+            ))),
+            GET_ENEMY_CONTROLLER_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("getEnemyController")
+            ))),
+            PAUSE_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("pause")
+            ))),
+            GET_GAME_STATE_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("getGameState")
+            ))),
+            GET_GAME_INPUT_HANDLER_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("getGameInputHandler")
+            ))),
+            UPDATE_OTHERS_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("updateOthers", double.class)
+            ))),
+            DO_COLLISIONS_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("doCollisions")
+            ))),
+            UPDATE_POINTS_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("updatePoints", List.class)
+            ))),
+            LOSE_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("lose")
+            ))),
+            REFILL_ENEMIES_IF_NECESSARY_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("refillEnemiesIfNecessary")
+            ))),
+            GET_PLAYER_CONTROLLER_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("getPlayerController")
+            ))),
+            GET_PLAYER_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("getPlayer")
+            ))),
+            IS_PAUSED_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("isPaused")
+            ))),
+            GET_TITLE_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameController.class.getDeclaredMethod("getTitle")
+            ))),
+            ;
+            private final MethodLink link;
+
+            GameControllerMethodLink(final MethodLink link) {
+                this.link = link;
+            }
+
+            @Override
+            public MethodLink getLink() {
+                return link;
+            }
+        }
+    }
+
+    public static class PlayerControllerLinks {
+        public enum PlayerControllerFieldLink implements ClassFieldLink {
+            PLAYER_FIELD(BasicTypeLink.of(PlayerController.class).getField(identical("player"))),
+            GAME_CONTROLLER_FIELD(BasicTypeLink.of(PlayerController.class).getField(identical("gameController"))),
+            ;
+            private final FieldLink link;
+
+            PlayerControllerFieldLink(final FieldLink link) {
+                this.link = link;
+            }
+
+            @Override
+            public FieldLink getLink() {
+                return link;
+            }
+        }
+
+        public enum PlayerControllerMethodLink implements ClassMethodLink {
+            GET_GAME_CONTROLLER_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> PlayerController.class.getDeclaredMethod("getGameController")
+            ))),
+            HANDLE_KEYBOARD_INPUTS_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> PlayerController.class.getDeclaredMethod("handleKeyboardInputs")
+            ))),
+            GET_PLAYER_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> PlayerController.class.getDeclaredMethod("getPlayer")
+            ))),
+            PLAYER_KEY_ACTION_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> PlayerController.class.getDeclaredMethod("playerKeyAction", KeyEvent.class)
+            ))),
+            ;
+            private final MethodLink link;
+
+            PlayerControllerMethodLink(final MethodLink link) {
+                this.link = link;
+            }
+
+            @Override
+            public MethodLink getLink() {
+                return link;
+            }
+        }
+    }
+
+    public static class EnemyControllerLinks {
+        public enum EnemyControllerFieldLink implements ClassFieldLink {
+            GAME_CONTROLLER_FIELD(BasicTypeLink.of(EnemyController.class).getField(identical("gameController"))),
+            ;
+            private final FieldLink link;
+
+            EnemyControllerFieldLink(final FieldLink link) {
+                this.link = link;
+            }
+
+            @Override
+            public FieldLink getLink() {
+                return link;
+            }
+        }
+
+        public enum EnemyControllerMethodLink implements ClassMethodLink {
+            NEXT_LEVEL_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> EnemyController.class.getDeclaredMethod("nextLevel")
+            ))),
+            GET_GAME_CONTROLLER_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> EnemyController.class.getDeclaredMethod("getGameController")
+            ))),
+            IS_DEFEATED_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> EnemyController.class.getDeclaredMethod("isDefeated")
+            ))),
+            ;
+            private final MethodLink link;
+
+            EnemyControllerMethodLink(final MethodLink link) {
+                this.link = link;
+            }
+
             @Override
             public MethodLink getLink() {
                 return link;
@@ -547,7 +781,7 @@ public class StudentLinks {
 
     @Test
     public void collectStudentLinks() {
-        final var clazz = GameScene.class;
+        final var clazz = EnemyController.class;
 
         final var output = collectClassLinks(clazz);
         System.out.println(output);
