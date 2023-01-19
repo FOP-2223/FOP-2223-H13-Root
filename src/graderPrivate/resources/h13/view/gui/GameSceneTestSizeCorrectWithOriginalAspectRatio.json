@@ -19,7 +19,8 @@
       "height": 224
     },
     "checkSize": true,
-    "checkPosition": false
+    "checkPosition": false,
+    "checkCentered": false
   },
   {
     "GAME_BOUNDS": {
@@ -41,7 +42,8 @@
       "height": 448
     },
     "checkSize": true,
-    "checkPosition": false
+    "checkPosition": false,
+    "checkCentered": false
   },
   {
     "GAME_BOUNDS": {
@@ -63,7 +65,8 @@
       "height": 24
     },
     "checkSize": true,
-    "checkPosition": false
+    "checkPosition": false,
+    "checkCentered": false
   },
   {
     "GAME_BOUNDS": {
@@ -85,6 +88,7 @@
       "height": 48
     },
     "checkSize": true,
-    "checkPosition": false
+    "checkPosition": false,
+    "checkCentered": false
   }
 ]

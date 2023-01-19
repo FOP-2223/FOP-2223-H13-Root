@@ -50,7 +50,9 @@ public class JsonConverter {
             put("GAME_BOUNDS", JsonConverter::toBounds);
             put("enemyBounds", JsonConverter::toBounds);
             put("gameSceneBounds", JsonConverter::toBounds);
+            put("gameSceneBounds2", JsonConverter::toBounds);
             put("expectedGameBoardBounds", JsonConverter::toBounds);
+            put("expectedGameBoardBounds2", JsonConverter::toBounds);
             put("newEnemyBounds", JsonConverter::toBounds);
             put("clampedEnemyBounds", JsonConverter::toBounds);
             put("direction", JsonConverter::toDirection);

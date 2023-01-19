@@ -3,10 +3,10 @@ package h13.view.gui;
 import h13.controller.ApplicationSettings;
 import h13.json.JsonParameterSet;
 import h13.json.JsonParameterSetTest;
-import h13.util.StudentLinks;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.ByteBuddyAgent;
 import net.bytebuddy.agent.builder.AgentBuilder;
@@ -16,20 +16,19 @@ import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.matcher.ElementMatchers;
 import net.bytebuddy.utility.JavaModule;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
+import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
+import javax.annotation.Nullable;
 import java.security.ProtectionDomain;
 
 import static h13.util.StudentLinks.GameConstantsLinks.GameConstantsFieldLink.ASPECT_RATIO_FIELD;
 import static h13.util.StudentLinks.GameConstantsLinks.GameConstantsFieldLink.ORIGINAL_GAME_BOUNDS_FIELD;
 import static h13.util.StudentLinks.GameSceneLinks.GameSceneMethodLink.*;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
 
 @TestForSubmission
 public class GameSceneTest extends ApplicationTest {
@@ -44,6 +43,7 @@ public class GameSceneTest extends ApplicationTest {
 
     @Override
     public void start(final Stage stage) throws Exception {
+        stage.initStyle(StageStyle.UNDECORATED);
         final var origGameBounds = new BoundingBox(0, 0, 256, 224);
         ORIGINAL_GAME_BOUNDS_FIELD.setStatic(origGameBounds);
         ASPECT_RATIO_FIELD.setStatic(origGameBounds.getWidth() / origGameBounds.getHeight());
@@ -71,10 +71,9 @@ public class GameSceneTest extends ApplicationTest {
             .make()
             .load(GameScene.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent())
             .getLoaded();
-//
+
         gameScene = spy((GameScene) dynamicType.getConstructor().newInstance());
 
-//        gameScene = spy(new GameScene());
         stage.setScene(gameScene);
         this.stage = stage;
         //stage.show();
@@ -87,7 +86,7 @@ public class GameSceneTest extends ApplicationTest {
         SET_HEIGHT_METHOD.invoke(gameScene, bounds.getHeight());
     }
 
-    public GameScene testGameBoardSize(final JsonParameterSet params) {
+    public void testGameBoardSize(final JsonParameterSet params) {
         final var context = params.toContext("expectedGameBoardBounds");
         if (params.availableKeys().contains("GAME_BOUNDS")) {
             final var gameBounds = params.get("GAME_BOUNDS", Bounds.class);
@@ -97,8 +96,45 @@ public class GameSceneTest extends ApplicationTest {
         setSize(params.get("gameSceneBounds", Bounds.class));
         INIT_GAMEBOARD_METHOD.invoke(context, gameScene);
         gameBoard = GET_GAME_BOARD_METHOD.invoke(context, gameScene);
-        final Bounds expectedBounds = params.get("expectedGameBoardBounds", Bounds.class);
-        if (params.getBoolean("checkSize")) {
+        assertSize(
+            params.toContext("expectedGameBoardBounds", "expectedGameBoardBounds2", "gameSceneBounds2"),
+            null,
+            params.get("expectedGameBoardBounds", Bounds.class),
+            params.getBoolean("checkSize"),
+            params.getBoolean("checkPosition"),
+            params.getBoolean("checkCentered")
+        );
+        if (params.availableKeys().contains("expectedGameBoardBounds2")) {
+            assertSize(
+                Assertions2.contextBuilder()
+                    .add(params.toContext(
+                        "expectedGameBoardBounds2",
+                        "expectedGameBoardBounds",
+                        "gameSceneBounds"
+                    ))
+                    .add("Note", "This run re-uses the same gameScene instance, to verify automatic resizing. You may use bindings to achieve this.")
+                    .build(),
+                params.get("gameSceneBounds2", Bounds.class),
+                params.get("expectedGameBoardBounds2", Bounds.class),
+                params.getBoolean("checkSize"),
+                params.getBoolean("checkPosition"),
+                params.getBoolean("checkCentered")
+            );
+        }
+    }
+
+    private void assertSize(
+        final Context context,
+        final @Nullable Bounds sceneBounds,
+        final Bounds expectedBounds,
+        final boolean checkSize,
+        final boolean checkPosition,
+        final boolean checkCentered
+    ) {
+        if (sceneBounds != null) {
+            setSize(sceneBounds);
+        }
+        if (checkSize) {
             Assertions2.assertEquals(
                 expectedBounds.getWidth(),
                 gameBoard.getWidth(),
@@ -112,21 +148,34 @@ public class GameSceneTest extends ApplicationTest {
                 r -> "The height of the GameBoard is not correct."
             );
         }
-        if (params.getBoolean("checkPosition")) {
+        if (checkPosition) {
             Assertions2.assertEquals(
                 expectedBounds.getMinX(),
-                gameBoard.getLayoutX(),
+                gameBoard.getBoundsInParent().getMinX(),
                 context,
                 r -> "The x position of the GameBoard is not correct."
             );
             Assertions2.assertEquals(
                 expectedBounds.getMinY(),
-                gameBoard.getLayoutY(),
+                gameBoard.getBoundsInParent().getMinY(),
                 context,
                 r -> "The y position of the GameBoard is not correct."
             );
         }
-        return gameScene;
+        if (checkCentered) {
+            Assertions2.assertEquals(
+                gameScene.getWidth() / 2,
+                gameBoard.getBoundsInParent().getCenterX(),
+                context,
+                r -> "The x position of the GameBoard is not correct."
+            );
+            Assertions2.assertEquals(
+                gameScene.getHeight() / 2,
+                gameBoard.getBoundsInParent().getCenterY(),
+                context,
+                r -> "The y position of the GameBoard is not correct."
+            );
+        }
     }
 
     @ParameterizedTest
@@ -134,9 +183,21 @@ public class GameSceneTest extends ApplicationTest {
     public void testSizeCorrectWithOriginalAspectRatio(final JsonParameterSet params) {
         testGameBoardSize(params);
     }
+
     @ParameterizedTest
     @JsonParameterSetTest("GameSceneTestSizeCorrectWithDifferentAspectRatio.json")
     public void testSizeCorrectWithDifferentAspectRatio(final JsonParameterSet params) {
+        testGameBoardSize(params);
+    }
+
+    @ParameterizedTest
+    @JsonParameterSetTest("GameSceneTestCentering.json")
+    public void testCentering(final JsonParameterSet params) {
+        testGameBoardSize(params);
+    }
+    @ParameterizedTest
+    @JsonParameterSetTest("GameSceneTestAllInOne.json")
+    public void combinedTest(final JsonParameterSet params) {
         testGameBoardSize(params);
     }
 }

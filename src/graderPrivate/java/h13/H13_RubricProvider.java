@@ -164,11 +164,16 @@ public class H13_RubricProvider implements RubricProvider {
                             ),
                             criterion(
                                 "Das GameBoard wird korrekt zentriert.",
-                                null
+                                JUnitTestRef.ofMethod(() -> GameSceneTest.class.getDeclaredMethod("testCentering", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die Methode initGameboard() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.and(
+                                    JUnitTestRef.ofMethod(() -> GameSceneTest.class.getDeclaredMethod("testSizeCorrectWithOriginalAspectRatio", JsonParameterSet.class)),
+                                    JUnitTestRef.ofMethod(() -> GameSceneTest.class.getDeclaredMethod("testSizeCorrectWithDifferentAspectRatio", JsonParameterSet.class)),
+                                    JUnitTestRef.ofMethod(() -> GameSceneTest.class.getDeclaredMethod("testCentering", JsonParameterSet.class)),
+                                    JUnitTestRef.ofMethod(() -> GameSceneTest.class.getDeclaredMethod("combinedTest", JsonParameterSet.class))
+                                )
                             )
                         )
                         .build(),

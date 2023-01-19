@@ -19,8 +19,8 @@
       "height": 224
     },
     "checkSize": true,
-    "checkPosition": false,
-    "checkCentered": false
+    "checkPosition": true,
+    "checkCentered": true
   },
   {
     "GAME_BOUNDS": {
@@ -42,8 +42,8 @@
       "height": 224
     },
     "checkSize": true,
-    "checkPosition": false,
-    "checkCentered": false
+    "checkPosition": true,
+    "checkCentered": true
   },
   {
     "GAME_BOUNDS": {
@@ -65,8 +65,8 @@
       "height": 224
     },
     "checkSize": true,
-    "checkPosition": false,
-    "checkCentered": false
+    "checkPosition": true,
+    "checkCentered": true
   },
   {
     "GAME_BOUNDS": {
@@ -88,8 +88,8 @@
       "height": 350
     },
     "checkSize": true,
-    "checkPosition": false,
-    "checkCentered": false
+    "checkPosition": true,
+    "checkCentered": true
   },
   {
     "GAME_BOUNDS": {
@@ -123,8 +123,8 @@
       "height": 800
     },
     "checkSize": true,
-    "checkPosition": false,
-    "checkCentered": false
+    "checkPosition": true,
+    "checkCentered": true
   },
   {
     "GAME_BOUNDS": {
@@ -158,7 +158,7 @@
       "height": 700
     },
     "checkSize": true,
-    "checkPosition": false,
-    "checkCentered": false
+    "checkPosition": true,
+    "checkCentered": true
   }
 ]
