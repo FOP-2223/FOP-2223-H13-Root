@@ -35,6 +35,7 @@ jagr {
                 implementation("org.mockito:mockito-junit-jupiter:4.9.0")
                 implementation("org.junit-pioneer:junit-pioneer:1.7.1")
                 implementation("com.fasterxml.jackson.core:jackson-databind:2.13.3")
+                compileOnly("org.testfx:openjfx-monocle:jdk-12.0.1+2")
             }
         }
         val graderPrivate by creating {
