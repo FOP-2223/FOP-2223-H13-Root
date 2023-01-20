@@ -1,5 +1,6 @@
 package h13;
 
+import h13.controller.scene.game.GameControllerTest;
 import h13.json.JsonParameterSet;
 import h13.model.gameplay.EnemyMovementTest;
 import h13.model.gameplay.sprites.EnemyTest;
@@ -221,7 +222,7 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Methode doCollisions() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testDoCollisions", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die Methode updatePoints() ist vollständig korrekt.",
