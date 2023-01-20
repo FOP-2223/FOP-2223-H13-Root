@@ -2,7 +2,7 @@
 plugins {
     java
     application
-    alias(libs.plugins.style)
+    // alias(libs.plugins.style)
     alias(libs.plugins.jagr.gradle)
     alias(libs.plugins.javafxplugin)
 }
@@ -11,7 +11,7 @@ version = file("version").readLines().first()
 
 javafx {
     version = "17.0.1"
-    modules("javafx.controls", "javafx.fxml")
+    modules("javafx.controls", "javafx.fxml", "javafx.swing", "javafx.graphics", "javafx.base")
 }
 
 jagr {
@@ -29,6 +29,8 @@ jagr {
             rubricProviderName.set("h13.H13_RubricProvider")
             configureDependencies {
                 implementation(libs.algoutils.tutor)
+                implementation(libs.junit.pioneer)
+                implementation("org.mockito:mockito-inline:4.9.0")
             }
         }
         val graderPrivate by creating {
@@ -36,6 +38,12 @@ jagr {
             graderName.set("FOP-2223-H13-Private")
         }
     }
+}
+
+val grader: SourceSet by sourceSets.creating {
+    val test = sourceSets.test.get()
+    compileClasspath += test.output + test.compileClasspath
+    runtimeClasspath += output + test.runtimeClasspath
 }
 
 dependencies {
