@@ -3,7 +3,11 @@ package h13.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import h13.model.gameplay.Direction;
+import h13.model.gameplay.GameState;
 import h13.model.gameplay.sprites.Enemy;
+import h13.model.gameplay.sprites.IDBullet;
+import h13.model.gameplay.sprites.IDEnemy;
+import h13.model.gameplay.sprites.IDPlayer;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import org.junit.jupiter.api.Assertions;
@@ -40,8 +44,61 @@ public class JsonConverter {
         return JsonEnemy.fromJsonNode(jsonNode).deserialize();
     }
 
+    public static IDEnemy toIDEnemy(final JsonNode jsonNode, final GameState gameState) {
+        final var enemy = new IDEnemy(
+            jsonNode.get("id").asInt(),
+            jsonNode.get("xIndex").asInt(),
+            jsonNode.get("yIndex").asInt(),
+            jsonNode.get("velocity").asInt(),
+            jsonNode.get("health").asInt(),
+            gameState
+        );
+        enemy.setX(jsonNode.get("x").asInt());
+        enemy.setY(jsonNode.get("y").asInt());
+        return enemy;
+    }
+
+    public static IDBullet toIDBullet(final JsonNode jsonNode) {
+        return new IDBullet(
+            jsonNode.get("id").asInt(0),
+            jsonNode.get("x").asInt(0),
+            jsonNode.get("y").asInt(0),
+            null,
+            null,
+            JsonConverter.toDirection(jsonNode.get("direction"))
+        );
+    }
+
+    public static IDPlayer toIDPlayer(final JsonNode jsonNode) {
+        return new IDPlayer(
+            jsonNode.get("id").asInt(0),
+            jsonNode.get("x").asInt(0),
+            jsonNode.get("y").asInt(0),
+            jsonNode.get("velocity").asDouble(0),
+            null
+        );
+    }
+
     public static List<Enemy> toEnemyList(final JsonNode jsonNode) {
         return toList(jsonNode, JsonConverter::toEnemy);
+    }
+
+    public static List<IDEnemy> toIDEnemyList(final JsonNode jsonNode, final GameState gameState) {
+        return toList(jsonNode, node -> JsonConverter.toIDEnemy(node, gameState));
+    }
+
+    public static List<IDEnemy> toIDEnemyList(final JsonNode jsonNode) {
+        return toIDEnemyList(jsonNode, null);
+    }
+
+    public static List<IDBullet> toIDBulletList(final JsonNode jsonNode) {
+        return toList(jsonNode, JsonConverter::toIDBullet);
+    }
+
+    public static Map<Integer, Integer> toIntMap(final JsonNode jsonNode) {
+        final var map = new HashMap<Integer, Integer>();
+        jsonNode.fields().forEachRemaining(entry -> map.put(Integer.parseInt(entry.getKey()), entry.getValue().asInt()));
+        return map;
     }
 
     // Custom converters

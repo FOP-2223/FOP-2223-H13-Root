@@ -2,6 +2,7 @@ package h13.util;
 
 import org.jetbrains.annotations.NotNull;
 import org.mockito.Mockito;
+import org.mockito.stubbing.Answer;
 import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 import org.tudalgo.algoutils.tutor.general.reflections.MethodLink;
@@ -126,7 +127,7 @@ public interface ClassMethodLink extends LinkHolder {
     }
 
     default void doReturn(final Context context, final Object instance, final Object value, final Object... args) {
-        if(MOCK_STUDENT_CODE) {
+        if (MOCK_STUDENT_CODE) {
             invoke(
                 context,
                 Mockito.doReturn(value).when(instance),
@@ -143,7 +144,56 @@ public interface ClassMethodLink extends LinkHolder {
         doReturn(instance, value, getAnyArgumentMatchers());
     }
 
+    default <T> void doAnswer(final Context context, final Object instance, final Answer<T> answer, final Object... args) {
+        if (MOCK_STUDENT_CODE) {
+            invoke(
+                context,
+                Mockito.doAnswer(answer).when(instance),
+                args
+            );
+        }
+    }
+
+    default <T> void doAnswer(final Object instance, final Answer<T> answer, final Object... args) {
+        doAnswer(Assertions2.emptyContext(), instance, answer, args);
+    }
+    default <T> void doAnswerAlways(final Context context, final Object instance, final Answer<T> answer) {
+        doAnswer(context, instance, answer, getAnyArgumentMatchers());
+    }
+
+    default <T> void doAnswer(final Object instance, final Answer<T> answer) {
+        doAnswer(instance, answer, getAnyArgumentMatchers());
+    }
+
     default void doReturnNull(final Object instance) {
         doReturn(instance, null);
+    }
+
+    default void doNothing(final Context context, final Object instance, final Object... args) {
+        if (MOCK_STUDENT_CODE) {
+            invoke(
+                context,
+                Mockito.doNothing().when(instance),
+                args
+            );
+        }
+    }
+
+    default void alwaysDoNothing(final Context context, final Object instance) {
+        if (MOCK_STUDENT_CODE) {
+            invoke(
+                context,
+                Mockito.doNothing().when(instance),
+                getAnyArgumentMatchers()
+            );
+        }
+    }
+
+    default void doNothing(final Object instance, final Object... args) {
+        doNothing(Assertions2.emptyContext(), instance, args);
+    }
+
+    default void doNothing(final Object instance) {
+        doNothing(instance, getAnyArgumentMatchers());
     }
 }
