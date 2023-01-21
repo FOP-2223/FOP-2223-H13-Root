@@ -1,9 +1,15 @@
 package h13.view.gui;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
+import h13.controller.GameConstants;
+import h13.json.JsonConverter;
+import h13.json.JsonParameterSet;
+import h13.json.JsonParameterSetTest;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
 import h13.model.gameplay.sprites.*;
+import h13.util.StudentLinks;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.BoundingBox;
@@ -12,11 +18,14 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.mock;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
+
+import org.junit.jupiter.params.ParameterizedTest;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
 import javax.imageio.ImageIO;
@@ -24,20 +33,54 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.FileSystems;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class SpriteRendererTest extends FxTest {
 
-    @Test
-    public void testRenderSprite(String fileName, Bounds bounds, List<Sprite> sprites){
+    public final static Map<String, Function<JsonNode, ?>> customConverters = new HashMap<>() {
+        {
+            put("sprites", JsonConverter::toSpriteList);
+
+            putAll(JsonConverter.DEFAULT_CONVERTERS);
+        }
+    };
+
+    @BeforeEach
+    public void setupGameVariables(){
+        StudentLinks.GameConstantsLinks.GameConstantsFieldLink.ORIGINAL_GAME_BOUNDS_FIELD.setStatic(new BoundingBox(
+            0,
+            0,
+            256,
+            224
+        ));
+        StudentLinks.GameConstantsLinks.GameConstantsFieldLink.SHIP_SIZE_FIELD.setStatic(15.825454545454544);
+    }
+
+    @ParameterizedTest
+    @JsonParameterSetTest(value = "RenderSpriteTest.json", customConverters = "customConverters")
+    public void testRenderSprite(JsonParameterSet params){
+        String fileName = params.getString("image");
+        Bounds bounds = params.get("GAME_BOUNDS");
+        List<Sprite> sprites = params.get("sprites");
+
         BufferedImage generatedImage = SwingFXUtils.fromFXImage(generateImage(bounds, sprites), null);
         BufferedImage expectedImage = null;
         try {
-            expectedImage = ImageIO.read(new File(fileName));
+//            System.out.println(new File(new URL(fileName).getFile()).exists());
+//            System.out.println(new File(new URL(fileName).getFile()).toPath().toAbsolutePath());
+
+            expectedImage = ImageIO.read(new File(getClass().getResource(fileName).getPath()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -52,17 +95,17 @@ public class SpriteRendererTest extends FxTest {
     }
 
 
-//    @Test
-//    public void run(){
-//        generateAllImages();
-//    }
+    @Test
+    public void run(){
+        generateAllImages();
+    }
 
     private record TestData(String name, Bounds bounds, List<Sprite> sprites){}
 
     private static void generateAllImages(){
         List<TestData> testData = new ArrayList<>();
-        testData.addAll(generateTexture());
-        testData.addAll(generateNoTexture());
+        testData.addAll(generateTexture(generateSprites()));
+        testData.addAll(generateNoTexture(generateSprites()));
 
         for (TestData data: testData){
             saveImage(data.name, generateImage(data.bounds, data.sprites));
@@ -79,15 +122,8 @@ public class SpriteRendererTest extends FxTest {
     }
 
     private static String generateJson(List<TestData> testData, String s){
-        StringBuilder builder = new StringBuilder();
 
-        String testDataString = IntStream.range(0,testData.size()).mapToObj(i ->
-            String.format("""
-            {
-              "Data%d":
-              %s
-            }""", i, generateJson(testData.get(i)))
-        ).collect(Collectors.joining(",\n"));
+        String testDataString = testData.stream().map(testDatum -> String.format("%s", generateJson(testDatum))).collect(Collectors.joining(",\n"));
 
         return String.format(
             """
@@ -102,8 +138,8 @@ public class SpriteRendererTest extends FxTest {
             """
             {
               "sprites": %s,
-              "bounds": %s,
-              "image": "%s"
+              "GAME_BOUNDS": %s,
+              "image": "/h13/view/gui/image/%s.png"
             }""", generateJson(data.sprites), generateJson(data.bounds), data.name);
     }
 
@@ -120,13 +156,7 @@ public class SpriteRendererTest extends FxTest {
     private static String generateJson(List<Sprite> sprites){
         StringBuilder builder = new StringBuilder();
 
-        String spritesString = IntStream.range(0,sprites.size()).mapToObj(i ->
-            String.format("""
-            {
-              "Sprite%d":
-              %s
-            }""", i, generateJson(sprites.get(i)))
-        ).collect(Collectors.joining(",\n"));
+        String spritesString = sprites.stream().map(sprite -> String.format("%s", generateJson(sprite))).collect(Collectors.joining(",\n"));
 
         return String.format(
             """
@@ -136,23 +166,31 @@ public class SpriteRendererTest extends FxTest {
     }
 
     private static String generateJson(Sprite sprite){
+        String type;
+        if (sprite instanceof Bullet){
+            type = "bullet";
+        } else if (sprite instanceof Player){
+            type = "player";
+        } else {
+            type = "enemy";
+        }
+
         return String.format("""
             {
               "x": "%d",
               "y": "%d",
-              "color": "%s"
-            }""", (int) sprite.getX(), (int) sprite.getY(), sprite.getTexture() != null ? "null" : sprite.getColor());
+              "color": "%s",
+              "type": "%s"
+            }""", (int) sprite.getX(), (int) sprite.getY(), sprite.getTexture() != null ? "null" : sprite.getColor(), type);
     }
 
-    private static List<TestData> generateNoTexture(){
-        List<TestData> testData = new ArrayList<>();
-
-        List<Sprite> sprites = List.of(
-            new BattleShip(0,0,0, Color.ORANGE, 3, mock(GameState.class)),
-            new BattleShip(103,100,0, Color.RED, 3, mock(GameState.class)),
-            new BattleShip(200,209,0, Color.GREEN, 3, mock(GameState.class)),
-            new BattleShip(205,0,0, Color.BROWN, 3, mock(GameState.class)),
-            new BattleShip(307,0,0, Color.AZURE, 3, mock(GameState.class)),
+    private static List<Sprite> generateSprites(){
+        return List.of(
+            new Enemy(0,0,0, 0, mock(GameState.class)), //TODO copy
+            new Enemy(103,100,0, 3, mock(GameState.class)),
+            new Enemy(200,209,0, 3, mock(GameState.class)),
+            new Enemy(205,0,0, 3, mock(GameState.class)),
+            new Enemy(307,0,0, 3, mock(GameState.class)),
             new Player(57,50,0, mock(GameState.class)),
             new Player(152,150,0, mock(GameState.class)),
             new Player(250,259,0, mock(GameState.class)),
@@ -162,11 +200,15 @@ public class SpriteRendererTest extends FxTest {
             new Bullet(100,200, mock(GameState.class), null, Direction.UP),
             new Bullet(5,47, mock(GameState.class), null, Direction.UP)
         );
+    }
+
+    private static List<TestData> generateData(List<Sprite> sprites, String baseName){
+        List<TestData> testData = new ArrayList<>();
 
         ThreadLocalRandom random = ThreadLocalRandom.current();
         for (int i = 0; i<sprites.size(); i++){
             Bounds bounds = new BoundingBox(0, 0, random.nextInt(300, 500), random.nextInt(300, 500));
-            testData.add(new TestData("NoTextureDrawSingle" + i, bounds, List.of(sprites.get(i))));
+            testData.add(new TestData(baseName + "Single" + i, bounds, List.of(sprites.get(i))));
         }
 
         for (int i = 0; i<10; i++){
@@ -178,8 +220,13 @@ public class SpriteRendererTest extends FxTest {
                     selSprites.add(test);
                 }
             }
-            testData.add(new TestData("NoTextureDrawMultiple" + i, bounds, selSprites));
+            testData.add(new TestData(baseName + "Multiple" + i, bounds, selSprites));
         }
+        return testData;
+    }
+
+    private static List<TestData> generateNoTexture(List<Sprite> sprites){
+        List<TestData> testData = generateData(sprites, "NoTextureDraw");
 
         for (TestData data: testData){
             for (Sprite sprite: data.sprites){
@@ -190,42 +237,8 @@ public class SpriteRendererTest extends FxTest {
         return testData;
     }
 
-    private static List<TestData> generateTexture(){
-        List<TestData> testData = new ArrayList<>();
-
-        List<Sprite> sprites = List.of(
-            new BattleShip(0,0,0, Color.ORANGE, 3, mock(GameState.class)),
-            new BattleShip(103,100,0, Color.RED, 3, mock(GameState.class)),
-            new BattleShip(200,209,0, Color.GREEN, 3, mock(GameState.class)),
-            new BattleShip(205,0,0, Color.BROWN, 3, mock(GameState.class)),
-            new BattleShip(307,0,0, Color.AZURE, 3, mock(GameState.class)),
-            new Player(57,50,0, mock(GameState.class)),
-            new Player(152,150,0, mock(GameState.class)),
-            new Player(250,259,0, mock(GameState.class)),
-            new Player(250,203,0, mock(GameState.class)),
-            new Bullet(100,5, mock(GameState.class), null, Direction.DOWN),
-            new Bullet(200,5, mock(GameState.class), null, Direction.RIGHT),
-            new Bullet(100,200, mock(GameState.class), null, Direction.UP),
-            new Bullet(5,47, mock(GameState.class), null, Direction.UP)
-        );
-
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-        for (int i = 0; i<sprites.size(); i++){
-            Bounds bounds = new BoundingBox(0, 0, random.nextInt(300, 500), random.nextInt(300, 500));
-            testData.add(new TestData("TextureDrawSingle" + i, bounds, List.of(sprites.get(i))));
-        }
-
-        for (int i = 0; i<10; i++){
-            Bounds bounds = new BoundingBox(0, 0, random.nextInt(300, 500), random.nextInt(300, 500));
-            List<Sprite> selSprites = new ArrayList<>();
-            while (selSprites.size() < 3){
-                Sprite test = sprites.get(random.nextInt(sprites.size()));
-                if (!selSprites.contains(test)){
-                    selSprites.add(test);
-                }
-            }
-            testData.add(new TestData("TextureDrawMultiple" + i, bounds, selSprites));
-        }
+    private static List<TestData> generateTexture(List<Sprite> sprites){
+        List<TestData> testData = generateData(sprites, "TextureDraw");
 
         return testData;
     }
@@ -263,9 +276,8 @@ public class SpriteRendererTest extends FxTest {
     }
 
     public static void assertEqualsImage(BufferedImage expected, BufferedImage actual, Context context){
-        if (expected.getWidth() != actual.getWidth() || expected.getHeight() != actual.getHeight()) {
-            fail(context, r -> "Generated Image does not have the Correct size");
-        }
+        assertEquals(expected.getWidth(), actual.getWidth(), context, r -> "Generated Image does not have the Correct width");
+        assertEquals(expected.getHeight(), actual.getHeight(), context, r -> "Generated Image does not have the Correct width");
         for (int x = 0; x < expected.getWidth(); x++) {
             for (int y = 0; y < expected.getHeight(); y++) {
                 int finalX = x;
