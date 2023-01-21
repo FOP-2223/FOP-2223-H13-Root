@@ -29,8 +29,13 @@ jagr {
             rubricProviderName.set("h13.H13_RubricProvider")
             configureDependencies {
                 implementation(libs.algoutils.tutor)
-                implementation(libs.junit.pioneer)
-                implementation("org.mockito:mockito-inline:4.9.0")
+                implementation("org.mockito:mockito-inline:5.0.0")
+                implementation("org.testfx:testfx-core:4.0.16-alpha")
+                implementation("org.testfx:testfx-junit5:4.0.16-alpha")
+                implementation("org.mockito:mockito-junit-jupiter:4.9.0")
+                implementation("org.junit-pioneer:junit-pioneer:1.7.1")
+                implementation("com.fasterxml.jackson.core:jackson-databind:2.13.3")
+                compileOnly("org.testfx:openjfx-monocle:jdk-12.0.1+2")
             }
         }
         val graderPrivate by creating {

@@ -102,7 +102,8 @@ public class Enemy extends BattleShip {
         timeTillNextShot -= elapsedTime * 1000;
         if (timeTillNextShot <= 0) {
             // Shoot at random intervals
-            if (Math.random() < ApplicationSettings.enemyShootingProbabilityProperty().get()) {
+            var random = Math.random();
+            if (random < ApplicationSettings.enemyShootingProbabilityProperty().get()) {
                 shoot();
                 timeTillNextShot = ApplicationSettings.enemyShootingDelayProperty().get();
             }
