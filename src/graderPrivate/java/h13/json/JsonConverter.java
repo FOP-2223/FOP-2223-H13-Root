@@ -4,20 +4,25 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
-import h13.model.gameplay.sprites.Enemy;
-import h13.model.gameplay.sprites.IDBullet;
-import h13.model.gameplay.sprites.IDEnemy;
-import h13.model.gameplay.sprites.IDPlayer;
+import h13.model.gameplay.sprites.*;
+import h13.util.StudentLinks;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.scene.paint.Color;
 import org.junit.jupiter.api.Assertions;
+import org.mockito.MockSettings;
+import org.mockito.junit.jupiter.MockitoSettings;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.StreamSupport;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
 public class JsonConverter {
 
@@ -38,6 +43,24 @@ public class JsonConverter {
         return StreamSupport.stream(jsonNode.spliterator(), false)
             .map(mapper)
             .toList();
+    }
+
+    private static Sprite toSprite(JsonNode jsonNode) {
+        int x = jsonNode.get("x").asInt();
+        int y = jsonNode.get("y").asInt();
+        String color = jsonNode.get("color").asText();
+
+        var sprite = spy(switch (jsonNode.get("type").asText()){
+            case "bullet" -> new Bullet(x, y, mock(GameState.class), null, Direction.UP);
+            case "enemy" -> new Enemy(x,y, 0, 0, mock(GameState.class));
+            default -> new Player(x, y, 0, mock(GameState.class));
+        });
+
+        if (!color.equals("null")){
+            sprite.setTexture(null);
+            StudentLinks.SpriteLinks.SpriteFieldLink.COLOR_FIELD.set(sprite, Color.valueOf(color));
+        }
+        return sprite;
     }
 
     public static Enemy toEnemy(final JsonNode jsonNode) {
@@ -81,6 +104,10 @@ public class JsonConverter {
 
     public static List<Enemy> toEnemyList(final JsonNode jsonNode) {
         return toList(jsonNode, JsonConverter::toEnemy);
+    }
+
+    public static List<Sprite> toSpriteList(final JsonNode jsonNode) {
+        return toList(jsonNode, JsonConverter::toSprite);
     }
 
     public static List<IDEnemy> toIDEnemyList(final JsonNode jsonNode, final GameState gameState) {
