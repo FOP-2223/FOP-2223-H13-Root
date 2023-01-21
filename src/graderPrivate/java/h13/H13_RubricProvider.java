@@ -6,6 +6,7 @@ import h13.model.gameplay.EnemyMovementTest;
 import h13.model.gameplay.sprites.EnemyTest;
 import h13.model.gameplay.sprites.PlayerTest;
 import h13.view.gui.GameSceneTest;
+import h13.view.gui.SpriteRendererTest;
 import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
 import org.tudalgo.algoutils.transform.AccessTransformer;
@@ -183,7 +184,7 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Methode renderSprite() funktioniert korrekt für Sprites ohne Textur.",
-                                null
+                                JUnitTestRef.ofClass(SpriteRendererTest.class)
                             ),
                             criterion(
                                 "Die Methode renderSprite() funktioniert korrekt für Sprites mit Textur.",
