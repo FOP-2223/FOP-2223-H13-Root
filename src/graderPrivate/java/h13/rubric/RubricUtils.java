@@ -81,7 +81,7 @@ public class RubricUtils {
 
             @Override
             public List<String> getComments() {
-                return List.of("Dieses Kriterium wird händisch bewertet.");
+                return List.of("This criterion will be graded manually.");
             }
         };
     }
