@@ -415,7 +415,7 @@ public class GameController extends SceneController implements Updatable {
      */
     public void updatePoints(final List<Sprite> damaged) {
         for (final Sprite sprite : damaged) {
-            if (sprite instanceof Enemy e) {
+            if (sprite instanceof Enemy e && e.isDead()) {
                 getPlayer().addPoints(e.getPointsWorth());
             }
         }
