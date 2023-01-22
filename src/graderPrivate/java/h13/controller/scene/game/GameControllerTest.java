@@ -81,7 +81,7 @@ public class GameControllerTest {
     @ParameterizedTest
     @JsonParameterSetTest(value = "GameControllerTestDoCollisions.json", customConverters = "customConverters")
     public void testDoCollisions(final JsonParameterSet params) {
-        final var context = params.toContext("hits");
+        final var context = params.toContext();
 
         // setup
         gameState.getSprites().clear();
