@@ -3,7 +3,6 @@ package h13.shared;
 import h13.model.gameplay.Direction;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 
 import static h13.controller.GameConstants.ORIGINAL_GAME_BOUNDS;
 

@@ -26,7 +26,7 @@ public class JsonArgumentSetProvider implements ArgumentsProvider, AnnotationCon
 
     @Override
     @SuppressWarnings("unchecked")
-    public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
+    public Stream<? extends Arguments> provideArguments(final ExtensionContext context) throws Exception {
         final var testClass = context.getRequiredTestClass();
         Map<String, Function<JsonNode, ?>> customConverters = null;
         if (!customConvertersFieldName.isBlank()) {

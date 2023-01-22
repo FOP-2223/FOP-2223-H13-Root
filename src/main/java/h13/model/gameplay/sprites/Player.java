@@ -82,7 +82,7 @@ public class Player extends BattleShip {
      * @param name The player's new {@link #name}.
      * @see #name
      */
-    public void setName(final String name) {
+    public void setName(final @Nullable String name) {
         this.name = name;
     }
 
@@ -167,7 +167,7 @@ public class Player extends BattleShip {
             }
 
             // check for dangerous bullets
-            var dangerousBullet = getGameState().getSprites().stream()
+            final var dangerousBullet = getGameState().getSprites().stream()
                 .filter(Bullet.class::isInstance)
                 .map(Bullet.class::cast)
                 .filter(bullet -> bullet.getDirection() == Direction.DOWN)

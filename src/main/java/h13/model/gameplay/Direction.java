@@ -1,7 +1,5 @@
 package h13.model.gameplay;
 
-import javafx.geometry.Point2D;
-
 import java.util.Arrays;
 import java.util.Comparator;
 

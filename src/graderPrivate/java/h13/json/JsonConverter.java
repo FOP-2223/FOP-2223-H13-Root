@@ -120,23 +120,21 @@ public class JsonConverter {
     }
 
     // Custom converters
-    public final static Map<String, Function<JsonNode, ?>> DEFAULT_CONVERTERS = new HashMap<>() {
-        {
-            put("GAME_BOUNDS", JsonConverter::toBounds);
-            put("enemyBounds", JsonConverter::toBounds);
-            put("gameSceneBounds", JsonConverter::toBounds);
-            put("gameSceneBounds2", JsonConverter::toBounds);
-            put("expectedGameBoardBounds", JsonConverter::toBounds);
-            put("expectedGameBoardBounds2", JsonConverter::toBounds);
-            put("newEnemyBounds", JsonConverter::toBounds);
-            put("clampedEnemyBounds", JsonConverter::toBounds);
-            put("direction", JsonConverter::toDirection);
-            put("oldDirection", JsonConverter::toDirection);
-            put("newDirection", JsonConverter::toDirection);
-            put("nextMovementDirection", JsonConverter::toDirection);
-            put("enemies", JsonConverter::toEnemyList);
-        }
-    };
+    public final static Map<String, Function<JsonNode, ?>> DEFAULT_CONVERTERS = Map.ofEntries(
+            Map.entry("GAME_BOUNDS", JsonConverter::toBounds),
+            Map.entry("enemyBounds", JsonConverter::toBounds),
+            Map.entry("gameSceneBounds", JsonConverter::toBounds),
+            Map.entry("gameSceneBounds2", JsonConverter::toBounds),
+            Map.entry("expectedGameBoardBounds", JsonConverter::toBounds),
+            Map.entry("expectedGameBoardBounds2", JsonConverter::toBounds),
+            Map.entry("newEnemyBounds", JsonConverter::toBounds),
+            Map.entry("clampedEnemyBounds", JsonConverter::toBounds),
+            Map.entry("direction", JsonConverter::toDirection),
+            Map.entry("oldDirection", JsonConverter::toDirection),
+            Map.entry("newDirection", JsonConverter::toDirection),
+            Map.entry("nextMovementDirection", JsonConverter::toDirection),
+            Map.entry("enemies", JsonConverter::toEnemyList)
+    );
 
     @SuppressWarnings("unchecked")
     public static <T> T convert(

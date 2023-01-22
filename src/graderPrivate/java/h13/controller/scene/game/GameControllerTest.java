@@ -19,7 +19,6 @@ import org.mockito.Mockito;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -40,17 +39,16 @@ public class GameControllerTest {
     private GameState gameState;
     private GameController gameController;
 
-    public final static Map<String, Function<JsonNode, ?>> customConverters = new HashMap<>() {
-        {
-            put("GAME_BOUNDS", JsonConverter::toBounds);
-            put("enemies", JsonConverter::toIDEnemyList);
-            put("bullets", JsonConverter::toIDBulletList);
-            put("player", JsonConverter::toIDPlayer);
-            put("bulletOwners", JsonConverter::toIntMap);
-            put("hits", JsonConverter::toIntMap);
-            put("damaged", jsonNode -> JsonConverter.toMap(jsonNode, Integer::parseInt, JsonNode::asBoolean));
-        }
-    };
+    @SuppressWarnings("unused")
+    public final static Map<String, Function<JsonNode, ?>> customConverters = Map.ofEntries(
+        Map.entry("GAME_BOUNDS", JsonConverter::toBounds),
+        Map.entry("enemies", JsonConverter::toIDEnemyList),
+        Map.entry("bullets", JsonConverter::toIDBulletList),
+        Map.entry("player", JsonConverter::toIDPlayer),
+        Map.entry("bulletOwners", JsonConverter::toIntMap),
+        Map.entry("hits", JsonConverter::toIntMap),
+        Map.entry("damaged", jsonNode -> JsonConverter.toMap(jsonNode, Integer::parseInt, JsonNode::asBoolean))
+    );
 
     @BeforeEach
     public void setUp() {

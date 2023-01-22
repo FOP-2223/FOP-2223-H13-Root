@@ -11,5 +11,5 @@ public interface LinkHolder {
      *
      * @return The {@link Link} stored in this {@link LinkHolder}.
      */
-    public Link getLink();
+    Link getLink();
 }
