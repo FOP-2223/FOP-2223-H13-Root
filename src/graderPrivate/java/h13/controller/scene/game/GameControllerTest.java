@@ -17,6 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.mockito.Answers;
 import org.mockito.Mockito;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
+import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,11 +26,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static h13.util.StudentLinks.BulletLinks.BulletFieldLink.OWNER_FIELD;
-import static h13.util.StudentLinks.BulletLinks.BulletMethodLink.CAN_HIT_METHOD;
 import static h13.util.StudentLinks.BulletLinks.BulletMethodLink.HIT_METHOD;
 import static h13.util.StudentLinks.GameConstantsLinks.GameConstantsFieldLink.*;
 import static h13.util.StudentLinks.GameControllerLinks.GameControllerFieldLink.GAME_STATE_FIELD;
 import static h13.util.StudentLinks.GameControllerLinks.GameControllerMethodLink.DO_COLLISIONS_METHOD;
+import static h13.util.StudentLinks.GameControllerLinks.GameControllerMethodLink.UPDATE_POINTS_METHOD;
+import static h13.util.StudentLinks.SpriteLinks.SpriteMethodLink.IS_DEAD_METHOD;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
@@ -46,6 +48,7 @@ public class GameControllerTest {
             put("player", JsonConverter::toIDPlayer);
             put("bulletOwners", JsonConverter::toIntMap);
             put("hits", JsonConverter::toIntMap);
+            put("damaged", jsonNode -> JsonConverter.toMap(jsonNode, Integer::parseInt, JsonNode::asBoolean));
         }
     };
 
@@ -58,45 +61,28 @@ public class GameControllerTest {
         gameState = new GameState();
         gameController = spy(mock(GameController.class, Answers.CALLS_REAL_METHODS));
         GAME_STATE_FIELD.set(gameController, gameState);
-        final var playerController = mock(PlayerController.class);
+        final var playerController = mock(PlayerController.class, Answers.CALLS_REAL_METHODS);
         StudentLinks.PlayerControllerLinks.PlayerControllerFieldLink.GAME_CONTROLLER_FIELD.set(playerController, gameController);
         gameController.setPlayerController(playerController);
-        final var enemyController = mock(EnemyController.class);
+        final var enemyController = mock(EnemyController.class, Answers.CALLS_REAL_METHODS);
         StudentLinks.EnemyControllerLinks.EnemyControllerFieldLink.GAME_CONTROLLER_FIELD.set(enemyController, gameController);
         gameController.setEnemyController(enemyController);
     }
 
-    /*
-    private void doCollisions() {
-        getGameState().getSprites().stream().filter(Bullet.class::isInstance).map(Bullet.class::cast).forEach(b -> {
-            getGameState().getSprites().stream()
-                //.filter(Sprite::isAlive)
-                .filter(BattleShip.class::isInstance)
-                .map(BattleShip.class::cast)
-                .filter(b::canHit)
-                .forEach(b::hit);
-        });
-    }
-     */
-    @ParameterizedTest
-    @JsonParameterSetTest(value = "GameControllerTestDoCollisions.json", customConverters = "customConverters")
-    public void testDoCollisions(final JsonParameterSet params) {
-        final var context = params.toContext();
-
-        // setup
+    private void setupGameController(final JsonParameterSet params) {
         gameState.getSprites().clear();
         final var gameBounds = params.get("GAME_BOUNDS", Bounds.class);
         ORIGINAL_GAME_BOUNDS_FIELD.setStatic(gameBounds);
         ASPECT_RATIO_FIELD.setStatic(gameBounds.getWidth() / gameBounds.getHeight());
         final var SHIP_SIZE = params.getDouble("SHIP_SIZE");
         SHIP_SIZE_FIELD.setStatic(SHIP_SIZE);
-        final IDPlayer player = params.get("player");
+        final IDPlayer player = spy(params.get("player", IDPlayer.class));
         StudentLinks.PlayerControllerLinks.PlayerControllerFieldLink.PLAYER_FIELD.set(
             gameController.getPlayerController(),
             player
         );
         gameState.getSprites().add(player);
-        final List<IDEnemy> enemies = params.get("enemies");
+        final List<IDEnemy> enemies = params.<List<IDEnemy>>get("enemies").stream().map(Mockito::spy).toList();
         gameState.getSprites().addAll(enemies);
         final var bullets = params.<List<IDBullet>>get("bullets").stream().map(Mockito::spy).toList();
         final Map<Integer, Integer> bulletOwners = params.get("bulletOwners");
@@ -112,25 +98,36 @@ public class GameControllerTest {
             OWNER_FIELD.set(bullet, owner);
         });
         gameState.getSprites().addAll(bullets);
+    }
+
+    @ParameterizedTest
+    @JsonParameterSetTest(value = "GameControllerTestDoCollisions.json", customConverters = "customConverters")
+    public void testDoCollisions(final JsonParameterSet params) {
+        final var context = params.toContext();
+
+        // setup
+        setupGameController(params);
+        final List<IDBullet> bullets = gameState.getSprites().stream()
+            .filter(IDBullet.class::isInstance)
+            .map(IDBullet.class::cast)
+            .toList();
         final var hits = params.<Map<Integer, Integer>>get("hits")
             .entrySet()
             .stream()
-            .map(e -> {
-                return Map.entry(
-                    bullets
-                        .stream()
-                        .filter(b -> b.getId() == e.getKey())
-                        .findFirst()
-                        .orElseThrow(() -> new RuntimeException("Invalid Test: Bullet not found")),
-                    gameState.getSprites()
-                        .stream()
-                        .filter(WithID.class::isInstance)
-                        .map(WithID.class::cast)
-                        .filter(s -> s.getId() == e.getValue())
-                        .findFirst()
-                        .orElseThrow(() -> new RuntimeException("Invalid Test: Sprite not found"))
-                );
-            })
+            .map(e -> Map.entry(
+                bullets
+                    .stream()
+                    .filter(b -> b.getId() == e.getKey())
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Invalid Test: Bullet not found")),
+                gameState.getSprites()
+                    .stream()
+                    .filter(WithID.class::isInstance)
+                    .map(WithID.class::cast)
+                    .filter(s -> s.getId() == e.getValue())
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Invalid Test: Sprite not found"))
+            ))
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 Map.Entry::getValue
@@ -171,6 +168,44 @@ public class GameControllerTest {
         bullets.forEach(b -> {
             Mockito.verify(b, Mockito.atMost(hits.containsKey(b) ? 1 : 0)).hit(Mockito.any());
         });
+    }
+
+    @ParameterizedTest
+    @JsonParameterSetTest(value = "GameControllerTestUpdatePoints.json", customConverters = "customConverters")
+    public void testUpdatePoints(final JsonParameterSet params) {
+        final var context = params.toContext("expectedPoints");
+
+        // setup
+        setupGameController(params);
+        final Map<Sprite, Boolean> damaged = params.<Map<Integer, Boolean>>get("damaged")
+            .entrySet()
+            .stream()
+            .map(d -> Map.entry(
+                     gameState.getSprites()
+                         .stream()
+                         .filter(s -> s instanceof WithID sid && sid.getId() == d.getKey())
+                         .findFirst()
+                         .orElseThrow(() -> new RuntimeException("Invalid Test: Bullet not found")),
+                     d.getValue()
+                 )
+            )
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                Map.Entry::getValue
+            ));
+        damaged.forEach((sprite, isDead) -> {
+            IS_DEAD_METHOD.doReturnAlways(context, sprite, isDead);
+        });
+
+        // test
+        UPDATE_POINTS_METHOD.invoke(context, gameController, damaged.keySet().stream().toList());
+
+        Assertions2.assertEquals(
+            params.get("expectedPoints"),
+            gameController.getPlayer().getScore(),
+            context,
+            r -> "Incorrect player score after updatePoints() was called."
+        );
     }
 }
 //    @ExtendWith(JagrExecutionCondition.class)

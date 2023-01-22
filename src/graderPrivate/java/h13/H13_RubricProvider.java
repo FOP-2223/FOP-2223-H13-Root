@@ -226,7 +226,7 @@ public class H13_RubricProvider implements RubricProvider {
                             ),
                             criterion(
                                 "Die Methode updatePoints() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testUpdatePoints", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die Methode handleKeyboardInputs() ist vollständig korrekt.",
@@ -240,10 +240,14 @@ public class H13_RubricProvider implements RubricProvider {
                                     manualGrader(1)
                                 )
                                 .build(),
-                            criterion(
-                                "Die Klasse GameController ist vollständig korrekt.",
-                                null
-                            )
+                            Criterion.builder()
+                                .shortDescription("Die Klasse GameController ist vollständig korrekt.")
+                                .minPoints(0)
+                                .maxPoints(1)
+                                .grader(
+                                    manualGrader(1)
+                                )
+                                .build()
                         )
                         .build(),
                     Criterion.builder()

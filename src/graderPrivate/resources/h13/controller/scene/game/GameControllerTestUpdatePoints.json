@@ -1,6 +1,6 @@
 [
   {
-    "SHIP_SIZE": 10,
+    "SHIP_SIZE": 1,
     "GAME_BOUNDS": {
       "x": 0,
       "y": 0,
@@ -10,80 +10,20 @@
     "player": {
       "id": 0,
       "x": 0,
-      "y": 400,
+      "y": 420,
       "velocity": 0,
-      "health": 1
+      "health": 4,
+      "score": 0
     },
     "enemies": [
-      {
-        "id": 1,
-        "xIndex": 10,
-        "yIndex": 20,
-        "x": 0,
-        "y": 0,
-        "velocity": 0,
-        "health": 1
-      }
     ],
     "bullets": [
-      {
-        "id": 2,
-        "x": 10,
-        "y": 20,
-        "velocity": 0,
-        "health": 1,
-        "direction": "UP"
-      }
     ],
     "bulletOwners": {
-      "2": 0
     },
-    "hits": {
-      "2": 1
-    }
-  },
-  {
-    "SHIP_SIZE": 10,
-    "GAME_BOUNDS": {
-      "x": 0,
-      "y": 0,
-      "width": 256,
-      "height": 224
+    "damaged": {
     },
-    "player": {
-      "id": 0,
-      "x": 0,
-      "y": 0,
-      "velocity": 0,
-      "health": 1
-    },
-    "enemies": [
-      {
-        "id": 1,
-        "xIndex": 0,
-        "yIndex": 0,
-        "x": 0,
-        "y": 0,
-        "velocity": 0,
-        "health": 1
-      }
-    ],
-    "bullets": [
-      {
-        "id": 2,
-        "x": 0,
-        "y": 0,
-        "velocity": 0,
-        "health": 1,
-        "direction": "UP"
-      }
-    ],
-    "bulletOwners": {
-      "2": 0
-    },
-    "hits": {
-      "2": 1
-    }
+    "expectedPoints": 0
   },
   {
     "SHIP_SIZE": 1,
@@ -96,94 +36,20 @@
     "player": {
       "id": 0,
       "x": 0,
-      "y": 400,
+      "y": 420,
       "velocity": 0,
-      "health": 1
+      "health": 4,
+      "score": 1337
     },
     "enemies": [
-      {
-        "id": 1,
-        "xIndex": 0,
-        "yIndex": 0,
-        "x": 0,
-        "y": 0,
-        "velocity": 0,
-        "health": 1
-      },
-      {
-        "id": 2,
-        "xIndex": 1,
-        "yIndex": 0,
-        "x": 10,
-        "y": 0,
-        "velocity": 0,
-        "health": 1
-      },
-      {
-        "id": 3,
-        "xIndex": 2,
-        "yIndex": 0,
-        "x": 20,
-        "y": 0,
-        "velocity": 0,
-        "health": 1
-      },
-      {
-        "id": 4,
-        "xIndex": 3,
-        "yIndex": 0,
-        "x": 30,
-        "y": 0,
-        "velocity": 0,
-        "health": 1
-      }
     ],
     "bullets": [
-      {
-        "id": 5,
-        "x": 0,
-        "y": 0,
-        "velocity": 0,
-        "health": 1,
-        "direction": "UP"
-      },
-      {
-        "id": 6,
-        "x": 10,
-        "y": 0,
-        "velocity": 0,
-        "health": 1,
-        "direction": "UP"
-      },
-      {
-        "id": 7,
-        "x": 20,
-        "y": 0,
-        "velocity": 0,
-        "health": 1,
-        "direction": "UP"
-      },
-      {
-        "id": 8,
-        "x": 30,
-        "y": 0,
-        "velocity": 0,
-        "health": 1,
-        "direction": "UP"
-      }
     ],
     "bulletOwners": {
-      "5": 0,
-      "6": 0,
-      "7": 0,
-      "8": 0
     },
-    "hits": {
-      "5": 1,
-      "6": 2,
-      "7": 3,
-      "8": 4
-    }
+    "damaged": {
+    },
+    "expectedPoints": 1337
   },
   {
     "SHIP_SIZE": 1,
@@ -196,9 +62,10 @@
     "player": {
       "id": 0,
       "x": 0,
-      "y": 400,
+      "y": 420,
       "velocity": 0,
-      "health": 4
+      "health": 4,
+      "score": 0
     },
     "enemies": [
       {
@@ -208,7 +75,8 @@
         "x": 0,
         "y": 0,
         "velocity": 0,
-        "health": 1
+        "health": 0,
+        "pointsWorth": 69
       },
       {
         "id": 2,
@@ -217,7 +85,8 @@
         "x": 10,
         "y": 0,
         "velocity": 0,
-        "health": 1
+        "health": 1,
+        "pointsWorth": 123
       },
       {
         "id": 3,
@@ -226,7 +95,8 @@
         "x": 20,
         "y": 0,
         "velocity": 0,
-        "health": 1
+        "health": 0,
+        "pointsWorth": 351
       },
       {
         "id": 4,
@@ -235,7 +105,8 @@
         "x": 30,
         "y": 0,
         "velocity": 0,
-        "health": 1
+        "health": 1,
+        "pointsWorth": 666
       }
     ],
     "bullets": [
@@ -274,7 +145,7 @@
       {
         "id": 9,
         "x": 0,
-        "y": 400,
+        "y": 420,
         "velocity": 0,
         "health": 1,
         "direction": "DOWN"
@@ -282,7 +153,7 @@
       {
         "id": 10,
         "x": 0,
-        "y": 400,
+        "y": 420,
         "velocity": 0,
         "health": 1,
         "direction": "DOWN"
@@ -290,7 +161,7 @@
       {
         "id": 11,
         "x": 0,
-        "y": 400,
+        "y": 420,
         "velocity": 0,
         "health": 1,
         "direction": "DOWN"
@@ -298,7 +169,7 @@
       {
         "id": 12,
         "x": 0,
-        "y": 400,
+        "y": 420,
         "velocity": 0,
         "health": 1,
         "direction": "DOWN"
@@ -306,151 +177,7 @@
       {
         "id": 13,
         "x": 0,
-        "y": 200,
-        "velocity": 0,
-        "health": 1,
-        "direction": "DOWN"
-      }
-    ],
-    "bulletOwners": {
-      "5": 0,
-      "6": 0,
-      "7": 0,
-      "8": 0
-    },
-    "hits": {
-      "5": 1,
-      "6": 2,
-      "7": 3,
-      "8": 4,
-      "9": 0,
-      "10": 0,
-      "11": 0,
-      "12": 0
-    }
-  },
-  {
-    "SHIP_SIZE": 1,
-    "GAME_BOUNDS": {
-      "x": 0,
-      "y": 0,
-      "width": 256,
-      "height": 224
-    },
-    "player": {
-      "id": 0,
-      "x": 0,
-      "y": 400,
-      "velocity": 0,
-      "health": 4
-    },
-    "enemies": [
-      {
-        "id": 1,
-        "xIndex": 0,
-        "yIndex": 0,
-        "x": 0,
-        "y": 0,
-        "velocity": 0,
-        "health": 1
-      },
-      {
-        "id": 2,
-        "xIndex": 1,
-        "yIndex": 0,
-        "x": 10,
-        "y": 0,
-        "velocity": 0,
-        "health": 1
-      },
-      {
-        "id": 3,
-        "xIndex": 2,
-        "yIndex": 0,
-        "x": 20,
-        "y": 0,
-        "velocity": 0,
-        "health": 1
-      },
-      {
-        "id": 4,
-        "xIndex": 3,
-        "yIndex": 0,
-        "x": 30,
-        "y": 0,
-        "velocity": 0,
-        "health": 1
-      }
-    ],
-    "bullets": [
-      {
-        "id": 5,
-        "x": 0,
-        "y": 0,
-        "velocity": 0,
-        "health": 1,
-        "direction": "UP"
-      },
-      {
-        "id": 6,
-        "x": 10,
-        "y": 0,
-        "velocity": 0,
-        "health": 1,
-        "direction": "UP"
-      },
-      {
-        "id": 7,
-        "x": 20,
-        "y": 0,
-        "velocity": 0,
-        "health": 1,
-        "direction": "UP"
-      },
-      {
-        "id": 8,
-        "x": 30,
-        "y": 0,
-        "velocity": 0,
-        "health": 1,
-        "direction": "UP"
-      },
-      {
-        "id": 9,
-        "x": 0,
-        "y": 400,
-        "velocity": 0,
-        "health": 1,
-        "direction": "DOWN"
-      },
-      {
-        "id": 10,
-        "x": 0,
-        "y": 400,
-        "velocity": 0,
-        "health": 1,
-        "direction": "DOWN"
-      },
-      {
-        "id": 11,
-        "x": 0,
-        "y": 400,
-        "velocity": 0,
-        "health": 1,
-        "direction": "DOWN"
-      },
-      {
-        "id": 12,
-        "x": 0,
-        "y": 400,
-        "velocity": 0,
-        "health": 1,
-        "direction": "DOWN"
-      },
-      {
-        "id": 13,
-        "x": 0,
-        "y": 200,
+        "y": 222,
         "velocity": 0,
         "health": 1,
         "direction": "DOWN"
@@ -467,7 +194,317 @@
       "12": 4,
       "13": 4
     },
-    "hits": {
-    }
+    "damaged": {
+      "1": true,
+      "2": false,
+      "3": true,
+      "4": false
+    },
+    "expectedPoints": 420
+  },
+  {
+    "SHIP_SIZE": 1,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "player": {
+      "id": 0,
+      "x": 0,
+      "y": 420,
+      "velocity": 0,
+      "health": 4,
+      "score": 917
+    },
+    "enemies": [
+      {
+        "id": 1,
+        "xIndex": 0,
+        "yIndex": 0,
+        "x": 0,
+        "y": 0,
+        "velocity": 0,
+        "health": 0,
+        "pointsWorth": 69
+      },
+      {
+        "id": 2,
+        "xIndex": 1,
+        "yIndex": 0,
+        "x": 10,
+        "y": 0,
+        "velocity": 0,
+        "health": 1,
+        "pointsWorth": 123
+      },
+      {
+        "id": 3,
+        "xIndex": 2,
+        "yIndex": 0,
+        "x": 20,
+        "y": 0,
+        "velocity": 0,
+        "health": 0,
+        "pointsWorth": 351
+      },
+      {
+        "id": 4,
+        "xIndex": 3,
+        "yIndex": 0,
+        "x": 30,
+        "y": 0,
+        "velocity": 0,
+        "health": 1,
+        "pointsWorth": 666
+      }
+    ],
+    "bullets": [
+      {
+        "id": 5,
+        "x": 0,
+        "y": 0,
+        "velocity": 0,
+        "health": 1,
+        "direction": "UP"
+      },
+      {
+        "id": 6,
+        "x": 10,
+        "y": 0,
+        "velocity": 0,
+        "health": 1,
+        "direction": "UP"
+      },
+      {
+        "id": 7,
+        "x": 20,
+        "y": 0,
+        "velocity": 0,
+        "health": 1,
+        "direction": "UP"
+      },
+      {
+        "id": 8,
+        "x": 30,
+        "y": 0,
+        "velocity": 0,
+        "health": 1,
+        "direction": "UP"
+      },
+      {
+        "id": 9,
+        "x": 0,
+        "y": 420,
+        "velocity": 0,
+        "health": 1,
+        "direction": "DOWN"
+      },
+      {
+        "id": 10,
+        "x": 0,
+        "y": 420,
+        "velocity": 0,
+        "health": 1,
+        "direction": "DOWN"
+      },
+      {
+        "id": 11,
+        "x": 0,
+        "y": 420,
+        "velocity": 0,
+        "health": 1,
+        "direction": "DOWN"
+      },
+      {
+        "id": 12,
+        "x": 0,
+        "y": 420,
+        "velocity": 0,
+        "health": 1,
+        "direction": "DOWN"
+      },
+      {
+        "id": 13,
+        "x": 0,
+        "y": 222,
+        "velocity": 0,
+        "health": 1,
+        "direction": "DOWN"
+      }
+    ],
+    "bulletOwners": {
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 1,
+      "10": 2,
+      "11": 3,
+      "12": 4,
+      "13": 4
+    },
+    "damaged": {
+      "1": true,
+      "2": false,
+      "3": true,
+      "4": false
+    },
+    "expectedPoints": 1337
+  },
+  {
+    "SHIP_SIZE": 1,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "player": {
+      "id": 0,
+      "x": 0,
+      "y": 420,
+      "velocity": 0,
+      "health": 4,
+      "score": 917
+    },
+    "enemies": [
+      {
+        "id": 1,
+        "xIndex": 0,
+        "yIndex": 0,
+        "x": 0,
+        "y": 0,
+        "velocity": 0,
+        "health": 0,
+        "pointsWorth": 69
+      },
+      {
+        "id": 2,
+        "xIndex": 1,
+        "yIndex": 0,
+        "x": 10,
+        "y": 0,
+        "velocity": 0,
+        "health": 1,
+        "pointsWorth": 123
+      },
+      {
+        "id": 3,
+        "xIndex": 2,
+        "yIndex": 0,
+        "x": 20,
+        "y": 0,
+        "velocity": 0,
+        "health": 0,
+        "pointsWorth": 351
+      },
+      {
+        "id": 4,
+        "xIndex": 3,
+        "yIndex": 0,
+        "x": 30,
+        "y": 0,
+        "velocity": 0,
+        "health": 1,
+        "pointsWorth": 666
+      }
+    ],
+    "bullets": [
+      {
+        "id": 5,
+        "x": 0,
+        "y": 0,
+        "velocity": 0,
+        "health": 1,
+        "direction": "UP"
+      },
+      {
+        "id": 6,
+        "x": 10,
+        "y": 0,
+        "velocity": 0,
+        "health": 1,
+        "direction": "UP"
+      },
+      {
+        "id": 7,
+        "x": 20,
+        "y": 0,
+        "velocity": 0,
+        "health": 1,
+        "direction": "UP"
+      },
+      {
+        "id": 8,
+        "x": 30,
+        "y": 0,
+        "velocity": 0,
+        "health": 1,
+        "direction": "UP"
+      },
+      {
+        "id": 9,
+        "x": 0,
+        "y": 420,
+        "velocity": 0,
+        "health": 1,
+        "direction": "DOWN"
+      },
+      {
+        "id": 10,
+        "x": 0,
+        "y": 420,
+        "velocity": 0,
+        "health": 1,
+        "direction": "DOWN"
+      },
+      {
+        "id": 11,
+        "x": 0,
+        "y": 420,
+        "velocity": 0,
+        "health": 1,
+        "direction": "DOWN"
+      },
+      {
+        "id": 12,
+        "x": 0,
+        "y": 420,
+        "velocity": 0,
+        "health": 1,
+        "direction": "DOWN"
+      },
+      {
+        "id": 13,
+        "x": 0,
+        "y": 222,
+        "velocity": 0,
+        "health": 1,
+        "direction": "DOWN"
+      }
+    ],
+    "bulletOwners": {
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 1,
+      "10": 2,
+      "11": 3,
+      "12": 4,
+      "13": 4
+    },
+    "damaged": {
+      "0": false,
+      "1": true,
+      "2": false,
+      "3": true,
+      "4": false,
+      "13": true
+    },
+    "expectedPoints": 1337,
+    "note": "This test uses other sprites than just enemies to ensure that those are not counted."
   }
 ]
