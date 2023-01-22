@@ -36,8 +36,6 @@ import static org.mockito.Mockito.spy;
 
 @TestForSubmission
 public class GameControllerTest {
-    private GameState gameState;
-    private GameController gameController;
 
     @SuppressWarnings("unused")
     public final static Map<String, Function<JsonNode, ?>> customConverters = Map.ofEntries(
@@ -50,38 +48,28 @@ public class GameControllerTest {
         Map.entry("damaged", jsonNode -> JsonConverter.toMap(jsonNode, Integer::parseInt, JsonNode::asBoolean))
     );
 
-    @BeforeEach
-    public void setUp() {
-        ApplicationSettings.loadTexturesProperty().set(false);
+    public static GameController setupGameController(final JsonParameterSet params) {
+        // preparation
         final var origGameBounds = new BoundingBox(0, 0, 256, 224);
         ORIGINAL_GAME_BOUNDS_FIELD.setStatic(origGameBounds);
         ASPECT_RATIO_FIELD.setStatic(origGameBounds.getWidth() / origGameBounds.getHeight());
-        gameState = new GameState();
-        gameController = spy(mock(GameController.class, Answers.CALLS_REAL_METHODS));
-        GAME_STATE_FIELD.set(gameController, gameState);
-        final var playerController = mock(PlayerController.class, Answers.CALLS_REAL_METHODS);
-        StudentLinks.PlayerControllerLinks.PlayerControllerFieldLink.GAME_CONTROLLER_FIELD.set(playerController, gameController);
-        gameController.setPlayerController(playerController);
-        final var enemyController = mock(EnemyController.class, Answers.CALLS_REAL_METHODS);
-        StudentLinks.EnemyControllerLinks.EnemyControllerFieldLink.GAME_CONTROLLER_FIELD.set(enemyController, gameController);
-        gameController.setEnemyController(enemyController);
-    }
-
-    private void setupGameController(final JsonParameterSet params) {
-        gameState.getSprites().clear();
+        ApplicationSettings.loadTexturesProperty().set(false);
         final var gameBounds = params.get("GAME_BOUNDS", Bounds.class);
         ORIGINAL_GAME_BOUNDS_FIELD.setStatic(gameBounds);
         ASPECT_RATIO_FIELD.setStatic(gameBounds.getWidth() / gameBounds.getHeight());
         final var SHIP_SIZE = params.getDouble("SHIP_SIZE");
         SHIP_SIZE_FIELD.setStatic(SHIP_SIZE);
+
+        // setup Model
+        final var gameState = new GameState();
+        gameState.getSprites().clear();
+
         final IDPlayer player = spy(params.get("player", IDPlayer.class));
-        StudentLinks.PlayerControllerLinks.PlayerControllerFieldLink.PLAYER_FIELD.set(
-            gameController.getPlayerController(),
-            player
-        );
         gameState.getSprites().add(player);
+
         final List<IDEnemy> enemies = params.<List<IDEnemy>>get("enemies").stream().map(Mockito::spy).toList();
         gameState.getSprites().addAll(enemies);
+
         final var bullets = params.<List<IDBullet>>get("bullets").stream().map(Mockito::spy).toList();
         final Map<Integer, Integer> bulletOwners = params.get("bulletOwners");
         bulletOwners.forEach((bulletID, ownerID) -> {
@@ -96,15 +84,34 @@ public class GameControllerTest {
             OWNER_FIELD.set(bullet, owner);
         });
         gameState.getSprites().addAll(bullets);
+
+        // setup Controller
+        final var gameController = spy(mock(GameController.class, Answers.CALLS_REAL_METHODS));
+        GAME_STATE_FIELD.set(gameController, gameState);
+
+        final var playerController = spy(mock(PlayerController.class, Answers.CALLS_REAL_METHODS));
+        StudentLinks.PlayerControllerLinks.PlayerControllerFieldLink.GAME_CONTROLLER_FIELD.set(playerController, gameController);
+        gameController.setPlayerController(playerController);
+        StudentLinks.PlayerControllerLinks.PlayerControllerFieldLink.PLAYER_FIELD.set(
+            gameController.getPlayerController(),
+            player
+        );
+
+        final var enemyController = mock(EnemyController.class, Answers.CALLS_REAL_METHODS);
+        StudentLinks.EnemyControllerLinks.EnemyControllerFieldLink.GAME_CONTROLLER_FIELD.set(enemyController, gameController);
+        gameController.setEnemyController(enemyController);
+
+        return gameController;
     }
 
     @ParameterizedTest
     @JsonParameterSetTest(value = "GameControllerTestDoCollisions.json", customConverters = "customConverters")
     public void testDoCollisions(final JsonParameterSet params) {
+        // setup
+        final var gameController = setupGameController(params);
+        final var gameState = gameController.getGameState();
         final var context = params.toContext();
 
-        // setup
-        setupGameController(params);
         final List<IDBullet> bullets = gameState.getSprites().stream()
             .filter(IDBullet.class::isInstance)
             .map(IDBullet.class::cast)
@@ -171,10 +178,11 @@ public class GameControllerTest {
     @ParameterizedTest
     @JsonParameterSetTest(value = "GameControllerTestUpdatePoints.json", customConverters = "customConverters")
     public void testUpdatePoints(final JsonParameterSet params) {
+        // setup
+        final var gameController = setupGameController(params);
+        final var gameState = gameController.getGameState();
         final var context = params.toContext("expectedPoints");
 
-        // setup
-        setupGameController(params);
         final Map<Sprite, Boolean> damaged = params.<Map<Integer, Boolean>>get("damaged")
             .entrySet()
             .stream()
