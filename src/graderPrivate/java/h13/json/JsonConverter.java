@@ -10,6 +10,7 @@ import h13.model.gameplay.sprites.IDEnemy;
 import h13.model.gameplay.sprites.IDPlayer;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.scene.input.KeyCode;
 import org.junit.jupiter.api.Assertions;
 
 import java.util.HashMap;
@@ -91,6 +92,10 @@ public class JsonConverter {
             p.setScore(jsonNode.get("score").asInt(0));
         }
         return p;
+    }
+
+    public static KeyCode toKeyCode(final JsonNode jsonNode) {
+        return KeyCode.valueOf(jsonNode.asText());
     }
 
     public static List<Enemy> toEnemyList(final JsonNode jsonNode) {

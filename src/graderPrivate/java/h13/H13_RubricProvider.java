@@ -261,11 +261,11 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Methode playerKeyAction() ist vollständig korrekt, wenn nur eine Taste gleichzeitig gedrückt wird.",
-                                JUnitTestRef.ofMethod(() -> PlayerControllerTest.class.getDeclaredMethod("testPlayerKeyActionSingleKey"))
+                                JUnitTestRef.ofMethod(() -> PlayerControllerTest.class.getDeclaredMethod("testPlayerKeyActionSingleKey", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die Methode playerKeyAction() ist vollständig korrekt, auch wenn mehrere Tasten gleichzeitig gedrückt werden.",
-                                JUnitTestRef.ofMethod(() -> PlayerControllerTest.class.getDeclaredMethod("testPlayerKeyActionMultipleKeys"))
+                                JUnitTestRef.ofMethod(() -> PlayerControllerTest.class.getDeclaredMethod("testPlayerKeyActionMultipleKeys", JsonParameterSet.class))
                             )
                         )
                         .build(),

@@ -11,6 +11,7 @@ import h13.model.gameplay.EnemyMovement;
 import h13.model.gameplay.sprites.*;
 import h13.shared.Utils;
 import h13.view.gui.GameScene;
+import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
@@ -77,7 +78,7 @@ public class StudentLinks {
             HEIGHT_FIELD(BasicTypeLink.of(Sprite.class).getField(identical("height"))),
             VELOCITY_FIELD(BasicTypeLink.of(Sprite.class).getField(identical("velocity"))),
             HEALTH_FIELD(BasicTypeLink.of(Sprite.class).getField(identical("health"))),
-            DIRERCTION_FIELD(BasicTypeLink.of(Sprite.class).getField(identical("direction"))),
+            DIRECTION_FIELD(BasicTypeLink.of(Sprite.class).getField(identical("direction"))),
             COLOR_FIELD(BasicTypeLink.of(Sprite.class).getField(identical("color"))),
             TEXTURE_FIELD(BasicTypeLink.of(Sprite.class).getField(identical("texture"))),
             GAME_STATE_FIELD(BasicTypeLink.of(Sprite.class).getField(identical("gameState"))),
@@ -682,6 +683,50 @@ public class StudentLinks {
         }
     }
 
+    public static class GameInputHandlerLinks {
+        public enum GameInputHandlerFieldLink implements ClassFieldLink {
+            KEYS_PRESSED_FIELD(BasicTypeLink.of(GameInputHandler.class).getField(identical("keysPressed"))),
+            ON_KEY_PRESSED_FIELD(BasicTypeLink.of(GameInputHandler.class).getField(identical("onKeyPressed"))),
+            ON_KEY_RELEASED_FIELD(BasicTypeLink.of(GameInputHandler.class).getField(identical("onKeyReleased"))),
+            ON_KEY_TYPED_FIELD(BasicTypeLink.of(GameInputHandler.class).getField(identical("onKeyTyped"))),
+            ;
+            private final FieldLink link;
+            GameInputHandlerFieldLink(final FieldLink link) {
+                this.link = link;
+            }
+            @Override
+            public FieldLink getLink() {
+                return link;
+            }
+        }
+        public enum GameInputHandlerMethodLink implements ClassMethodLink {
+            HANDLE_KEYBOARD_INPUTS_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameInputHandler.class.getDeclaredMethod("handleKeyboardInputs", GameScene.class)
+            ))),
+            GET_KEYS_PRESSED_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameInputHandler.class.getDeclaredMethod("getKeysPressed")
+            ))),
+            ADD_ON_KEY_PRESSED_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameInputHandler.class.getDeclaredMethod("addOnKeyPressed", EventHandler.class)
+            ))),
+            ADD_ON_KEY_RELEASED_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameInputHandler.class.getDeclaredMethod("addOnKeyReleased", EventHandler.class)
+            ))),
+            ADD_ON_KEY_TYPED_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameInputHandler.class.getDeclaredMethod("addOnKeyTyped", EventHandler.class)
+            ))),
+            ;
+            private final MethodLink link;
+            GameInputHandlerMethodLink(final MethodLink link) {
+                this.link = link;
+            }
+            @Override
+            public MethodLink getLink() {
+                return link;
+            }
+        }
+    }
+
     @Test
     public void testLinks() {
         // get all the fields and methods in the class
@@ -781,7 +826,7 @@ public class StudentLinks {
 
     @Test
     public void collectStudentLinks() {
-        final var clazz = EnemyController.class;
+        final var clazz = GameInputHandler.class;
 
         final var output = collectClassLinks(clazz);
         System.out.println(output);
