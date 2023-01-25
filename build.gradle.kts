@@ -37,6 +37,7 @@ jagr {
                 implementation("com.fasterxml.jackson.core:jackson-databind:2.13.3")
                 compileOnly("org.testfx:openjfx-monocle:jdk-12.0.1+2")
             }
+            disableTimeouts()
         }
         val graderPrivate by creating {
             parent(graderPublic)

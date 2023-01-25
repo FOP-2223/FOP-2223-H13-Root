@@ -8,6 +8,7 @@ import h13.model.gameplay.sprites.*;
 import h13.util.StudentLinks;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import org.junit.jupiter.api.Assertions;
 import org.mockito.MockSettings;
@@ -21,8 +22,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.StreamSupport;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.*;
 
 public class JsonConverter {
 
@@ -45,20 +45,22 @@ public class JsonConverter {
             .toList();
     }
 
-    private static Sprite toSprite(JsonNode jsonNode) {
+    public static Sprite toSprite(JsonNode jsonNode) {
         int x = jsonNode.get("x").asInt();
         int y = jsonNode.get("y").asInt();
-        String color = jsonNode.get("color").asText();
+        String texture = jsonNode.get("texture").asText();
 
         var sprite = spy(switch (jsonNode.get("type").asText()){
             case "bullet" -> new Bullet(x, y, mock(GameState.class), null, Direction.UP);
-            case "enemy" -> new Enemy(x,y, 0, 0, mock(GameState.class));
+            case "enemy" -> new EnemyC(x,y, 0, 0, mock(GameState.class));
             default -> new Player(x, y, 0, mock(GameState.class));
         });
 
-        if (!color.equals("null")){
-            sprite.setTexture(null);
-            StudentLinks.SpriteLinks.SpriteFieldLink.COLOR_FIELD.set(sprite, Color.valueOf(color));
+        if (!texture.equals("null")){
+            Image image = new Image(JsonConverter.class.getResourceAsStream(texture));
+            when(sprite.getTexture()).thenReturn(image);
+        } else {
+            when(sprite.getTexture()).thenReturn(null);
         }
         return sprite;
     }

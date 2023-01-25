@@ -1,57 +1,44 @@
 package h13.view.gui;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import h13.controller.GameConstants;
+import h13.controller.ApplicationSettings;
 import h13.json.JsonConverter;
 import h13.json.JsonParameterSet;
 import h13.json.JsonParameterSetTest;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
 import h13.model.gameplay.sprites.*;
+import h13.util.PrettyPrinter;
 import h13.util.StudentLinks;
-import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.mock;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
 
 import org.junit.jupiter.params.ParameterizedTest;
+import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.FileSystems;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+@TestForSubmission
 public class SpriteRendererTest extends FxTest {
 
     public final static Map<String, Function<JsonNode, ?>> customConverters = new HashMap<>() {
         {
             put("sprites", JsonConverter::toSpriteList);
-
             putAll(JsonConverter.DEFAULT_CONVERTERS);
         }
     };
@@ -61,57 +48,82 @@ public class SpriteRendererTest extends FxTest {
         StudentLinks.GameConstantsLinks.GameConstantsFieldLink.ORIGINAL_GAME_BOUNDS_FIELD.setStatic(new BoundingBox(
             0,
             0,
-            256,
-            224
+            testScale * 256,
+            testScale * 224
         ));
-        StudentLinks.GameConstantsLinks.GameConstantsFieldLink.SHIP_SIZE_FIELD.setStatic(15.825454545454544);
+        StudentLinks.GameConstantsLinks.GameConstantsFieldLink.SHIP_SIZE_FIELD.setStatic(testScale * 15.825454545454544);
+        ApplicationSettings.loadTexturesProperty().set(false);
     }
 
     @ParameterizedTest
-    @JsonParameterSetTest(value = "RenderSpriteTest.json", customConverters = "customConverters")
-    public void testRenderSprite(JsonParameterSet params){
-        String fileName = params.getString("image");
-        Bounds bounds = params.get("GAME_BOUNDS");
-        List<Sprite> sprites = params.get("sprites");
+    @JsonParameterSetTest(value = "RenderSpriteTestTexture.json", customConverters = "customConverters")
+    public void testRenderSprite_Texture(JsonParameterSet params){
+        runTest(params);
+    }
 
-        BufferedImage generatedImage = SwingFXUtils.fromFXImage(generateImage(bounds, sprites), null);
-        BufferedImage expectedImage = null;
-        try {
-//            System.out.println(new File(new URL(fileName).getFile()).exists());
-//            System.out.println(new File(new URL(fileName).getFile()).toPath().toAbsolutePath());
+    @ParameterizedTest
+    @JsonParameterSetTest(value = "RenderSpriteTestNoTexture.json", customConverters = "customConverters")
+    public void testRenderSprite_NoTexture(JsonParameterSet params){
+        runTest(params);
+    }
 
-            expectedImage = ImageIO.read(new File(getClass().getResource(fileName).getPath()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    private void runTest(JsonParameterSet params){
+            String fileName = params.getString("image");
+            Bounds bounds = params.get("GAME_BOUNDS");
+            List<Sprite> sprites = params.get("sprites");
+
+            BufferedImage generatedImage = SwingFXUtils.fromFXImage(generateImage(bounds, sprites), null);
+            BufferedImage expectedImage = FxTest.loadImage(fileName);
+
+            Context context = contextBuilder()
+                .add("Loaded Image", fileName)
+                .add("Sprites", PrettyPrinter.prettyPrint(sprites))
+                .add("bounds", bounds)
+                .build();
+
+            assertEqualsImage(expectedImage, generatedImage, context);
+    }
+
+    private static Image generateImage(Bounds bounds, List<Sprite> spritesToRender){
+        final Canvas canvas = new Canvas(bounds.getWidth(), bounds.getHeight());
+        final var gc = canvas.getGraphicsContext2D();
+
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0,0, bounds.getWidth(), bounds.getHeight());
+
+        for (Sprite sprite: spritesToRender){
+            SpriteRenderer.renderSprite(gc, sprite);
         }
 
-        Context context = contextBuilder()
-            .add("Loaded Image", fileName)
-            .add("Sprites", sprites)
-            .add("bounds", bounds)
-            .build();
-
-        assertEqualsImage(expectedImage, generatedImage, context);
+        return renderImage(bounds, canvas);
     }
 
+    //Everything following this Line is Used to generate Test Cases.
 
-    @Test
-    public void run(){
-        generateAllImages();
-    }
+//    @Test
+//    public void run(){
+//        generateAllImages();
+//    }
 
     private record TestData(String name, Bounds bounds, List<Sprite> sprites){}
 
     private static void generateAllImages(){
         List<TestData> testData = new ArrayList<>();
-        testData.addAll(generateTexture(generateSprites()));
-        testData.addAll(generateNoTexture(generateSprites()));
+        List<TestData> texture = generateTexture(generateSprites());
+        List<TestData> noTexture = generateNoTexture(generateSprites());
+        testData.addAll(texture);
+        testData.addAll(noTexture);
 
         for (TestData data: testData){
-            saveImage(data.name, generateImage(data.bounds, data.sprites));
+            saveImage(data.name, getBufferedImage(generateImage(data.bounds, data.sprites)));
         }
+        writeJsonFile(texture, "RenderSpriteTestTexture.json");
+        writeJsonFile(noTexture, "RenderSpriteTestNoTexture.json");
+    }
+
+    private static void writeJsonFile(List<TestData> testData, String fileName){
         try {
-            FileOutputStream outputStream = new FileOutputStream("RenderSpriteTest.json");
+            FileOutputStream outputStream = new FileOutputStream(fileName);
             byte[] strToBytes = generateJson(testData, null).getBytes();
             outputStream.write(strToBytes);
 
@@ -140,57 +152,16 @@ public class SpriteRendererTest extends FxTest {
               "sprites": %s,
               "GAME_BOUNDS": %s,
               "image": "/h13/view/gui/image/%s.png"
-            }""", generateJson(data.sprites), generateJson(data.bounds), data.name);
-    }
-
-    private static String generateJson(Bounds bounds){
-        return String.format("""
-            {
-                "x": "%d",
-                "y": "%d",
-                "width": "%d",
-                "height": "%d"
-              }""", (int) bounds.getMinX(), (int) bounds.getMinY(), (int) bounds.getWidth(), (int) bounds.getHeight());
-    }
-
-    private static String generateJson(List<Sprite> sprites){
-        StringBuilder builder = new StringBuilder();
-
-        String spritesString = sprites.stream().map(sprite -> String.format("%s", generateJson(sprite))).collect(Collectors.joining(",\n"));
-
-        return String.format(
-            """
-            [
-            %s
-              ]""", spritesString.indent(4));
-    }
-
-    private static String generateJson(Sprite sprite){
-        String type;
-        if (sprite instanceof Bullet){
-            type = "bullet";
-        } else if (sprite instanceof Player){
-            type = "player";
-        } else {
-            type = "enemy";
-        }
-
-        return String.format("""
-            {
-              "x": "%d",
-              "y": "%d",
-              "color": "%s",
-              "type": "%s"
-            }""", (int) sprite.getX(), (int) sprite.getY(), sprite.getTexture() != null ? "null" : sprite.getColor(), type);
+            }""", generateJsonFromSprites(data.sprites), generateJsonFromBounds(data.bounds), data.name);
     }
 
     private static List<Sprite> generateSprites(){
         return List.of(
-            new Enemy(0,0,0, 0, mock(GameState.class)), //TODO copy
-            new Enemy(103,100,0, 3, mock(GameState.class)),
-            new Enemy(200,209,0, 3, mock(GameState.class)),
-            new Enemy(205,0,0, 3, mock(GameState.class)),
-            new Enemy(307,0,0, 3, mock(GameState.class)),
+            new EnemyC(0,0,0, 0, mock(GameState.class)),
+            new EnemyC(103,100,0, 3, mock(GameState.class)),
+            new EnemyC(200,209,0, 3, mock(GameState.class)),
+            new EnemyC(205,0,0, 3, mock(GameState.class)),
+            new EnemyC(307,0,0, 3, mock(GameState.class)),
             new Player(57,50,0, mock(GameState.class)),
             new Player(152,150,0, mock(GameState.class)),
             new Player(250,259,0, mock(GameState.class)),
@@ -237,53 +208,7 @@ public class SpriteRendererTest extends FxTest {
         return testData;
     }
 
-    private static List<TestData> generateTexture(List<Sprite> sprites){
-        List<TestData> testData = generateData(sprites, "TextureDraw");
-
-        return testData;
-    }
-
-    private static Image generateImage(Bounds bounds, List<Sprite> spritesToRender){
-        final Canvas canvas = new Canvas(bounds.getWidth(), bounds.getHeight());
-        final var gc = canvas.getGraphicsContext2D();
-
-        gc.setFill(Color.BLACK);
-        gc.fillRect(0,0, bounds.getWidth(), bounds.getHeight());
-
-        for (Sprite sprite: spritesToRender){
-            SpriteRenderer.renderSprite(gc, sprite);
-        }
-        CompletableFuture<Image> fut = new CompletableFuture<>();
-
-        final var writableImage = new WritableImage((int) bounds.getWidth(), (int) bounds.getHeight());
-        Platform.runLater(() -> fut.complete(canvas.snapshot(null, writableImage)));
-
-        try {
-            return fut.get(500, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static void saveImage(String name, Image image){
-        final var outputFile = new File(name + ".png");
-        try {
-            final var bImage = SwingFXUtils.fromFXImage(image, null);
-            ImageIO.write(bImage, "png", outputFile);
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void assertEqualsImage(BufferedImage expected, BufferedImage actual, Context context){
-        assertEquals(expected.getWidth(), actual.getWidth(), context, r -> "Generated Image does not have the Correct width");
-        assertEquals(expected.getHeight(), actual.getHeight(), context, r -> "Generated Image does not have the Correct width");
-        for (int x = 0; x < expected.getWidth(); x++) {
-            for (int y = 0; y < expected.getHeight(); y++) {
-                int finalX = x;
-                int finalY = y;
-                assertEquals(expected.getRGB(x, y), actual.getRGB(x, y), context, r -> String.format("Generated Image does not match expected. Wrong Color in Pixel (%d,%d)", finalX, finalY));
-            }
-        }
+    private static List<TestData> generateTexture(List<Sprite> sprites) {
+        return generateData(sprites, "TextureDraw");
     }
 }

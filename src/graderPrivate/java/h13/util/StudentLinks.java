@@ -10,9 +10,11 @@ import h13.model.gameplay.Direction;
 import h13.model.gameplay.EnemyMovement;
 import h13.model.gameplay.sprites.*;
 import h13.shared.Utils;
+import h13.view.gui.GameBoard;
 import h13.view.gui.GameScene;
 import javafx.geometry.Bounds;
 import javafx.scene.Scene;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Assertions;
@@ -682,6 +684,54 @@ public class StudentLinks {
         }
     }
 
+    public static class GameBoardLinks {
+        public enum GameBoardFieldLink implements ClassFieldLink {
+            GAME_SCENE_FIELD(BasicTypeLink.of(GameBoard.class).getField(identical("gameScene"))),
+            BACKGROUND_IMAGE_FIELD(BasicTypeLink.of(GameBoard.class).getField(identical("backgroundImage"))),
+            ;
+            private final FieldLink link;
+            GameBoardFieldLink(final FieldLink link) {
+                this.link = link;
+            }
+            @Override
+            public FieldLink getLink() {
+                return link;
+            }
+        }
+        public enum GameBoardMethodLink implements ClassMethodLink {
+            UPDATE_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameBoard.class.getDeclaredMethod("update", double.class)
+            ))),
+            GET_SCALE_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameBoard.class.getDeclaredMethod("getScale")
+            ))),
+            DRAW_BACKGROUND_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameBoard.class.getDeclaredMethod("drawBackground", GraphicsContext.class)
+            ))),
+            DRAW_SPRITES_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameBoard.class.getDeclaredMethod("drawSprites", GraphicsContext.class)
+            ))),
+            DRAW_H_U_D_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameBoard.class.getDeclaredMethod("drawHUD", GraphicsContext.class)
+            ))),
+            DRAW_BORDER_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameBoard.class.getDeclaredMethod("drawBorder", GraphicsContext.class)
+            ))),
+            GET_GAME_CONTROLLER_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
+                () -> GameBoard.class.getDeclaredMethod("getGameController")
+            ))),
+            ;
+            private final MethodLink link;
+            GameBoardMethodLink(final MethodLink link) {
+                this.link = link;
+            }
+            @Override
+            public MethodLink getLink() {
+                return link;
+            }
+        }
+    }
+
     @Test
     public void testLinks() {
         // get all the fields and methods in the class
@@ -781,7 +831,7 @@ public class StudentLinks {
 
     @Test
     public void collectStudentLinks() {
-        final var clazz = EnemyController.class;
+        final var clazz = GameBoard.class;
 
         final var output = collectClassLinks(clazz);
         System.out.println(output);
