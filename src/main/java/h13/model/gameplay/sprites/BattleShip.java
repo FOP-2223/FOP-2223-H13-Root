@@ -109,7 +109,7 @@ public class BattleShip extends Sprite {
 
         final var bullet = new Bullet(
             getBounds().getCenterX() - BULLET_WIDTH / 2,
-            getBounds().getMinY(),
+            getBounds().getCenterY() - BULLET_HEIGHT / 2,
             getGameState(),
             this,
             direction
