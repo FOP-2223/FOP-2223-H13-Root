@@ -1,9 +1,7 @@
 package h13.controller.scene;
 
 import h13.view.gui.*;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.Nullable;

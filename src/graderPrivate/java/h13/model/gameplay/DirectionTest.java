@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * The Junit-Tests for the {@link Direction} class.
  */
-public class DirecitonTest {
+public class DirectionTest {
     @Test
     public void testOpposite() {
         for (final Direction d : Direction.values()) {
@@ -30,6 +30,17 @@ public class DirecitonTest {
         for (final Direction d : Direction.values()) {
             assertEquals(d, d.combine(d));
             assertEquals(Direction.NONE, d.combine(d.getOpposite()));
+        }
+    }
+
+    @Test
+    public void testRotate() {
+        for (final Direction d : Direction.values()) {
+            assertEquals(d, d.rotate(0));
+            assertEquals(d, d.rotate(360));
+            assertEquals(d, d.rotate(-360));
+            assertEquals(d, d.rotate(720));
+            assertEquals(d.getOpposite(), d.rotate(180));
         }
     }
 }

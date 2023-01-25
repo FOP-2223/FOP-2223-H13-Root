@@ -1,0 +1,94 @@
+[
+  {
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "gameSceneBounds": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "expectedGameBoardBounds": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "checkSize": true,
+    "checkPosition": false,
+    "checkCentered": false
+  },
+  {
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "gameSceneBounds": {
+      "x": 0,
+      "y": 0,
+      "width": 512,
+      "height": 448
+    },
+    "expectedGameBoardBounds": {
+      "x": 0,
+      "y": 0,
+      "width": 512,
+      "height": 448
+    },
+    "checkSize": true,
+    "checkPosition": false,
+    "checkCentered": false
+  },
+  {
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 24,
+      "height": 12
+    },
+    "gameSceneBounds": {
+      "x": 0,
+      "y": 0,
+      "width": 48,
+      "height": 24
+    },
+    "expectedGameBoardBounds": {
+      "x": 0,
+      "y": 0,
+      "width": 48,
+      "height": 24
+    },
+    "checkSize": true,
+    "checkPosition": false,
+    "checkCentered": false
+  },
+  {
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 12,
+      "height": 24
+    },
+    "gameSceneBounds": {
+      "x": 0,
+      "y": 0,
+      "width": 24,
+      "height": 48
+    },
+    "expectedGameBoardBounds": {
+      "x": 0,
+      "y": 0,
+      "width": 24,
+      "height": 48
+    },
+    "checkSize": true,
+    "checkPosition": false,
+    "checkCentered": false
+  }
+]

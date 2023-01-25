@@ -1,0 +1,29 @@
+[
+  {
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "SHIP_SIZE": 10,
+    "enemyBounds": { "x": 0, "y": 0, "width": 70, "height": 70 },
+    "bottomWasReached": false,
+    "targetReached": false,
+    "yTarget": 0,
+    "direction": "RIGHT",
+    "velocity": 10,
+    "expectsNextMovementCall": false,
+    "VERTICAL_ENEMY_MOVE_DISTANCE": 10,
+    "ENEMY_MOVEMENT_SPEED_INCREASE": 0.1,
+    "nextMovementYTarget": 0,
+    "nextMovementDirection": "RIGHT",
+    "nextMovementVelocity": 0,
+    "expectsUpdatePositionsCall": false,
+    "deltaX": 0,
+    "deltaY": 0,
+    "elapsedTime": 1,
+    "newEnemyBounds": { "x": 10, "y": 0, "width": 70, "height": 70 },
+    "clampedEnemyBounds": { "x": 10, "y": 0, "width": 70, "height": 70 }
+  }
+]

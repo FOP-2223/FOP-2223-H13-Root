@@ -44,6 +44,6 @@ public record SceneAndController(Scene scene, @Nullable SceneController controll
      * @return The new {@link SceneAndController}.
      */
     public static SceneAndController fromScene(final Scene scene) {
-        return new SceneAndController(scene, scene instanceof ControlledScene cs ? cs.getController() : null);
+        return new SceneAndController(scene, scene instanceof ControlledScene<?> cs ? cs.getController() : null);
     }
 }

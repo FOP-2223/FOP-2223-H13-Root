@@ -335,8 +335,6 @@ public abstract class Sprite implements Updatable {
 
     /**
      * Damages the sprite by the given amount.
-     * <br>
-     * If the sprite's health is less than or equal to 0, the method {@link #die()} is called.
      *
      * @param amount the amount to damage the sprite by.
      */
