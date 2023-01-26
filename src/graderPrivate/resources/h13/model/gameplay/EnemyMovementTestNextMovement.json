@@ -1,0 +1,74 @@
+[
+  {
+    "SHIP_SIZE": 10,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "enemyBounds": { "x": 200, "y": 0, "width": 56, "height": 70 },
+    "VERTICAL_ENEMY_MOVE_DISTANCE": 10,
+    "oldYtarget": 0,
+    "newYtarget": 10,
+    "oldDirection": "RIGHT",
+    "newDirection": "DOWN",
+    "ENEMY_MOVEMENT_SPEED_INCREASE": 0.1,
+    "oldVelocity": 1,
+    "newVelocity": 1.1
+  },
+  {
+    "SHIP_SIZE": 10,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "enemyBounds": { "x": 200, "y": 10, "width": 56, "height": 70 },
+    "VERTICAL_ENEMY_MOVE_DISTANCE": 10,
+    "oldYtarget": 10,
+    "newYtarget": 10,
+    "oldDirection": "DOWN",
+    "newDirection": "LEFT",
+    "ENEMY_MOVEMENT_SPEED_INCREASE": 0.1,
+    "oldVelocity": 1,
+    "newVelocity": 1.1
+  },
+  {
+    "SHIP_SIZE": 10,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "enemyBounds": { "x": 0, "y": 10, "width": 56, "height": 70 },
+    "VERTICAL_ENEMY_MOVE_DISTANCE": 10,
+    "oldYtarget": 10,
+    "newYtarget": 10,
+    "oldDirection": "DOWN",
+    "newDirection": "RIGHT",
+    "ENEMY_MOVEMENT_SPEED_INCREASE": 0.1,
+    "oldVelocity": 1,
+    "newVelocity": 1.1
+  },
+  {
+    "SHIP_SIZE": 10,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "enemyBounds": { "x": 0, "y": 10, "width": 56, "height": 70 },
+    "VERTICAL_ENEMY_MOVE_DISTANCE": 10,
+    "oldYtarget": 10,
+    "newYtarget": 20,
+    "oldDirection": "LEFT",
+    "newDirection": "DOWN",
+    "ENEMY_MOVEMENT_SPEED_INCREASE": 0.1,
+    "oldVelocity": 1,
+    "newVelocity": 1.1
+  }
+]

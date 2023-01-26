@@ -128,11 +128,11 @@ public class EnemyMovement implements Updatable {
      * @param enemyBounds The BoundingBox of all alive enemies.
      * @return {@code true} if the target Position of the current movement iteration is reached, {@code false} otherwise.
      */
-    private boolean targetReached(final Bounds enemyBounds) {
+    public boolean targetReached(final Bounds enemyBounds) {
         return switch (direction) {
             case NONE -> false;
-            case UP -> enemyBounds.getMinY() <= yTarget;
-            case DOWN -> enemyBounds.getMaxY() >= yTarget;
+            case UP -> enemyBounds.getMaxY() <= yTarget;
+            case DOWN -> enemyBounds.getMinY() >= yTarget;
             case LEFT -> enemyBounds.getMinX() <= 0;
             case RIGHT -> enemyBounds.getMaxX() >= ORIGINAL_GAME_BOUNDS.getWidth();
             default -> throw new IllegalStateException("Unexpected value: " + direction);
@@ -149,7 +149,6 @@ public class EnemyMovement implements Updatable {
 
         final var enemyBounds = getEnemyBounds();
         Bounds newBounds = Utils.getNextPosition(enemyBounds, getVelocity(), direction, elapsedTime);
-
         if (targetReached(newBounds)) {
             newBounds = Utils.clamp(newBounds);
             nextMovement(enemyBounds);
@@ -167,7 +166,7 @@ public class EnemyMovement implements Updatable {
      * @param deltaX The deltaX.
      * @param deltaY The deltaY.
      */
-    private void updatePositions(final double deltaX, final double deltaY) {
+    public void updatePositions(final double deltaX, final double deltaY) {
         getGameState().getEnemies().forEach(enemy -> {
             enemy.setX(enemy.getX() + deltaX);
             enemy.setY(enemy.getY() + deltaY);
@@ -179,10 +178,10 @@ public class EnemyMovement implements Updatable {
      *
      * @param enemyBounds The BoundingBox of all alive enemies.
      */
-    private void nextMovement(final Bounds enemyBounds) {
+    public void nextMovement(final Bounds enemyBounds) {
         if (direction.isHorizontal()) {
             direction = Direction.DOWN;
-            yTarget = enemyBounds.getMaxY() + VERTICAL_ENEMY_MOVE_DISTANCE;
+            yTarget += VERTICAL_ENEMY_MOVE_DISTANCE;
         } else {
             direction = enemyBounds.getMaxX() >= ORIGINAL_GAME_BOUNDS.getWidth() ? Direction.LEFT : Direction.RIGHT;
         }
@@ -196,6 +195,6 @@ public class EnemyMovement implements Updatable {
      */
     public void nextRound() {
         direction = INITIAL_ENEMY_MOVEMENT_DIRECTION;
-        yTarget = 0;
+        yTarget = HUD_HEIGHT;
     }
 }

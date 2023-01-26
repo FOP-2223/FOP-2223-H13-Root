@@ -5,8 +5,6 @@ import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
 import javafx.scene.paint.Color;
 
-import static h13.controller.GameConstants.ENEMY_SHOOTING_PROBABILITY;
-
 /**
  * An Enemy is a BattleShip that is moved by the EnemyController and shoots downwards.
  */
@@ -102,7 +100,8 @@ public class Enemy extends BattleShip {
         timeTillNextShot -= elapsedTime * 1000;
         if (timeTillNextShot <= 0) {
             // Shoot at random intervals
-            if (Math.random() < ApplicationSettings.enemyShootingProbabilityProperty().get()) {
+            final var random = Math.random();
+            if (random < ApplicationSettings.enemyShootingProbabilityProperty().get()) {
                 shoot();
                 timeTillNextShot = ApplicationSettings.enemyShootingDelayProperty().get();
             }

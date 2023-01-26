@@ -1,0 +1,181 @@
+[ {
+  "oldShouldKeepShooting" : false,
+  "keysPressed" : [ ],
+  "newDirection" : "NONE",
+  "oldDirection" : "LEFT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : false,
+  "keysPressed" : [ ],
+  "newDirection" : "NONE",
+  "oldDirection" : "RIGHT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : false,
+  "keysPressed" : [ ],
+  "newDirection" : "NONE",
+  "oldDirection" : "NONE",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : true,
+  "keysPressed" : [ ],
+  "newDirection" : "NONE",
+  "oldDirection" : "LEFT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : true,
+  "keysPressed" : [ ],
+  "newDirection" : "NONE",
+  "oldDirection" : "RIGHT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : true,
+  "keysPressed" : [ ],
+  "newDirection" : "NONE",
+  "oldDirection" : "NONE",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : false,
+  "keysPressed" : [ "RIGHT" ],
+  "newDirection" : "RIGHT",
+  "oldDirection" : "LEFT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : false,
+  "keysPressed" : [ "RIGHT" ],
+  "newDirection" : "RIGHT",
+  "oldDirection" : "RIGHT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : false,
+  "keysPressed" : [ "RIGHT" ],
+  "newDirection" : "RIGHT",
+  "oldDirection" : "NONE",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : true,
+  "keysPressed" : [ "RIGHT" ],
+  "newDirection" : "RIGHT",
+  "oldDirection" : "LEFT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : true,
+  "keysPressed" : [ "RIGHT" ],
+  "newDirection" : "RIGHT",
+  "oldDirection" : "RIGHT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : true,
+  "keysPressed" : [ "RIGHT" ],
+  "newDirection" : "RIGHT",
+  "oldDirection" : "NONE",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : false,
+  "keysPressed" : [ "LEFT" ],
+  "newDirection" : "LEFT",
+  "oldDirection" : "LEFT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : false,
+  "keysPressed" : [ "LEFT" ],
+  "newDirection" : "LEFT",
+  "oldDirection" : "RIGHT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : false,
+  "keysPressed" : [ "LEFT" ],
+  "newDirection" : "LEFT",
+  "oldDirection" : "NONE",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : true,
+  "keysPressed" : [ "LEFT" ],
+  "newDirection" : "LEFT",
+  "oldDirection" : "LEFT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : true,
+  "keysPressed" : [ "LEFT" ],
+  "newDirection" : "LEFT",
+  "oldDirection" : "RIGHT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : true,
+  "keysPressed" : [ "LEFT" ],
+  "newDirection" : "LEFT",
+  "oldDirection" : "NONE",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : false,
+  "keysPressed" : [ "D" ],
+  "newDirection" : "RIGHT",
+  "oldDirection" : "LEFT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : false,
+  "keysPressed" : [ "D" ],
+  "newDirection" : "RIGHT",
+  "oldDirection" : "RIGHT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : false,
+  "keysPressed" : [ "D" ],
+  "newDirection" : "RIGHT",
+  "oldDirection" : "NONE",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : true,
+  "keysPressed" : [ "D" ],
+  "newDirection" : "RIGHT",
+  "oldDirection" : "LEFT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : true,
+  "keysPressed" : [ "D" ],
+  "newDirection" : "RIGHT",
+  "oldDirection" : "RIGHT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : true,
+  "keysPressed" : [ "D" ],
+  "newDirection" : "RIGHT",
+  "oldDirection" : "NONE",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : false,
+  "keysPressed" : [ "A" ],
+  "newDirection" : "LEFT",
+  "oldDirection" : "LEFT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : false,
+  "keysPressed" : [ "A" ],
+  "newDirection" : "LEFT",
+  "oldDirection" : "RIGHT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : false,
+  "keysPressed" : [ "A" ],
+  "newDirection" : "LEFT",
+  "oldDirection" : "NONE",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : true,
+  "keysPressed" : [ "A" ],
+  "newDirection" : "LEFT",
+  "oldDirection" : "LEFT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : true,
+  "keysPressed" : [ "A" ],
+  "newDirection" : "LEFT",
+  "oldDirection" : "RIGHT",
+  "newShouldKeepShooting" : false
+}, {
+  "oldShouldKeepShooting" : true,
+  "keysPressed" : [ "A" ],
+  "newDirection" : "LEFT",
+  "oldDirection" : "NONE",
+  "newShouldKeepShooting" : false
+} ]
