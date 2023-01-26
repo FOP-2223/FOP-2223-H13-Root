@@ -53,7 +53,7 @@ public class SpriteTest {
 
     @ParameterizedTest
     @CsvSource({"0,1", "1,0", "-5,1", "5,10", "100,5", "100,0", "3,1", "2, 1000000"})
-    void damage(int health, int damage) {
+    public void damage(int health, int damage) {
         Sprite s = createSprite(health);
         Context context = contextBuilder()
             .add("Sprite Health", health)
@@ -69,7 +69,7 @@ public class SpriteTest {
 
     @ParameterizedTest
     @ValueSource(ints = {-10, -5, 0, 3, 10, Integer.MAX_VALUE})
-    void die(int health) {
+    public void die(int health) {
         Sprite s = createSprite(health);
         Context context = contextBuilder()
             .add("Sprite Health", health)
@@ -81,7 +81,7 @@ public class SpriteTest {
     }
 
     @Test
-    void update_inside() {
+    public void update_inside() {
         GameConstants.ORIGINAL_GAME_BOUNDS = new BoundingBox(0, 0, 100, 100);
         Bounds destination = new BoundingBox(50, 50, 1, 1);
 
@@ -128,7 +128,7 @@ public class SpriteTest {
     }
 
     @Test
-    void update_outside() {
+    public void update_outside() {
         GameConstants.ORIGINAL_GAME_BOUNDS = new BoundingBox(0, 0, 100, 100);
         Bounds destination = new BoundingBox(500, 500, 1, 1);
         Bounds clampedDestination = new BoundingBox(50, 50, 1, 1);
@@ -203,7 +203,7 @@ public class SpriteTest {
      * @param health the health the Sprite should have after creation
      * @return the newly created sprite
      */
-    private static Sprite createSprite(int health){
+    public static Sprite createSprite(int health){
         Sprite s = mock(Sprite.class, Mockito.CALLS_REAL_METHODS);
         s.setHealth(health);
         return s;

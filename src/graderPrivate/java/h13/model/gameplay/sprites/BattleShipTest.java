@@ -1,6 +1,7 @@
 package h13.model.gameplay.sprites;
 
 import h13.controller.ApplicationSettings;
+import h13.json.JsonParameterSet;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
 import javafx.scene.paint.Color;
@@ -9,26 +10,29 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junitpioneer.jupiter.cartesian.ArgumentSets;
 import org.junitpioneer.jupiter.cartesian.CartesianTest;
+import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atMostOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNotNull;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertTrue;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.context;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.contextBuilder;
 
+@TestForSubmission
 public class BattleShipTest {
 
+    //TODO
     @Test
-    public void isFriend(BattleShip ship1, BattleShip ship2, boolean isFriend){
+    public void isFriend(JsonParameterSet params){
+        BattleShip ship1 = params.get("ship1");
+        BattleShip ship2 = params.get("ship2");
+        boolean isFriend = params.getBoolean("isFriend");
+
         Context context = contextBuilder()
             .add("Battleship 1", ship1)
             .add("Battleship 2", ship2)
@@ -51,10 +55,19 @@ public class BattleShipTest {
     @ParameterizedTest
     @EnumSource(value = Direction.class)
     public void shoot_hasBullet(Direction direction){
-        BattleShip ship = spy(new BattleShip(0, 0, 0, mock(Color.class), 1, mock(GameState.class)));
+        GameState state = new GameState();
+        BattleShip ship = spy(new BattleShip(0, 0, 0, mock(Color.class), 1, state));
+
+        Context context = contextBuilder()
+            .add("Direction", direction)
+            .build();
 
         ApplicationSettings.instantShooting.setValue(false);
-        ship.setBullet(mock(Bullet.class));
+        Bullet firstBullet = spy(new Bullet(0, 0, mock(GameState.class), ship, Direction.UP));
+        state.getSprites().add(firstBullet);
+        state.getToAdd().add(firstBullet);
+
+        ship.setBullet(firstBullet);
         ship.shoot(direction);
 
         verify(ship, atMostOnce()).setBullet(any());
@@ -63,6 +76,9 @@ public class BattleShipTest {
         ship.shoot(direction);
 
         verify(ship, times(2)).setBullet(any());
+        assertTrue(state.getToAdd().contains(firstBullet), context, r -> "Orignal Bullet was removed but should not have been");
+        assertTrue(state.getSprites().contains(firstBullet), context, r -> "Orignal Bullet was removed but should not have been");
+        verify(firstBullet, never()).die();
     }
 
     @ParameterizedTest

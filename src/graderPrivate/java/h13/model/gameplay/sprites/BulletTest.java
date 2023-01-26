@@ -4,6 +4,7 @@ import h13.controller.ApplicationSettings;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
 import h13.shared.Utils;
+import javafx.geometry.Bounds;
 import javafx.scene.paint.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junitpioneer.jupiter.cartesian.CartesianTest;
 import org.junitpioneer.jupiter.params.IntRangeSource;
+import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -23,6 +25,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
 
+@TestForSubmission
 public class BulletTest {
 
     @BeforeEach
@@ -104,5 +107,15 @@ public class BulletTest {
         }
     }
 
-    //TODO copy update tests from Sprite to test update inside game bounds
+    @Test
+    public void updateBasic(){
+        try (var testMock = mockStatic(SpriteTest.class)){
+            testMock.when(() -> SpriteTest.createSprite(
+                    any(int.class)
+                ))
+                .thenReturn(spy(new Bullet(0, 0, mock(GameState.class), mock(BattleShip.class), Direction.UP_LEFT)));
+
+            new SpriteTest().update_inside();
+        }
+    }
 }
