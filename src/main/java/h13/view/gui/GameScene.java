@@ -70,7 +70,7 @@ public class GameScene extends Scene implements ControlledScene<GameController> 
     /**
      * Initializes the GameScene.
      */
-    private void init() {
+    protected void init() {
         // Game Board
         initGameboard();
 
