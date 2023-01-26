@@ -56,7 +56,7 @@ public final class EnemyController {
      * @see Enemy#isDead()
      */
     public boolean isDefeated() {
-        return getGameController().getGameState().getEnemies().isEmpty();
+        return getGameController().getGameState().getAliveEnemies().isEmpty();
     }
 
     // --Other Methods-- //

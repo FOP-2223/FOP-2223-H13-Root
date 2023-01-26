@@ -1,7 +1,5 @@
 package h13.json;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 /**
  * A class that can be deserialized from JSON.
  *
@@ -13,5 +11,5 @@ public interface JsonDataClass<T> {
      *
      * @return The deserialized data class.
      */
-    public T deserialize();
+    T deserialize();
 }

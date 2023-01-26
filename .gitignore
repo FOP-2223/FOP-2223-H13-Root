@@ -82,3 +82,4 @@ gradle-app.setting
 !gradle-wrapper.jar
 .gradletasknamecache
 *.hprof
+jagr.conf

@@ -1,5 +1,16 @@
 package h13;
 
+import h13.controller.gamelogic.EnemyControllerTest;
+import h13.controller.gamelogic.PlayerControllerTest;
+import h13.controller.scene.game.GameControllerTest;
+import h13.json.JsonParameterSet;
+import h13.model.gameplay.EnemyMovementTest;
+import h13.model.gameplay.sprites.EnemyTest;
+import h13.model.gameplay.sprites.PlayerTest;
+import h13.view.gui.GameSceneTest;
+import org.sourcegrade.jagr.api.rubric.*;
+import org.sourcegrade.jagr.api.testing.RubricConfiguration;
+import org.tudalgo.algoutils.transform.AccessTransformer;
 import h13.controller.scene.game.GameControllerTest;
 import h13.json.JsonParameterSet;
 import h13.model.gameplay.EnemyMovementTest;
@@ -231,12 +242,16 @@ public class H13_RubricProvider implements RubricProvider {
                             ),
                             criterion(
                                 "Die Methode updatePoints() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testUpdatePoints", JsonParameterSet.class))
                             ),
-                            criterion(
-                                "Die Methode handleKeyboardInputs() ist vollständig korrekt.",
-                                null
-                            ),
+                            Criterion.builder()
+                                .shortDescription("Die Methode handleKeyboardInputs() ist vollständig korrekt.")
+                                .minPoints(0)
+                                .maxPoints(1)
+                                .grader(
+                                    manualGrader(1)
+                                )
+                                .build(),
                             Criterion.builder()
                                 .shortDescription("Die Methode lose() ist vollständig korrekt.")
                                 .minPoints(0)
@@ -245,10 +260,14 @@ public class H13_RubricProvider implements RubricProvider {
                                     manualGrader(1)
                                 )
                                 .build(),
-                            criterion(
-                                "Die Klasse GameController ist vollständig korrekt.",
-                                null
-                            )
+                            Criterion.builder()
+                                .shortDescription("Die Klasse GameController ist vollständig korrekt.")
+                                .minPoints(0)
+                                .maxPoints(1)
+                                .grader(
+                                    manualGrader(1)
+                                )
+                                .build()
                         )
                         .build(),
                     Criterion.builder()
@@ -256,11 +275,11 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Methode playerKeyAction() ist vollständig korrekt, wenn nur eine Taste gleichzeitig gedrückt wird.",
-                                null
+                                JUnitTestRef.ofMethod(() -> PlayerControllerTest.class.getDeclaredMethod("testPlayerKeyActionSingleKey", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die Methode playerKeyAction() ist vollständig korrekt, auch wenn mehrere Tasten gleichzeitig gedrückt werden.",
-                                null
+                                JUnitTestRef.ofMethod(() -> PlayerControllerTest.class.getDeclaredMethod("testPlayerKeyActionMultipleKeys", JsonParameterSet.class))
                             )
                         )
                         .build(),
@@ -269,11 +288,11 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Methode isDefeated() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.ofMethod(() -> EnemyControllerTest.class.getDeclaredMethod("testIsDefeated", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die Klasse EnemyController ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.ofMethod(() -> EnemyControllerTest.class.getDeclaredMethod("testIsDefeated", JsonParameterSet.class))
                             )
                         )
                         .build()

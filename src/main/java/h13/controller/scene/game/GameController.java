@@ -284,22 +284,22 @@ public class GameController extends SceneController implements Updatable {
      */
     private void lose() {
         pause();
-        TextInputDialog dialog = new TextInputDialog("<CoolPlayerName>");
+        final TextInputDialog dialog = new TextInputDialog("<CoolPlayerName>");
         dialog.setTitle("Game Over");
         dialog.setHeaderText("You Lost!\n Your Score: " + getPlayer().getScore());
         dialog.setContentText("Please enter your name to add it to the leaderboard:");
 
         final Optional<String> playerName = dialog.showAndWait();
         playerName.ifPresent((name) -> {
-            getPlayer().setName(name);
-                ApplicationSettings.getHighscores().add(
-                    new HighscoreEntry(
-                        getPlayer().getName(),
-                        new Date().toString(),
-                        getPlayer().getScore()
-                    )
-                );
-            }
+                                 getPlayer().setName(name);
+                                 ApplicationSettings.getHighscores().add(
+                                     new HighscoreEntry(
+                                         getPlayer().getName(),
+                                         new Date().toString(),
+                                         getPlayer().getScore()
+                                     )
+                                 );
+                             }
         );
 
 
@@ -398,14 +398,14 @@ public class GameController extends SceneController implements Updatable {
      * Calculate the collision between the sprites and damages the collided sprites.
      */
     private void doCollisions() {
-        getGameState().getSprites().stream().filter(Bullet.class::isInstance).map(Bullet.class::cast).forEach(b -> {
-            getGameState().getSprites().stream()
+        getGameState().getSprites().stream().filter(Bullet.class::isInstance).map(Bullet.class::cast).forEach(
+            b -> getGameState().getSprites().stream()
                 //.filter(Sprite::isAlive)
                 .filter(BattleShip.class::isInstance)
                 .map(BattleShip.class::cast)
                 .filter(b::canHit)
-                .forEach(b::hit);
-        });
+                .forEach(b::hit)
+        );
     }
 
     /**
@@ -415,7 +415,7 @@ public class GameController extends SceneController implements Updatable {
      */
     public void updatePoints(final List<Sprite> damaged) {
         for (final Sprite sprite : damaged) {
-            if (sprite instanceof Enemy e) {
+            if (sprite instanceof Enemy e && e.isDead()) {
                 getPlayer().addPoints(e.getPointsWorth());
             }
         }

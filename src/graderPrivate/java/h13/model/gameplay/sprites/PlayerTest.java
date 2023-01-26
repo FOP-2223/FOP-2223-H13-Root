@@ -2,7 +2,6 @@ package h13.model.gameplay.sprites;
 
 import h13.controller.ApplicationSettings;
 import h13.model.gameplay.GameState;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;

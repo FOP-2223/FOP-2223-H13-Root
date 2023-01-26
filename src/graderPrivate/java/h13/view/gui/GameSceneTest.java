@@ -37,6 +37,7 @@ public class GameSceneTest extends ApplicationTest {
     public GameBoard gameBoard;
 
     public static class NoOpMethod {
+        @SuppressWarnings("unused")
         public static void noOp() {
         }
     }
@@ -64,7 +65,7 @@ public class GameSceneTest extends ApplicationTest {
             )
             .installOn(ByteBuddyAgent.install());
 
-        Class<?> dynamicType = new ByteBuddy()
+        final Class<?> dynamicType = new ByteBuddy()
             .redefine(GameScene.class)
             .method(ElementMatchers.named("init"))
             .intercept(MethodDelegation.to(NoOpMethod.class))

@@ -4,6 +4,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
+import h13.model.gameplay.sprites.Enemy;
+import h13.model.gameplay.sprites.IDBullet;
+import h13.model.gameplay.sprites.IDEnemy;
+import h13.model.gameplay.sprites.IDPlayer;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
+import javafx.scene.input.KeyCode;
+import org.junit.jupiter.api.Assertions;
+
 import h13.model.gameplay.sprites.*;
 import h13.util.StudentLinks;
 import javafx.geometry.BoundingBox;
@@ -75,16 +84,19 @@ public class JsonConverter {
             jsonNode.get("xIndex").asInt(),
             jsonNode.get("yIndex").asInt(),
             jsonNode.get("velocity").asInt(),
-            jsonNode.get("health").asInt(),
+            jsonNode.has("pointsWorth") ? jsonNode.get("pointsWorth").asInt() : 0,
             gameState
         );
         enemy.setX(jsonNode.get("x").asInt());
         enemy.setY(jsonNode.get("y").asInt());
+        if (jsonNode.has("health")) {
+            enemy.setHealth(jsonNode.get("health").asInt());
+        }
         return enemy;
     }
 
     public static IDBullet toIDBullet(final JsonNode jsonNode) {
-        return new IDBullet(
+        final var b = new IDBullet(
             jsonNode.get("id").asInt(0),
             jsonNode.get("x").asInt(0),
             jsonNode.get("y").asInt(0),
@@ -92,16 +104,31 @@ public class JsonConverter {
             null,
             JsonConverter.toDirection(jsonNode.get("direction"))
         );
+        if (jsonNode.has("health")) {
+            b.setHealth(jsonNode.get("health").asInt(0));
+        }
+        return b;
     }
 
     public static IDPlayer toIDPlayer(final JsonNode jsonNode) {
-        return new IDPlayer(
+        final var p = new IDPlayer(
             jsonNode.get("id").asInt(0),
             jsonNode.get("x").asInt(0),
             jsonNode.get("y").asInt(0),
             jsonNode.get("velocity").asDouble(0),
             null
         );
+        if (jsonNode.has("health")) {
+            p.setHealth(jsonNode.get("health").asInt(0));
+        }
+        if (jsonNode.has("score")) {
+            p.setScore(jsonNode.get("score").asInt(0));
+        }
+        return p;
+    }
+
+    public static KeyCode toKeyCode(final JsonNode jsonNode) {
+        return KeyCode.valueOf(jsonNode.asText());
     }
 
     public static List<Enemy> toEnemyList(final JsonNode jsonNode) {
@@ -124,30 +151,32 @@ public class JsonConverter {
         return toList(jsonNode, JsonConverter::toIDBullet);
     }
 
-    public static Map<Integer, Integer> toIntMap(final JsonNode jsonNode) {
-        final var map = new HashMap<Integer, Integer>();
-        jsonNode.fields().forEachRemaining(entry -> map.put(Integer.parseInt(entry.getKey()), entry.getValue().asInt()));
+    public static <K, V> Map<K, V> toMap(final JsonNode jsonNode, final Function<String, K> keyMapper, final Function<JsonNode, V> valueMapper) {
+        final var map = new HashMap<K, V>();
+        jsonNode.fields().forEachRemaining(entry -> map.put(keyMapper.apply(entry.getKey()), valueMapper.apply(entry.getValue())));
         return map;
     }
 
+    public static Map<Integer, Integer> toIntMap(final JsonNode jsonNode) {
+        return toMap(jsonNode, Integer::parseInt, JsonNode::asInt);
+    }
+
     // Custom converters
-    public final static Map<String, Function<JsonNode, ?>> DEFAULT_CONVERTERS = new HashMap<>() {
-        {
-            put("GAME_BOUNDS", JsonConverter::toBounds);
-            put("enemyBounds", JsonConverter::toBounds);
-            put("gameSceneBounds", JsonConverter::toBounds);
-            put("gameSceneBounds2", JsonConverter::toBounds);
-            put("expectedGameBoardBounds", JsonConverter::toBounds);
-            put("expectedGameBoardBounds2", JsonConverter::toBounds);
-            put("newEnemyBounds", JsonConverter::toBounds);
-            put("clampedEnemyBounds", JsonConverter::toBounds);
-            put("direction", JsonConverter::toDirection);
-            put("oldDirection", JsonConverter::toDirection);
-            put("newDirection", JsonConverter::toDirection);
-            put("nextMovementDirection", JsonConverter::toDirection);
-            put("enemies", JsonConverter::toEnemyList);
-        }
-    };
+    public final static Map<String, Function<JsonNode, ?>> DEFAULT_CONVERTERS = Map.ofEntries(
+            Map.entry("GAME_BOUNDS", JsonConverter::toBounds),
+            Map.entry("enemyBounds", JsonConverter::toBounds),
+            Map.entry("gameSceneBounds", JsonConverter::toBounds),
+            Map.entry("gameSceneBounds2", JsonConverter::toBounds),
+            Map.entry("expectedGameBoardBounds", JsonConverter::toBounds),
+            Map.entry("expectedGameBoardBounds2", JsonConverter::toBounds),
+            Map.entry("newEnemyBounds", JsonConverter::toBounds),
+            Map.entry("clampedEnemyBounds", JsonConverter::toBounds),
+            Map.entry("direction", JsonConverter::toDirection),
+            Map.entry("oldDirection", JsonConverter::toDirection),
+            Map.entry("newDirection", JsonConverter::toDirection),
+            Map.entry("nextMovementDirection", JsonConverter::toDirection),
+            Map.entry("enemies", JsonConverter::toEnemyList)
+    );
 
     @SuppressWarnings("unchecked")
     public static <T> T convert(

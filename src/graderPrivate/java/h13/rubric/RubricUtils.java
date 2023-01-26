@@ -68,21 +68,6 @@ public class RubricUtils {
      * @return The newly created grader.
      */
     public static Grader manualGrader(final int points) {
-        return (testCycle, criterion) -> new GradeResult() {
-            @Override
-            public int getMinPoints() {
-                return Math.min(points, 0);
-            }
-
-            @Override
-            public int getMaxPoints() {
-                return Math.max(points, 0);
-            }
-
-            @Override
-            public List<String> getComments() {
-                return List.of("Dieses Kriterium wird händisch bewertet.");
-            }
-        };
+        return (testCycle, criterion) -> GradeResult.of(Math.min(points, 0), Math.max(points, 0), "This criterion will be graded manually.");
     }
 }

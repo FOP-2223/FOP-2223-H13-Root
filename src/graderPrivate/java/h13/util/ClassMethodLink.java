@@ -136,11 +136,15 @@ public interface ClassMethodLink extends LinkHolder {
         }
     }
 
+    default void doReturnAlways(final Context context, final Object instance, final Object value) {
+        doReturn(context, instance, value, getAnyArgumentMatchers());
+    }
+
     default void doReturn(final Object instance, final Object value, final Object... args) {
         doReturn(Assertions2.emptyContext(), instance, value, args);
     }
 
-    default void doReturn(final Object instance, final Object value) {
+    default void doReturnAlways(final Object instance, final Object value) {
         doReturn(instance, value, getAnyArgumentMatchers());
     }
 
@@ -166,7 +170,7 @@ public interface ClassMethodLink extends LinkHolder {
     }
 
     default void doReturnNull(final Object instance) {
-        doReturn(instance, null);
+        doReturnAlways(instance, null);
     }
 
     default void doNothing(final Context context, final Object instance, final Object... args) {
