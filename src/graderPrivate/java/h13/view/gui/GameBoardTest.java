@@ -77,16 +77,16 @@ public class GameBoardTest extends FxTest {
         graphicsContext = canvas.getGraphicsContext2D();
 
         //mock needed Objects
-        player = mock(Player.class);
-        scene = mock(GameScene.class);
-        controller = mock(GameController.class);
-        playerController = mock(PlayerController.class);
+        player = spy(mock(Player.class, CALLS_REAL_METHODS));
+        scene = spy(mock(GameScene.class, CALLS_REAL_METHODS));
+        controller = spy(mock(GameController.class, CALLS_REAL_METHODS));
+        playerController = spy(mock(PlayerController.class, CALLS_REAL_METHODS));
         state = spy(new GameState());
 
-        when(scene.getController()).thenReturn(controller);
-        when(controller.getPlayer()).thenReturn(player);
-        when(controller.getGameState()).thenReturn(state);
-        when(controller.getPlayerController()).thenReturn(playerController);
+        StudentLinks.GameSceneLinks.GameSceneMethodLink.GET_CONTROLLER_METHOD.doReturnAlways(scene,controller);
+        StudentLinks.GameControllerLinks.GameControllerMethodLink.GET_PLAYER_METHOD.doReturnAlways(controller,player);
+        StudentLinks.GameControllerLinks.GameControllerMethodLink.GET_GAME_STATE_METHOD.doReturnAlways(controller,state);
+        StudentLinks.GameControllerLinks.GameControllerMethodLink.GET_PLAYER_CONTROLLER_METHOD.doReturnAlways(controller,playerController);
 
         //init GameBoard
         board = new GameBoard(GameConstants.ORIGINAL_GAME_BOUNDS.getWidth(), GameConstants.ORIGINAL_GAME_BOUNDS.getHeight(), scene);
@@ -161,10 +161,10 @@ public class GameBoardTest extends FxTest {
 
         Collections.shuffle(sprites, new Random(0));
 
-        when(state.getSprites()).thenReturn(new HashSet<>(sprites));
-        when(state.getEnemies()).thenReturn(new HashSet<>(enemyList));
-        when(state.getAliveEnemies()).thenReturn(new HashSet<>(enemyList));
-        when(playerController.getPlayer()).thenReturn(player);
+        StudentLinks.GameStateLinks.GameStateMethodLink.GET_SPRITES_METHOD.doReturnAlways(state, new HashSet<>(sprites));
+        StudentLinks.GameStateLinks.GameStateMethodLink.GET_ENEMIES_METHOD.doReturnAlways(state, new HashSet<>(enemyList));
+        StudentLinks.GameStateLinks.GameStateMethodLink.GET_ALIVE_ENEMIES_METHOD.doReturnAlways(state, new HashSet<>(enemyList));
+        StudentLinks.PlayerControllerLinks.PlayerControllerMethodLink.GET_PLAYER_METHOD.doReturnAlways(playerController, player);
 
         StudentLinks.GameBoardLinks.GameBoardMethodLink.DRAW_SPRITES_METHOD.invoke(board, graphicsContext);
 
@@ -191,8 +191,8 @@ public class GameBoardTest extends FxTest {
             .add("Board Size", PrettyPrinter.prettyPrint(GameConstants.ORIGINAL_GAME_BOUNDS))
             .build();
 
-        when(player.getScore()).thenReturn(score);
-        when(player.getHealth()).thenReturn(lives);
+        StudentLinks.PlayerLinks.PlayerMethodLink.GET_SCORE_METHOD.doReturnAlways(player, score);
+        StudentLinks.SpriteLinks.SpriteMethodLink.GET_HEALTH_METHOD.doReturnAlways(player, lives);
 
         StudentLinks.GameBoardLinks.GameBoardMethodLink.DRAW_H_U_D_METHOD.invoke(board, graphicsContext);
 
@@ -278,7 +278,7 @@ public class GameBoardTest extends FxTest {
                 "image" : "/h13/view/gui/GameBoardTest_%s.png"
             },""", generateJsonFromSprites(bullets), generateJsonFromSprites(enemies), generateJsonFromSprite(player), name);
 
-        when(state.getSprites()).thenReturn(sprites);
+        StudentLinks.GameStateLinks.GameStateMethodLink.GET_SPRITES_METHOD.doReturnAlways(state, sprites);
 
         StudentLinks.GameBoardLinks.GameBoardMethodLink.DRAW_SPRITES_METHOD.invoke(board, graphicsContext);
         saveImage("GameBoardTest_" + name, getBufferedImage(renderImage(GameConstants.ORIGINAL_GAME_BOUNDS, graphicsContext.getCanvas())));
