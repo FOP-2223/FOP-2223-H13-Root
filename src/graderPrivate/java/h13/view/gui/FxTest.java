@@ -10,6 +10,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import org.junit.jupiter.api.BeforeAll;
+import org.testfx.framework.junit5.ApplicationTest;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
 import javax.imageio.ImageIO;
@@ -28,13 +29,13 @@ import java.util.stream.Collectors;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.fail;
 
-public class FxTest {
+public class FxTest extends ApplicationTest {
 
     protected static final double testScale = 1;
 
     @BeforeAll
     public static void initJFX(){
-        new JFXPanel();
+        //new JFXPanel();
     }
 
     public static Image renderImage(Bounds bounds, Canvas canvas) {
