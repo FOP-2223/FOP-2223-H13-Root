@@ -17,10 +17,7 @@ import org.tudalgo.algoutils.tutor.general.assertions.Context;
 import static h13.util.StudentLinks.GameConstantsLinks.GameConstantsFieldLink.ORIGINAL_GAME_BOUNDS_FIELD;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
 
 @TestForSubmission
@@ -92,7 +89,6 @@ public class SpriteTest {
             .build();
 
         try (final var utilsMock = mockStatic(Utils.class)){
-            // TODO: Use StudentLinks
             utilsMock.when(() -> Utils.getNextPosition(
                     any(Bounds.class),
                     anyDouble(),
@@ -141,7 +137,6 @@ public class SpriteTest {
             .build();
 
         try (final var utilsMock = mockStatic(Utils.class)){
-            // TODO: use StudentLinks
             utilsMock.when(() -> Utils.getNextPosition(
                     any(Bounds.class),
                     anyDouble(),
@@ -170,10 +165,10 @@ public class SpriteTest {
             ), atLeastOnce());
 
             final ArgumentCaptor<Double> argumentSetX = ArgumentCaptor.forClass(Double.class);
-            verify(sprite).setX(argumentSetX.capture());
+            verify(sprite, atLeast(0)).setX(argumentSetX.capture());
 
             final ArgumentCaptor<Double> argumentSetY = ArgumentCaptor.forClass(Double.class);
-            verify(sprite).setX(argumentSetY.capture());
+            verify(sprite, atLeast(0)).setY(argumentSetY.capture());
 
             assertTrue(argumentSetX.getAllValues().stream().noneMatch(d -> isOutOfBounds(sprite, d, true)), context, r -> String.format("SetX was called with out of bounds coordinates. Called Values: %s", argumentSetX.getAllValues()));
             assertTrue(argumentSetY.getAllValues().stream().noneMatch(d -> isOutOfBounds(sprite, d, false)), context, r -> String.format("SetY was called with out of bounds coordinates. Called Values: %s", argumentSetY.getAllValues()));

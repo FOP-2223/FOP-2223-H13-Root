@@ -3,7 +3,8 @@ package h13.model.gameplay.sprites;
 import h13.controller.ApplicationSettings;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
-import h13.shared.Utils;
+import h13.util.PrettyPrinter;
+import h13.util.StudentLinks;
 import javafx.scene.paint.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.junitpioneer.jupiter.params.IntRangeSource;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
+import static h13.util.StudentLinks.SpriteLinks.SpriteMethodLink.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
@@ -36,21 +38,31 @@ public class BulletTest {
         final BattleShip ship1 = spy(new Enemy(pos1, pos1, 0, 0, mock(GameState.class)));
         final boolean isHit = pos2 == 0;
         final BattleShip ship2 = enemy ?
-            new Player(pos2, pos2, 0, mock(GameState.class)) :
-            new Enemy(pos2, pos2, 0, 0, mock(GameState.class));
+            spy(new Player(pos2, pos2, 0, mock(GameState.class))) :
+            spy(new Enemy(pos2, pos2, 0, 0, mock(GameState.class)));
 
-        if (!isAlive) {
-            ship2.setHealth(0);
-        }
+        IS_ALIVE_METHOD.doReturn(ship2, isAlive);
+        IS_DEAD_METHOD.doReturn(ship2, !isAlive);
         final Bullet bullet = new Bullet(0, 0, mock(GameState.class), ship1, Direction.UP);
+
+        Context context = contextBuilder()
+            .add("ship1", PrettyPrinter.prettyPrint(ship1))
+            .add("ship2", PrettyPrinter.prettyPrint(ship2))
+            .add("bullet", PrettyPrinter.prettyPrint(bullet))
+            .add("isAlive", isAlive)
+            .build();
 
         final boolean actual = bullet.canHit(ship2);
 
         if (enemy && isAlive && isHit) {
-            verify(ship1, atLeastOnce()).isFriend(any());
+            try {
+                verify(ship1, atLeastOnce()).isFriend(any());
+            } catch (org.mockito.exceptions.verification.WantedButNotInvoked e){
+                verify(ship2, atLeastOnce()).isFriend(any());
+            }
         }
 
-        assertEquals(enemy && isAlive && isHit, actual, context(), r -> String.format("Expected canHit to return %b but was %b", isHit && isAlive && enemy, actual));
+        assertEquals(enemy && isAlive && isHit, actual, context, r -> String.format("Expected canHit to return %b but was %b", isHit && isAlive && enemy, actual));
     }
 
     @ParameterizedTest
@@ -61,26 +73,39 @@ public class BulletTest {
 
         final Bullet bullet = new Bullet(position, position, mock(GameState.class), hitter, Direction.UP);
 
-        assertTrue(bullet.canHit(toHit), context(), r -> String.format("The bullet should be able to hit the ship at position %d", position));
+        Context context = contextBuilder()
+            .add("Hitter", PrettyPrinter.prettyPrint(hitter))
+            .add("To hit", PrettyPrinter.prettyPrint(toHit))
+            .add("Bullet", PrettyPrinter.prettyPrint(bullet))
+            .build();
+
+        assertTrue(bullet.canHit(toHit), context, r -> String.format("The bullet should be able to hit the ship at position %d", position));
         bullet.hit(toHit);
-        assertFalse(bullet.canHit(toHit), context(), r -> String.format("The bullet should not be able to hit the ship at position %d", position));
+        assertFalse(bullet.canHit(toHit), context, r -> String.format("The bullet should not be able to hit the ship at position %d", position));
     }
 
     @Test
     public void hit() {
-        final Bullet bullet = new Bullet(0, 0, mock(GameState.class), mock(BattleShip.class), Direction.UP);
-        final BattleShip ship = new BattleShip(0, 0, 0, Color.AQUA, 1, mock(GameState.class));
+        final Bullet bullet = spy(new Bullet(0, 0, mock(GameState.class), mock(BattleShip.class), Direction.UP));
+        final BattleShip ship = spy(new BattleShip(0, 0, 0, Color.AQUA, 1, mock(GameState.class)));
 
         final Context context = contextBuilder()
-            .add("Hitting Bullet", bullet)
-            .add("Ship to hit", ship)
+            .add("Hitting Bullet", PrettyPrinter.prettyPrint(bullet))
+            .add("Ship to hit", PrettyPrinter.prettyPrint(ship))
             .build();
 
-        // TODO: Mock damage, make canHit return true
+
+        StudentLinks.BulletLinks.BulletMethodLink.CAN_HIT_METHOD.doReturn(bullet, true, ship);
         bullet.hit(ship);
 
-        assertEquals(0, ship.getHealth(), context, r -> "The ship that was hit did not take the expected one damage.");
-        assertEquals(0, bullet.getHealth(), context, r -> "The Bullet that was hitting did not take the expected one damage.");
+        DAMAGE_METHOD_WITH_AMOUNT.verify(contextBuilder().add(context).add("error", "The ship that was hit did not take the expected one damage.").build(),
+            ship,
+            times(1),
+            1);
+        DAMAGE_METHOD_WITH_AMOUNT.verify(contextBuilder().add(context).add("error", "The Bullet that was hitting did not take the expected one damage.").build(),
+            bullet,
+            times(1),
+            1);
     }
 
     @ParameterizedTest
@@ -93,11 +118,8 @@ public class BulletTest {
             .add("Time passed", time)
             .build();
 
-        try (final var utilsMock = mockStatic(Utils.class)) {
-            bullet.update(time);
-
-            verify(bullet, atLeastOnce()).die();
-        }
+        bullet.update(time);
+        DIE_METHOD.verify(context, bullet, atLeastOnce());
     }
 
     @Test

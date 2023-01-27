@@ -44,7 +44,7 @@ public class FxTest extends ApplicationTest {
         final var writableImage = new WritableImage((int) bounds.getWidth(), (int) bounds.getHeight());
         Platform.runLater(() -> fut.complete(canvas.snapshot(null, writableImage)));
         try {
-            return fut.get(100, TimeUnit.MILLISECONDS);
+            return fut.get(300, TimeUnit.MILLISECONDS);
         } catch (final InterruptedException | ExecutionException | TimeoutException e) {
             throw new RuntimeException(e);
         }

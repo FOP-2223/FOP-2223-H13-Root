@@ -21,13 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static org.mockito.ArgumentMatchers.any;
+import static h13.util.StudentLinks.BattleShipLinks.BattleShipMethodLink.SET_BULLET_METHOD;
+import static h13.util.StudentLinks.SpriteLinks.SpriteMethodLink.DIE_METHOD;
 import static org.mockito.Mockito.*;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertNotNull;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertTrue;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.context;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.contextBuilder;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
 
 @TestForSubmission
 public class BattleShipTest {
@@ -78,6 +75,7 @@ public class BattleShipTest {
         final BattleShip ship = spy(new BattleShip(0, 0, 0, mock(Color.class), 1, state));
 
         final Context context = contextBuilder()
+            .add("Ship has Bullet", false)
             .add("Direction", direction)
             .build();
 
@@ -89,7 +87,6 @@ public class BattleShipTest {
         ship.setBullet(firstBullet);
         ship.shoot(direction);
 
-        // TODO: Use Student Links
         verify(ship, atMostOnce()).setBullet(any());
 
         ApplicationSettings.instantShooting.setValue(true);
@@ -98,7 +95,7 @@ public class BattleShipTest {
         verify(ship, times(2)).setBullet(any());
         assertTrue(state.getToAdd().contains(firstBullet), context, r -> "Orignal Bullet was removed but should not have been");
         assertTrue(state.getSprites().contains(firstBullet), context, r -> "Orignal Bullet was removed but should not have been");
-        verify(firstBullet, never()).die();
+        DIE_METHOD.verify(context, firstBullet, never());
     }
 
     @ParameterizedTest
@@ -107,7 +104,10 @@ public class BattleShipTest {
         final GameState state = new GameState();
         final BattleShip ship = spy(new BattleShip(0, 0, 0, mock(Color.class), 1, state));
 
-        final Context context = context();
+        final Context context = contextBuilder()
+            .add("Ship has Bullet", true)
+            .add("Direction", direction)
+            .build();
 
         ship.shoot(direction);
         final Bullet bullet = ship.getBullet();
