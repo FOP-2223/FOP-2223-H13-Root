@@ -11,7 +11,7 @@ on:
 jobs:
     test:
         runs-on: ubuntu-latest
-
+        timeout-minutes: 5
         steps:
             - uses: actions/checkout@v3
             - name: Set up JDK 17
@@ -25,6 +25,6 @@ jobs:
               uses: gradle/gradle-build-action@v2
               env:
                   GRADLE_OPTS: -Dorg.gradle.daemon=false
-                  _JAVA_OPTIONS: "-Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw"
+                  _JAVA_OPTIONS: "-Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Djdk.attach.allowAttachSelf=true"
               with:
                   arguments: graderPrivateRun

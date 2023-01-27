@@ -34,7 +34,7 @@ public class JsonParameterSet {
     public <T> T get(final String key, final Class<T> type) {
         final var jsonNode = getRootNode().get(key);
         if (jsonNode == null) {
-            throw new IllegalArgumentException("The given key does not exist in the json node.");
+            throw new IllegalArgumentException("The given key does not exist in the json node. The Key: " + key);
         }
         return JsonConverter.convert(
             jsonNode,

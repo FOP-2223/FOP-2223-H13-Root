@@ -5,6 +5,14 @@ import h13.model.gameplay.sprites.*;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
+import h13.model.gameplay.sprites.Bullet;
+import h13.model.gameplay.sprites.Enemy;
+import h13.model.gameplay.sprites.Player;
+import h13.model.gameplay.sprites.Sprite;
+import org.tudalgo.algoutils.tutor.general.conversion.AbstractArrayNodeConversion;
+import org.tudalgo.algoutils.tutor.general.conversion.ArrayConverter;
+
+import java.util.*;
 import java.util.function.Function;
 
 public class PrettyPrinter {
@@ -15,7 +23,9 @@ public class PrettyPrinter {
         Map.entry(Sprite.class, (Function<Sprite, String>) PrettyPrinter::prettyPrintSprite),
         Map.entry(IDBullet.class, (Function<IDBullet, String>) PrettyPrinter::prettyPrintIDBullet),
         Map.entry(IDEnemy.class, (Function<IDEnemy, String>) PrettyPrinter::prettyPrintIDEnemy),
-        Map.entry(IDPlayer.class, (Function<IDPlayer, String>) PrettyPrinter::prettyPrintIDPlayer)
+        Map.entry(IDPlayer.class, (Function<IDPlayer, String>) PrettyPrinter::prettyPrintIDPlayer),
+        Map.entry(Bullet.class, (Function<Sprite, String>) PrettyPrinter::prettyPrintSprite),
+        Map.entry(Player.class, (Function<Sprite, String>) PrettyPrinter::prettyPrintSprite)
     );
 
     @SuppressWarnings("unchecked")

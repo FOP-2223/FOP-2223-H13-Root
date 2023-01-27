@@ -1,5 +1,6 @@
 package h13.util;
 
+import h13.model.gameplay.sprites.Sprite;
 import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 import org.tudalgo.algoutils.tutor.general.reflections.FieldLink;
