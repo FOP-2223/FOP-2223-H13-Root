@@ -24,6 +24,7 @@ import static h13.util.PrettyPrinter.prettyPrint;
 import static h13.util.StudentLinks.EnemyMovementLinks.EnemyMovementFieldLink;
 import static h13.util.StudentLinks.EnemyMovementLinks.EnemyMovementFieldLink.*;
 import static h13.util.StudentLinks.EnemyMovementLinks.EnemyMovementMethodLink.*;
+import static h13.util.StudentLinks.GameConstantsLinks.GameConstantsFieldLink.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -42,7 +43,7 @@ public class EnemyMovementTest {
     @ParameterizedTest
     @JsonParameterSetTest("EnemyMovementTestGetEnemyBounds.json")
     void testGetEnemyBounds(final JsonParameterSet params) {
-        GameConstants.SHIP_SIZE = params.getDouble("SHIP_SIZE");
+        SHIP_SIZE_FIELD.setStatic(params.getDouble("SHIP_SIZE"));
         final var context = params.toContext("enemyBounds");
         gameState.getSprites().addAll(params.get("enemies"));
         final Bounds actualBounds = GET_ENEMY_BOUNDS_METHOD.invoke(context, enemyMovement);
@@ -57,8 +58,8 @@ public class EnemyMovementTest {
     @ParameterizedTest
     @JsonParameterSetTest("EnemyMovementTestBottomWasReached.json")
     void testBottomWasReached(final JsonParameterSet params) {
-        GameConstants.ORIGINAL_GAME_BOUNDS = params.get("GAME_BOUNDS");
-        GameConstants.SHIP_SIZE = params.getDouble("SHIP_SIZE");
+        ORIGINAL_GAME_BOUNDS_FIELD.setStatic(params.get("GAME_BOUNDS"));
+        SHIP_SIZE_FIELD.setStatic(params.getDouble("SHIP_SIZE"));
         final var enemyBounds = params.get("enemyBounds");
         gameState.getSprites().addAll(params.get("enemies"));
         final var context = params.toContext("bottomWasReached");
@@ -77,10 +78,10 @@ public class EnemyMovementTest {
     void testNextMovement(
         final JsonParameterSet params
     ) {
-        GameConstants.ORIGINAL_GAME_BOUNDS = params.get("GAME_BOUNDS");
-        GameConstants.SHIP_SIZE = params.getDouble("SHIP_SIZE");
-        GameConstants.ENEMY_MOVEMENT_SPEED_INCREASE = params.getDouble("ENEMY_MOVEMENT_SPEED_INCREASE");
-        GameConstants.VERTICAL_ENEMY_MOVE_DISTANCE = params.getDouble("VERTICAL_ENEMY_MOVE_DISTANCE");
+        ORIGINAL_GAME_BOUNDS_FIELD.setStatic(params.get("GAME_BOUNDS"));
+        SHIP_SIZE_FIELD.setStatic(params.getDouble("SHIP_SIZE"));
+        ENEMY_MOVEMENT_SPEED_INCREASE_FIELD.setStatic(params.getDouble("ENEMY_MOVEMENT_SPEED_INCREASE"));
+        VERTICAL_ENEMY_MOVE_DISTANCE_FIELD.setStatic(params.getDouble("VERTICAL_ENEMY_MOVE_DISTANCE"));
         final Bounds enemyBounds = params.get("enemyBounds");
         final var context = params.toContext("newYtarget", "newDirection", "newVelocity");
         gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds));
@@ -115,8 +116,8 @@ public class EnemyMovementTest {
     @ParameterizedTest
     @JsonParameterSetTest("EnemyMovementTestTargetReached.json")
     void testTargetReached(final JsonParameterSet params) {
-        GameConstants.ORIGINAL_GAME_BOUNDS = params.get("GAME_BOUNDS");
-        GameConstants.SHIP_SIZE = params.getDouble("SHIP_SIZE");
+        ORIGINAL_GAME_BOUNDS_FIELD.setStatic(params.get("GAME_BOUNDS"));
+        SHIP_SIZE_FIELD.setStatic(params.getDouble("SHIP_SIZE"));
         final Bounds enemyBounds = params.get("enemyBounds");
         gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds));
         final var context = params.toContext("targetReached");
@@ -140,7 +141,7 @@ public class EnemyMovementTest {
         @DoubleRangeSource(from = -200, to = 200, step = 50, closed = true) final double deltaX,
         @DoubleRangeSource(from = -200, to = 200, step = 50, closed = true) final double deltaY
     ) {
-        GameConstants.ORIGINAL_GAME_BOUNDS = new BoundingBox(0, 0, 1000, 1000);
+        ORIGINAL_GAME_BOUNDS_FIELD.setStatic(new BoundingBox(0, 0, 1000, 1000));
         final List<Point2D> enemyPositions = List.of(
             new Point2D(500, 500),
             new Point2D(690, 420)
@@ -195,10 +196,10 @@ public class EnemyMovementTest {
         final Direction direction = params.get("direction");
         final double velocity = params.get("velocity", Double.class);
 
-        GameConstants.ORIGINAL_GAME_BOUNDS = gameBounds;
-        GameConstants.SHIP_SIZE = params.get("SHIP_SIZE", Double.class);
-        GameConstants.VERTICAL_ENEMY_MOVE_DISTANCE = params.get("VERTICAL_ENEMY_MOVE_DISTANCE", Double.class);
-        GameConstants.ENEMY_MOVEMENT_SPEED_INCREASE = params.get("ENEMY_MOVEMENT_SPEED_INCREASE", Double.class);
+        ORIGINAL_GAME_BOUNDS_FIELD.setStatic(gameBounds);
+        SHIP_SIZE_FIELD.setStatic(params.get("SHIP_SIZE", Double.class));
+        VERTICAL_ENEMY_MOVE_DISTANCE_FIELD.setStatic(params.get("VERTICAL_ENEMY_MOVE_DISTANCE", Double.class));
+        ENEMY_MOVEMENT_SPEED_INCREASE_FIELD.setStatic(params.get("ENEMY_MOVEMENT_SPEED_INCREASE", Double.class));
         gameState.getSprites().addAll(createEnemiesForBounds(enemyBounds));
         if (mockStudentCode) {
             GET_ENEMY_BOUNDS_METHOD.doReturn(context, enemyMovement, enemyBounds);

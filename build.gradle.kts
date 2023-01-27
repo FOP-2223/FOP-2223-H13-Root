@@ -2,7 +2,7 @@
 plugins {
     java
     application
-    // alias(libs.plugins.style)
+    //alias(libs.plugins.style)
     alias(libs.plugins.jagr.gradle)
     alias(libs.plugins.javafxplugin)
 }
