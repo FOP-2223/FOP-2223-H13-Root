@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 @TestForSubmission
 public class SpriteRendererTest extends FxTest {
 
+    @SuppressWarnings("unused")
     public final static Map<String, Function<JsonNode, ?>> customConverters = new HashMap<>() {
         {
             put("sprites", JsonConverter::toSpriteList);
@@ -57,25 +58,25 @@ public class SpriteRendererTest extends FxTest {
 
     @ParameterizedTest
     @JsonParameterSetTest(value = "RenderSpriteTestTexture.json", customConverters = "customConverters")
-    public void testRenderSprite_Texture(JsonParameterSet params){
+    public void testRenderSprite_Texture(final JsonParameterSet params){
         runTest(params);
     }
 
     @ParameterizedTest
     @JsonParameterSetTest(value = "RenderSpriteTestNoTexture.json", customConverters = "customConverters")
-    public void testRenderSprite_NoTexture(JsonParameterSet params){
+    public void testRenderSprite_NoTexture(final JsonParameterSet params){
         runTest(params);
     }
 
-    private void runTest(JsonParameterSet params){
-            String fileName = params.getString("image");
-            Bounds bounds = params.get("GAME_BOUNDS");
-            List<Sprite> sprites = params.get("sprites");
+    private void runTest(final JsonParameterSet params){
+            final String fileName = params.getString("image");
+            final Bounds bounds = params.get("GAME_BOUNDS");
+            final List<Sprite> sprites = params.get("sprites");
 
-            BufferedImage generatedImage = SwingFXUtils.fromFXImage(generateImage(bounds, sprites), null);
-            BufferedImage expectedImage = FxTest.loadImage(fileName);
+            final BufferedImage generatedImage = SwingFXUtils.fromFXImage(generateImage(bounds, sprites), null);
+            final BufferedImage expectedImage = FxTest.loadImage(fileName);
 
-            Context context = contextBuilder()
+            final Context context = contextBuilder()
                 .add("Loaded Image", fileName)
                 .add("Sprites", PrettyPrinter.prettyPrint(sprites))
                 .add("bounds", bounds)
@@ -84,14 +85,14 @@ public class SpriteRendererTest extends FxTest {
             assertEqualsImage(expectedImage, generatedImage, context);
     }
 
-    private static Image generateImage(Bounds bounds, List<Sprite> spritesToRender){
+    private static Image generateImage(final Bounds bounds, final List<Sprite> spritesToRender){
         final Canvas canvas = new Canvas(bounds.getWidth(), bounds.getHeight());
         final var gc = canvas.getGraphicsContext2D();
 
         gc.setFill(Color.BLACK);
         gc.fillRect(0,0, bounds.getWidth(), bounds.getHeight());
 
-        for (Sprite sprite: spritesToRender){
+        for (final Sprite sprite: spritesToRender){
             SpriteRenderer.renderSprite(gc, sprite);
         }
 
@@ -108,34 +109,34 @@ public class SpriteRendererTest extends FxTest {
     private record TestData(String name, Bounds bounds, List<Sprite> sprites){}
 
     private static void generateAllImages(){
-        List<TestData> testData = new ArrayList<>();
-        List<TestData> texture = generateTexture(generateSprites());
-        List<TestData> noTexture = generateNoTexture(generateSprites());
+        final List<TestData> testData = new ArrayList<>();
+        final List<TestData> texture = generateTexture(generateSprites());
+        final List<TestData> noTexture = generateNoTexture(generateSprites());
         testData.addAll(texture);
         testData.addAll(noTexture);
 
-        for (TestData data: testData){
+        for (final TestData data: testData){
             saveImage(data.name, getBufferedImage(generateImage(data.bounds, data.sprites)));
         }
         writeJsonFile(texture, "RenderSpriteTestTexture.json");
         writeJsonFile(noTexture, "RenderSpriteTestNoTexture.json");
     }
 
-    private static void writeJsonFile(List<TestData> testData, String fileName){
+    private static void writeJsonFile(final List<TestData> testData, final String fileName){
         try {
-            FileOutputStream outputStream = new FileOutputStream(fileName);
-            byte[] strToBytes = generateJson(testData, null).getBytes();
+            final FileOutputStream outputStream = new FileOutputStream(fileName);
+            final byte[] strToBytes = generateJson(testData).getBytes();
             outputStream.write(strToBytes);
 
             outputStream.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static String generateJson(List<TestData> testData, String s){
+    private static String generateJson(final List<TestData> testData){
 
-        String testDataString = testData.stream().map(testDatum -> String.format("%s", generateJson(testDatum))).collect(Collectors.joining(",\n"));
+        final String testDataString = testData.stream().map(testDatum -> String.format("%s", generateJson(testDatum))).collect(Collectors.joining(",\n"));
 
         return String.format(
             """
@@ -145,7 +146,7 @@ public class SpriteRendererTest extends FxTest {
             """, testDataString.indent(2));
     }
 
-    private static String generateJson(TestData data){
+    private static String generateJson(final TestData data){
         return String.format(
             """
             {
@@ -173,20 +174,20 @@ public class SpriteRendererTest extends FxTest {
         );
     }
 
-    private static List<TestData> generateData(List<Sprite> sprites, String baseName){
-        List<TestData> testData = new ArrayList<>();
+    private static List<TestData> generateData(final List<Sprite> sprites, final String baseName){
+        final List<TestData> testData = new ArrayList<>();
 
-        ThreadLocalRandom random = ThreadLocalRandom.current();
+        final ThreadLocalRandom random = ThreadLocalRandom.current();
         for (int i = 0; i<sprites.size(); i++){
-            Bounds bounds = new BoundingBox(0, 0, random.nextInt(300, 500), random.nextInt(300, 500));
+            final Bounds bounds = new BoundingBox(0, 0, random.nextInt(300, 500), random.nextInt(300, 500));
             testData.add(new TestData(baseName + "Single" + i, bounds, List.of(sprites.get(i))));
         }
 
         for (int i = 0; i<10; i++){
-            Bounds bounds = new BoundingBox(0, 0, random.nextInt(300, 500), random.nextInt(300, 500));
-            List<Sprite> selSprites = new ArrayList<>();
+            final Bounds bounds = new BoundingBox(0, 0, random.nextInt(300, 500), random.nextInt(300, 500));
+            final List<Sprite> selSprites = new ArrayList<>();
             while (selSprites.size() < 3){
-                Sprite test = sprites.get(random.nextInt(sprites.size()));
+                final Sprite test = sprites.get(random.nextInt(sprites.size()));
                 if (!selSprites.contains(test)){
                     selSprites.add(test);
                 }
@@ -196,11 +197,11 @@ public class SpriteRendererTest extends FxTest {
         return testData;
     }
 
-    private static List<TestData> generateNoTexture(List<Sprite> sprites){
-        List<TestData> testData = generateData(sprites, "NoTextureDraw");
+    private static List<TestData> generateNoTexture(final List<Sprite> sprites){
+        final List<TestData> testData = generateData(sprites, "NoTextureDraw");
 
-        for (TestData data: testData){
-            for (Sprite sprite: data.sprites){
+        for (final TestData data: testData){
+            for (final Sprite sprite: data.sprites){
                 sprite.setTexture(null);
             }
         }
@@ -208,7 +209,7 @@ public class SpriteRendererTest extends FxTest {
         return testData;
     }
 
-    private static List<TestData> generateTexture(List<Sprite> sprites) {
+    private static List<TestData> generateTexture(final List<Sprite> sprites) {
         return generateData(sprites, "TextureDraw");
     }
 }

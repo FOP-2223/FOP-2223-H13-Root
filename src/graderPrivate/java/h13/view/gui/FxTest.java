@@ -1,9 +1,10 @@
 package h13.view.gui;
 
-import h13.model.gameplay.GameState;
-import h13.model.gameplay.sprites.*;
+import h13.model.gameplay.sprites.Bullet;
+import h13.model.gameplay.sprites.EnemyC;
+import h13.model.gameplay.sprites.Player;
+import h13.model.gameplay.sprites.Sprite;
 import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
@@ -14,7 +15,6 @@ import org.testfx.framework.junit5.ApplicationTest;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -38,28 +38,28 @@ public class FxTest extends ApplicationTest {
         //new JFXPanel();
     }
 
-    public static Image renderImage(Bounds bounds, Canvas canvas) {
-        CompletableFuture<Image> fut = new CompletableFuture<>();
+    public static Image renderImage(final Bounds bounds, final Canvas canvas) {
+        final CompletableFuture<Image> fut = new CompletableFuture<>();
 
         final var writableImage = new WritableImage((int) bounds.getWidth(), (int) bounds.getHeight());
         Platform.runLater(() -> fut.complete(canvas.snapshot(null, writableImage)));
         try {
             return fut.get(100, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+        } catch (final InterruptedException | ExecutionException | TimeoutException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static BufferedImage getBufferedImage(Image image){
+    public static BufferedImage getBufferedImage(final Image image){
         return SwingFXUtils.fromFXImage(image, null);
     }
 
-    public static BufferedImage loadImage(String imageToLoad) {
+    public static BufferedImage loadImage(final String imageToLoad) {
         try (
-            InputStream stream = FxTest.class.getResourceAsStream(imageToLoad)) {
+            final InputStream stream = FxTest.class.getResourceAsStream(imageToLoad)) {
             return ImageIO.read(stream);
         } catch (
-            IOException e) {
+            final IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -70,24 +70,24 @@ public class FxTest extends ApplicationTest {
      * @param actual the Image to test
      * @param context thew context in which the images are tested
      */
-    public static void assertEqualsImage(BufferedImage expected, BufferedImage actual, Context context){
+    public static void assertEqualsImage(final BufferedImage expected, final BufferedImage actual, final Context context){
         if (expected == null && actual == null){
             return;
         }
         if (expected == null){
             fail(context, r -> "The Expected Image is null but the Actual image is not!");
         }
-        if (expected == null){
+        if (actual == null){
             fail(context, r -> "The Actual Image is null but the Expected image is not!");
         }
         assertEquals(expected.getWidth(), actual.getWidth(), context, r -> "Generated Image does not have the Correct width");
         assertEquals(expected.getHeight(), actual.getHeight(), context, r -> "Generated Image does not have the Correct width");
         for (int x = 0; x < expected.getWidth(); x++) {
             for (int y = 0; y < expected.getHeight(); y++) {
-                int finalX = x;
-                int finalY = y;
-                java.awt.Color expectedColor = new java.awt.Color(expected.getRGB(x, y));
-                java.awt.Color actualColor = new java.awt.Color(actual.getRGB(x, y));
+                final int finalX = x;
+                final int finalY = y;
+                final java.awt.Color expectedColor = new java.awt.Color(expected.getRGB(x, y));
+                final java.awt.Color actualColor = new java.awt.Color(actual.getRGB(x, y));
                 assertEquals(expectedColor.getRed(), actualColor.getRed(), context, r -> String.format("Generated Image does not match expected. Wrong R-ColorValue in Pixel (%d,%d)", finalX, finalY));
                 assertEquals(expectedColor.getGreen(), actualColor.getGreen(), context, r -> String.format("Generated Image does not match expected. Wrong G-ColorValue in Pixel (%d,%d)", finalX, finalY));
                 assertEquals(expectedColor.getBlue(), actualColor.getBlue(), context, r -> String.format("Generated Image does not match expected. Wrong B-ColorValue in Pixel (%d,%d)", finalX, finalY));
@@ -95,7 +95,7 @@ public class FxTest extends ApplicationTest {
         }
     }
 
-    public static void saveImage(String name, BufferedImage image){
+    public static void saveImage(final String name, final BufferedImage image){
         final var outputFile = new File(name + ".png");
         try {
             ImageIO.write(image, "png", outputFile);
@@ -104,7 +104,7 @@ public class FxTest extends ApplicationTest {
         }
     }
 
-    public static String generateJsonFromBounds(Bounds bounds){
+    public static String generateJsonFromBounds(final Bounds bounds){
         return String.format("""
             {
                 "x": "%d",
@@ -114,10 +114,8 @@ public class FxTest extends ApplicationTest {
               }""", (int) bounds.getMinX(), (int) bounds.getMinY(), (int) bounds.getWidth(), (int) bounds.getHeight());
     }
 
-    public static String generateJsonFromSprites(List<? extends Sprite> sprites){
-        StringBuilder builder = new StringBuilder();
-
-        String spritesString = sprites.stream().map(sprite -> String.format("%s", generateJsonFromSprite(sprite))).collect(Collectors.joining(",\n"));
+    public static String generateJsonFromSprites(final List<? extends Sprite> sprites){
+        final String spritesString = sprites.stream().map(sprite -> String.format("%s", generateJsonFromSprite(sprite))).collect(Collectors.joining(",\n"));
 
         return String.format(
             """
@@ -126,7 +124,7 @@ public class FxTest extends ApplicationTest {
               ]""", spritesString.indent(4));
     }
 
-    public static String generateJsonFromSprite(Sprite sprite){
+    public static String generateJsonFromSprite(final Sprite sprite){
         String type = "null";
         String spriteTexture = null;
         if (sprite instanceof Bullet){

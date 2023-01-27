@@ -19,14 +19,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
-import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -47,6 +45,7 @@ public class GameBoardTest extends FxTest {
     private GameState state;
     private GameBoard board;
 
+    @SuppressWarnings("unused")
     public final static Map<String, Function<JsonNode, ?>> customConverters = new HashMap<>() {
         {
             put("enemies", JsonConverter::toSpriteList);
@@ -94,9 +93,9 @@ public class GameBoardTest extends FxTest {
 
     @ParameterizedTest
     @ValueSource(ints = {0, 1000, 2000, 3000})
-    public void testDrawBackground_NoImage(int seed) {
-        Random random = new Random(seed);
-        Context context = contextBuilder()
+    public void testDrawBackground_NoImage(final int seed) {
+        final Random random = new Random(seed);
+        final Context context = contextBuilder()
             .add("Seed", seed)
             .add("Expected Image", "/h13/view/gui/image/GameBoardTest_DrawBackground_NoImage_" + seed + ".png")
             .add("Board Size", PrettyPrinter.prettyPrint(GameConstants.ORIGINAL_GAME_BOUNDS))
@@ -113,9 +112,9 @@ public class GameBoardTest extends FxTest {
 
         StudentLinks.GameBoardLinks.GameBoardFieldLink.BACKGROUND_IMAGE_FIELD.set(board, null);
         StudentLinks.GameBoardLinks.GameBoardMethodLink.DRAW_BACKGROUND_METHOD.invoke(board, graphicsContext);
-        BufferedImage actual = getBufferedImage(renderImage(GameConstants.ORIGINAL_GAME_BOUNDS, graphicsContext.getCanvas()));
+        final BufferedImage actual = getBufferedImage(renderImage(GameConstants.ORIGINAL_GAME_BOUNDS, graphicsContext.getCanvas()));
 
-        BufferedImage expected = loadImage("/h13/view/gui/image/GameBoardTest_DrawBackground_NoImage_" + seed + ".png");
+        final BufferedImage expected = loadImage("/h13/view/gui/image/GameBoardTest_DrawBackground_NoImage_" + seed + ".png");
 
         //saveImage("DrawBackground_NoImage_" + seed, actual);
 
@@ -128,8 +127,8 @@ public class GameBoardTest extends FxTest {
         "/h13/images/wallpapers/Galaxy2.jpg,/h13/view/gui/image/GameBoardTest_DrawBackground_Image_Galaxy2.png",
         "/h13/images/wallpapers/Galaxy1.jpg,/h13/view/gui/image/GameBoardTest_DrawBackground_Image_Galaxy1.png"
     })
-    public void testDrawBackground_Image(String backgroundImage, String expectedImage) {
-        Context context = contextBuilder()
+    public void testDrawBackground_Image(final String backgroundImage, final String expectedImage) {
+        final Context context = contextBuilder()
             .add("Background Image", backgroundImage)
             .add("Expected Image", expectedImage)
             .add("Board Size", PrettyPrinter.prettyPrint(GameConstants.ORIGINAL_GAME_BOUNDS))
@@ -138,8 +137,8 @@ public class GameBoardTest extends FxTest {
         StudentLinks.GameBoardLinks.GameBoardFieldLink.BACKGROUND_IMAGE_FIELD.set(board, SwingFXUtils.toFXImage(loadImage(backgroundImage),null));
         StudentLinks.GameBoardLinks.GameBoardMethodLink.DRAW_BACKGROUND_METHOD.invoke(board, graphicsContext);
 
-        BufferedImage actual = getBufferedImage(renderImage(GameConstants.ORIGINAL_GAME_BOUNDS, graphicsContext.getCanvas()));
-        BufferedImage expected = loadImage(expectedImage);
+        final BufferedImage actual = getBufferedImage(renderImage(GameConstants.ORIGINAL_GAME_BOUNDS, graphicsContext.getCanvas()));
+        final BufferedImage expected = loadImage(expectedImage);
 
         //saveImage("GameBoardTest_DrawBackground_Image_" + backgroundImage.substring(backgroundImage.lastIndexOf("/")+1), actual);
 
@@ -148,13 +147,13 @@ public class GameBoardTest extends FxTest {
 
     @ParameterizedTest
     @JsonParameterSetTest(value = "GameBoardTestDrawSprites.json", customConverters = "customConverters")
-    public void testDrawSprites(JsonParameterSet params){
-        String expectedImageLocation = params.getString("image");
-        List<Enemy> enemyList = params.get("enemies");
-        List<Bullet> bullets = params.get("bullets");
-        Player player = params.get("player");
+    public void testDrawSprites(final JsonParameterSet params){
+        final String expectedImageLocation = params.getString("image");
+        final List<Enemy> enemyList = params.get("enemies");
+        final List<Bullet> bullets = params.get("bullets");
+        final Player player = params.get("player");
 
-        List<Sprite> sprites = new ArrayList<>();
+        final List<Sprite> sprites = new ArrayList<>();
         sprites.addAll(enemyList);
         sprites.addAll(bullets);
         sprites.add(player);
@@ -168,8 +167,8 @@ public class GameBoardTest extends FxTest {
 
         StudentLinks.GameBoardLinks.GameBoardMethodLink.DRAW_SPRITES_METHOD.invoke(board, graphicsContext);
 
-        BufferedImage actual = getBufferedImage(renderImage(GameConstants.ORIGINAL_GAME_BOUNDS, graphicsContext.getCanvas()));
-        BufferedImage expected = loadImage(expectedImageLocation);
+        final BufferedImage actual = getBufferedImage(renderImage(GameConstants.ORIGINAL_GAME_BOUNDS, graphicsContext.getCanvas()));
+        final BufferedImage expected = loadImage(expectedImageLocation);
 
         assertEqualsImage(expected, actual, params.toContext());
     }
@@ -184,8 +183,8 @@ public class GameBoardTest extends FxTest {
         "3,7544",
         "2,2147483647"
     })
-    public void testDrawHUD(int lives, int score){
-        Context context = contextBuilder()
+    public void testDrawHUD(final int lives, final int score){
+        final Context context = contextBuilder()
             .add("Lives", lives)
             .add("Score", score)
             .add("Board Size", PrettyPrinter.prettyPrint(GameConstants.ORIGINAL_GAME_BOUNDS))
@@ -196,8 +195,8 @@ public class GameBoardTest extends FxTest {
 
         StudentLinks.GameBoardLinks.GameBoardMethodLink.DRAW_H_U_D_METHOD.invoke(board, graphicsContext);
 
-        BufferedImage actual = getBufferedImage(renderImage(GameConstants.ORIGINAL_GAME_BOUNDS, graphicsContext.getCanvas()));
-        BufferedImage expected = loadImage("/h13/view/gui/image/GameBoardTest_DrawHUD_"+score+"_"+lives+".png");
+        final BufferedImage actual = getBufferedImage(renderImage(GameConstants.ORIGINAL_GAME_BOUNDS, graphicsContext.getCanvas()));
+        final BufferedImage expected = loadImage("/h13/view/gui/image/GameBoardTest_DrawHUD_"+score+"_"+lives+".png");
 
         //saveImage("DrawHUD_"+score+"_"+lives, actual);
 
@@ -212,13 +211,13 @@ public class GameBoardTest extends FxTest {
         "CHOCOLATE,2",
         "TAN,1"
     })
-    public void testDrawBorder(String color, int borderWidth){
+    public void testDrawBorder(final String color, final int borderWidth){
         StudentLinks.GameConstantsLinks.GameConstantsFieldLink.BORDER_COLOR_FIELD.setStatic(Color.valueOf(color));
         StudentLinks.GameConstantsLinks.GameConstantsFieldLink.BORDER_WIDTH_FIELD.setStatic((double) borderWidth);
 
-        String expectedImage = "/h13/view/gui/image/GameBoardTest_DrawBorder_" + color + ".png";
+        final String expectedImage = "/h13/view/gui/image/GameBoardTest_DrawBorder_" + color + ".png";
 
-        Context context = contextBuilder()
+        final Context context = contextBuilder()
             .add("Color", color)
             .add("Border Width", borderWidth)
             .add("Expected Image", expectedImage)
@@ -227,8 +226,8 @@ public class GameBoardTest extends FxTest {
 
         StudentLinks.GameBoardLinks.GameBoardMethodLink.DRAW_BORDER_METHOD.invoke(board, graphicsContext);
 
-        BufferedImage expected = loadImage(expectedImage);
-        BufferedImage actual = getBufferedImage(renderImage(GameConstants.ORIGINAL_GAME_BOUNDS, graphicsContext.getCanvas()));
+        final BufferedImage expected = loadImage(expectedImage);
+        final BufferedImage actual = getBufferedImage(renderImage(GameConstants.ORIGINAL_GAME_BOUNDS, graphicsContext.getCanvas()));
 
         //saveImage("DrawBorder_" + color, actual);
 
@@ -241,8 +240,8 @@ public class GameBoardTest extends FxTest {
 //    }
 
     private void generateDrawSprites(){
-        String name = "Random";
-        List<Bullet> bullets = List.of(
+        final String name = "Random";
+        final List<Bullet> bullets = List.of(
             new Bullet(100,5, mock(GameState.class), null, Direction.DOWN),
             new Bullet(200,5, mock(GameState.class), null, Direction.RIGHT),
             new Bullet(100,200, mock(GameState.class), null, Direction.UP),
@@ -252,7 +251,7 @@ public class GameBoardTest extends FxTest {
             new Bullet(43,98, mock(GameState.class), null, Direction.UP),
             new Bullet(57,47, mock(GameState.class), null, Direction.UP)
         );
-        List<Enemy> enemies = List.of(
+        final List<Enemy> enemies = List.of(
             new EnemyC(100,100,0, 0, mock(GameState.class)),
             new EnemyC(75,184,0, 0, mock(GameState.class)),
             new EnemyC(276,234,0, 0, mock(GameState.class)),
@@ -262,15 +261,15 @@ public class GameBoardTest extends FxTest {
             new EnemyC(98,2,0, 0, mock(GameState.class)),
             new EnemyC(340,85,0, 0, mock(GameState.class))
         );
-        Player player = new Player(100, 100, 0, state);
+        final Player player = new Player(100, 100, 0, state);
 
-        Set<Sprite> sprites = new HashSet<>();
+        final Set<Sprite> sprites = new HashSet<>();
         sprites.addAll(bullets);
         sprites.addAll(enemies);
         sprites.add(player);
 
 
-        String json = String.format("""
+        final String json = String.format("""
             {
                 "bullets" : %s,
                 "enemies" : %s,
@@ -284,12 +283,12 @@ public class GameBoardTest extends FxTest {
         saveImage("GameBoardTest_" + name, getBufferedImage(renderImage(GameConstants.ORIGINAL_GAME_BOUNDS, graphicsContext.getCanvas())));
 
         try {
-            FileOutputStream outputStream = new FileOutputStream("DrawSpritesBits.json");
-            byte[] strToBytes = json.getBytes();
+            final FileOutputStream outputStream = new FileOutputStream("DrawSpritesBits.json");
+            final byte[] strToBytes = json.getBytes();
             outputStream.write(strToBytes);
 
             outputStream.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
