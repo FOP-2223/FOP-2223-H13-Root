@@ -9,7 +9,6 @@ import h13.util.StudentLinks;
 import h13.json.JsonConverter;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junitpioneer.jupiter.cartesian.ArgumentSets;
 import org.junitpioneer.jupiter.cartesian.CartesianTest;
@@ -28,6 +27,7 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
 @TestForSubmission
 public class UtilsTest {
 
+    @SuppressWarnings("unused")
     public final static Map<String, Function<JsonNode, ?>> customConverters = new HashMap<>() {
         {
             put("world", JsonConverter::toBounds);
@@ -39,21 +39,21 @@ public class UtilsTest {
 
     @ParameterizedTest
     @JsonParameterSetTest(value = "UtilsTestClamp.json", customConverters = "customConverters")
-    public void clamp(JsonParameterSet params) {
-        Bounds worldBounds = params.get("world", Bounds.class);
-        Bounds spriteBounds = params.get("sprite", Bounds.class);
-        Bounds expectedBounds = params.get("expected", Bounds.class);
+    public void clamp(final JsonParameterSet params) {
+        final Bounds worldBounds = params.get("world", Bounds.class);
+        final Bounds spriteBounds = params.get("sprite", Bounds.class);
+        final Bounds expectedBounds = params.get("expected", Bounds.class);
 
         StudentLinks.GameConstantsLinks.GameConstantsFieldLink.ORIGINAL_GAME_BOUNDS_FIELD.setStatic(worldBounds);
 
-        Context context = contextBuilder()
+        final Context context = contextBuilder()
             .add("World Bounds", GameConstants.ORIGINAL_GAME_BOUNDS)
             .add("Sprite Bounds", spriteBounds)
             .add("Expected Bounds", spriteBounds)
             .build();
 
 
-        Bounds clampedBounds = Utils.clamp(spriteBounds);
+        final Bounds clampedBounds = Utils.clamp(spriteBounds);
 
         assertEquals(expectedBounds.getMinX(), clampedBounds.getMinX(), context,
             r -> String.format("Sprite wrongly clamped inside Bounding Box. Expected x: %f. But got %f", expectedBounds.getMinX(), clampedBounds.getMinX())
@@ -71,20 +71,20 @@ public class UtilsTest {
 
     @CartesianTest
     @CartesianTest.MethodFactory("provideClamp")
-    public void clamp_generator(Bounds world, Bounds sprite, Direction direction, int distance){
+    public void clamp_generator(final Bounds world, final Bounds sprite, final Direction direction, final int distance){
         GameConstants.ORIGINAL_GAME_BOUNDS = world;
 
-        Bounds spriteBounds = move(sprite, direction.getX() * distance, direction.getY() * distance);
+        final Bounds spriteBounds = move(sprite, direction.getX() * distance, direction.getY() * distance);
 
-        Context context = contextBuilder()
+        final Context context = contextBuilder()
             .add("World Bounds", GameConstants.ORIGINAL_GAME_BOUNDS)
             .add("Sprite Bounds", spriteBounds)
             .add("Direction", direction)
             .add("Distance", distance)
             .build();
 
-        Bounds clampedBounds = Utils.clamp(spriteBounds);
-        Bounds expected = new BoundingBox(
+        final Bounds clampedBounds = Utils.clamp(spriteBounds);
+        final Bounds expected = new BoundingBox(
             Math.max(0, Math.min(ORIGINAL_GAME_BOUNDS.getWidth() - spriteBounds.getWidth(), spriteBounds.getMinX())),
             Math.max(0, Math.min(ORIGINAL_GAME_BOUNDS.getHeight() - spriteBounds.getHeight(), spriteBounds.getMinY())),
             spriteBounds.getWidth(),
@@ -107,16 +107,16 @@ public class UtilsTest {
 
     @ParameterizedTest
     @JsonParameterSetTest(value = "UtilsTestGetNextPosition.json", customConverters = "customConverters")
-    public void getNextPosition(JsonParameterSet params) {
-        Bounds startingPos = params.get("sprite", Bounds.class);
-        Bounds expected = params.get("expected", Bounds.class);
-        double velocity = params.getDouble("velocity");
-        double elapsedTime = params.getDouble("elapsedTime");
-        Direction direction = params.get("direction", Direction.class);
+    public void getNextPosition(final JsonParameterSet params) {
+        final Bounds startingPos = params.get("sprite", Bounds.class);
+        final Bounds expected = params.get("expected", Bounds.class);
+        final double velocity = params.getDouble("velocity");
+        final double elapsedTime = params.getDouble("elapsedTime");
+        final Direction direction = params.get("direction", Direction.class);
 
-        Bounds actual = Utils.getNextPosition(startingPos, velocity, direction, elapsedTime);
+        final Bounds actual = Utils.getNextPosition(startingPos, velocity, direction, elapsedTime);
 
-        Context context = contextBuilder()
+        final Context context = contextBuilder()
             .add("Starting Position", startingPos)
             .add("Velocity", velocity)
             .add("Direction", direction)
@@ -131,23 +131,23 @@ public class UtilsTest {
      * @return the created ArgumentSet containing all Parameters for testing.
      */
     public static ArgumentSets provideClamp(){
-        List<Bounds> worldBox = new ArrayList<>();
+        final List<Bounds> worldBox = new ArrayList<>();
 
 
         worldBox.add(new BoundingBox(0, 0, 256, 224));
         worldBox.add(new BoundingBox(0, 0, 300, 250));
         worldBox.add(new BoundingBox(0, 0, 50, 50));
 
-        List<Bounds> spriteBox = new ArrayList<>();
+        final List<Bounds> spriteBox = new ArrayList<>();
         spriteBox.add(new BoundingBox(0,0, 5, 5));
         spriteBox.add(new BoundingBox(0,0, 15, 20));
         spriteBox.add(new BoundingBox(0,0, 9, 4));
         spriteBox.add(new BoundingBox(0,0, 49, 49));
 
-        List<Direction> directions = List.of(Direction.values());
-        List<Integer> distances = List.of(5, 400, 450, 1234);
+        final List<Direction> directions = List.of(Direction.values());
+        final List<Integer> distances = List.of(5, 400, 450, 1234);
 
-        ArgumentSets argumentSets = ArgumentSets.create();
+        final ArgumentSets argumentSets = ArgumentSets.create();
         argumentSets.argumentsForNextParameter(worldBox);
         argumentSets.argumentsForNextParameter(spriteBox);
         argumentSets.argumentsForNextParameter(directions);
@@ -162,7 +162,7 @@ public class UtilsTest {
      * @param y the distance to move in y direction
      * @return the resulting BoundingBox
      */
-    public static Bounds move(Bounds bounds, double x, double y){
+    public static Bounds move(final Bounds bounds, final double x, final double y){
         return new BoundingBox(bounds.getMinX() + x, bounds.getMinY() + y, bounds.getWidth(), bounds.getHeight());
     }
 }

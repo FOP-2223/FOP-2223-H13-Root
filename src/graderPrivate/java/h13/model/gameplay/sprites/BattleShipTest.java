@@ -9,7 +9,6 @@ import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
 import javafx.scene.paint.Color;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junitpioneer.jupiter.cartesian.ArgumentSets;
@@ -33,6 +32,7 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.context
 @TestForSubmission
 public class BattleShipTest {
 
+    @SuppressWarnings("unused")
     public final static Map<String, Function<JsonNode, ?>> customConverters = new HashMap<>() {
         {
             put("ship1", JsonConverter::toSprite);
@@ -47,12 +47,12 @@ public class BattleShipTest {
 
     @ParameterizedTest
     @JsonParameterSetTest(value = "BattleShipTestIsFriend.json", customConverters = "customConverters")
-    public void isFriend(JsonParameterSet params){
-        BattleShip ship1 = params.get("ship1");
-        BattleShip ship2 = params.get("ship2");
-        boolean isFriend = params.getBoolean("isFriend");
+    public void isFriend(final JsonParameterSet params){
+        final BattleShip ship1 = params.get("ship1");
+        final BattleShip ship2 = params.get("ship2");
+        final boolean isFriend = params.getBoolean("isFriend");
 
-        Context context = contextBuilder()
+        final Context context = contextBuilder()
             .add("Battleship 1", ship1)
             .add("Battleship 2", ship2)
             .build();
@@ -62,8 +62,8 @@ public class BattleShipTest {
 
     @CartesianTest
     @CartesianTest.MethodFactory("provideIsFriend")
-    public void isFriend(BattleShip ship1, BattleShip ship2){
-        Context context = contextBuilder()
+    public void isFriend(final BattleShip ship1, final BattleShip ship2){
+        final Context context = contextBuilder()
             .add("Battleship 1", ship1)
             .add("Battleship 2", ship2)
             .build();
@@ -72,23 +72,24 @@ public class BattleShipTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = Direction.class)
-    public void shoot_hasBullet(Direction direction){
-        GameState state = new GameState();
-        BattleShip ship = spy(new BattleShip(0, 0, 0, mock(Color.class), 1, state));
+    @EnumSource(Direction.class)
+    public void shoot_hasBullet(final Direction direction){
+        final GameState state = new GameState();
+        final BattleShip ship = spy(new BattleShip(0, 0, 0, mock(Color.class), 1, state));
 
-        Context context = contextBuilder()
+        final Context context = contextBuilder()
             .add("Direction", direction)
             .build();
 
         ApplicationSettings.instantShooting.setValue(false);
-        Bullet firstBullet = spy(new Bullet(0, 0, mock(GameState.class), ship, Direction.UP));
+        final Bullet firstBullet = spy(new Bullet(0, 0, mock(GameState.class), ship, Direction.UP));
         state.getSprites().add(firstBullet);
         state.getToAdd().add(firstBullet);
 
         ship.setBullet(firstBullet);
         ship.shoot(direction);
 
+        // TODO: Use Student Links
         verify(ship, atMostOnce()).setBullet(any());
 
         ApplicationSettings.instantShooting.setValue(true);
@@ -101,15 +102,15 @@ public class BattleShipTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = Direction.class)
-    public void shoot_hasNoBullet(Direction direction){
-        GameState state = new GameState();
-        BattleShip ship = spy(new BattleShip(0, 0, 0, mock(Color.class), 1, state));
+    @EnumSource(Direction.class)
+    public void shoot_hasNoBullet(final Direction direction){
+        final GameState state = new GameState();
+        final BattleShip ship = spy(new BattleShip(0, 0, 0, mock(Color.class), 1, state));
 
-        Context context = context();
+        final Context context = context();
 
         ship.shoot(direction);
-        Bullet bullet = ship.getBullet();
+        final Bullet bullet = ship.getBullet();
 
         assertNotNull(bullet, context, r -> "Bullet was not created or not added to Ship");
         assertEquals(direction, bullet.getDirection(), context, r -> "Bullet Direction did not match expected");
@@ -124,7 +125,7 @@ public class BattleShipTest {
      * @return a ArgumentSets containing all arguments for the test
      */
     private static ArgumentSets provideIsFriend(){
-        List<BattleShip> ships = List.of(
+        final List<BattleShip> ships = List.of(
             new BattleShip(0,0,0, Color.AQUA,1, mock(GameState.class)),
             new BattleShip(10,10,5, Color.AQUA,1, mock(GameState.class)),
             new Enemy(0,0,0,0,mock(GameState.class)),
