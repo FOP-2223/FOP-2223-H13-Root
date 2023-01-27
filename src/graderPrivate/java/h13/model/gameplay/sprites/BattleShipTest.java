@@ -1,10 +1,14 @@
 package h13.model.gameplay.sprites;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import h13.controller.ApplicationSettings;
+import h13.json.JsonConverter;
 import h13.json.JsonParameterSet;
+import h13.json.JsonParameterSetTest;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
 import javafx.scene.paint.Color;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -13,7 +17,10 @@ import org.junitpioneer.jupiter.cartesian.CartesianTest;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -26,8 +33,20 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.context
 @TestForSubmission
 public class BattleShipTest {
 
-    //TODO
-    @Test
+    public final static Map<String, Function<JsonNode, ?>> customConverters = new HashMap<>() {
+        {
+            put("ship1", JsonConverter::toSprite);
+            put("ship2", JsonConverter::toSprite);
+        }
+    };
+
+    @BeforeEach
+    public void initTests(){
+        ApplicationSettings.loadTexturesProperty().set(false);
+    }
+
+    @ParameterizedTest
+    @JsonParameterSetTest(value = "BattleShipTestIsFriend.json", customConverters = "customConverters")
     public void isFriend(JsonParameterSet params){
         BattleShip ship1 = params.get("ship1");
         BattleShip ship2 = params.get("ship2");
