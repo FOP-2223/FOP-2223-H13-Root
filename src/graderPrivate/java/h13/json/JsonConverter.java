@@ -4,12 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
-import h13.model.gameplay.sprites.Enemy;
-import h13.model.gameplay.sprites.IDBullet;
-import h13.model.gameplay.sprites.IDEnemy;
-import h13.model.gameplay.sprites.IDPlayer;
+import h13.model.gameplay.sprites.*;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import org.junit.jupiter.api.Assertions;
 
@@ -19,6 +17,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.StreamSupport;
+
+import static org.mockito.Mockito.*;
 
 public class JsonConverter {
 
@@ -39,6 +39,26 @@ public class JsonConverter {
         return StreamSupport.stream(jsonNode.spliterator(), false)
             .map(mapper)
             .toList();
+    }
+
+    public static Sprite toSprite(final JsonNode jsonNode) {
+        final int x = jsonNode.get("x").asInt();
+        final int y = jsonNode.get("y").asInt();
+        final String texture = jsonNode.get("texture").asText();
+
+        final var sprite = spy(switch (jsonNode.get("type").asText()){
+            case "bullet" -> new Bullet(x, y, mock(GameState.class), null, Direction.UP);
+            case "enemy" -> new EnemyC(x,y, 0, 0, mock(GameState.class));
+            default -> new Player(x, y, 0, mock(GameState.class));
+        });
+
+        if (!texture.equals("null")){
+            final Image image = new Image(Objects.requireNonNull(JsonConverter.class.getResourceAsStream(texture)));
+            when(sprite.getTexture()).thenReturn(image);
+        } else {
+            when(sprite.getTexture()).thenReturn(null);
+        }
+        return sprite;
     }
 
     public static Enemy toEnemy(final JsonNode jsonNode) {
@@ -69,7 +89,7 @@ public class JsonConverter {
             jsonNode.get("y").asInt(0),
             null,
             null,
-            JsonConverter.toDirection(jsonNode.get("direction"))
+            toDirection(jsonNode.get("direction"))
         );
         if (jsonNode.has("health")) {
             b.setHealth(jsonNode.get("health").asInt(0));
@@ -102,8 +122,12 @@ public class JsonConverter {
         return toList(jsonNode, JsonConverter::toEnemy);
     }
 
+    public static List<Sprite> toSpriteList(final JsonNode jsonNode) {
+        return toList(jsonNode, JsonConverter::toSprite);
+    }
+
     public static List<IDEnemy> toIDEnemyList(final JsonNode jsonNode, final GameState gameState) {
-        return toList(jsonNode, node -> JsonConverter.toIDEnemy(node, gameState));
+        return toList(jsonNode, node -> toIDEnemy(node, gameState));
     }
 
     public static List<IDEnemy> toIDEnemyList(final JsonNode jsonNode) {

@@ -11,6 +11,17 @@ import h13.view.gui.GameSceneTest;
 import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
 import org.tudalgo.algoutils.transform.AccessTransformer;
+import h13.controller.scene.game.GameControllerTest;
+import h13.json.JsonParameterSet;
+import h13.model.gameplay.EnemyMovementTest;
+import h13.model.gameplay.sprites.EnemyTest;
+import h13.model.gameplay.sprites.PlayerTest;
+import h13.view.gui.GameBoardTest;
+import h13.view.gui.GameSceneTest;
+import h13.view.gui.SpriteRendererTest;
+import org.sourcegrade.jagr.api.rubric.*;
+import org.sourcegrade.jagr.api.testing.RubricConfiguration;
+import org.tudalgo.algoutils.transform.AccessTransformer;
 
 import static h13.rubric.RubricUtils.*;
 
@@ -185,11 +196,11 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Methode renderSprite() funktioniert korrekt für Sprites ohne Textur.",
-                                null
+                                JUnitTestRef.ofMethod(() -> SpriteRendererTest.class.getDeclaredMethod("testRenderSprite_NoTexture", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die Methode renderSprite() funktioniert korrekt für Sprites mit Textur.",
-                                null
+                                JUnitTestRef.ofMethod(() -> SpriteRendererTest.class.getDeclaredMethod("testRenderSprite_Texture", JsonParameterSet.class))
                             )
                         )
                         .build(),
@@ -198,19 +209,22 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Methode drawBackground() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.and(
+                                    JUnitTestRef.ofMethod(() -> GameBoardTest.class.getDeclaredMethod("testDrawBackground_NoImage", int.class)),
+                                    JUnitTestRef.ofMethod(() -> GameBoardTest.class.getDeclaredMethod("testDrawBackground_Image", String.class, String.class))
+                                )
                             ),
                             criterion(
                                 "Die Methode drawSprites() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.ofMethod(() -> GameBoardTest.class.getDeclaredMethod("testDrawSprites", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die Methode drawHUD() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.ofMethod(() -> GameBoardTest.class.getDeclaredMethod("testDrawHUD", int.class, int.class))
                             ),
                             criterion(
                                 "Die Methode drawBorder() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.ofMethod(() -> GameBoardTest.class.getDeclaredMethod("testDrawBorder", String.class, int.class))
                             )
                         )
                         .build()

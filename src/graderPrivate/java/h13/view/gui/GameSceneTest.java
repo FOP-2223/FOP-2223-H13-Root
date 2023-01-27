@@ -49,31 +49,37 @@ public class GameSceneTest extends ApplicationTest {
         ORIGINAL_GAME_BOUNDS_FIELD.setStatic(origGameBounds);
         ASPECT_RATIO_FIELD.setStatic(origGameBounds.getWidth() / origGameBounds.getHeight());
         ApplicationSettings.loadBackgroundProperty().set(false);
+//
+//        // use bytebuddy to intercept init() call when gameScene is constructed
+//        new AgentBuilder.Default()
+//            .type(ElementMatchers.nameStartsWith("h13.view.gui.GameScene"))
+//            .transform((
+//                           DynamicType.Builder<?> builder,
+//                           TypeDescription typeDescription,
+//                           ClassLoader classLoader,
+//                           JavaModule module,
+//                           ProtectionDomain protectionDomain
+//                       ) -> builder
+//                .method(ElementMatchers.named("init"))
+//                .intercept(MethodDelegation.to(NoOpMethod.class))
+//            )
+//            .installOn(ByteBuddyAgent.install());
+//
+//        final Class<?> dynamicType = new ByteBuddy()
+//            .redefine(GameScene.class)
+//            .method(ElementMatchers.named("init"))
+//            .intercept(MethodDelegation.to(NoOpMethod.class))
+//            .make()
+//            .load(GameScene.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent())
+//            .getLoaded();
 
-        // use bytebuddy to intercept init() call when gameScene is constructed
-        new AgentBuilder.Default()
-            .type(ElementMatchers.nameStartsWith("h13.view.gui.GameScene"))
-            .transform((
-                           DynamicType.Builder<?> builder,
-                           TypeDescription typeDescription,
-                           ClassLoader classLoader,
-                           JavaModule module,
-                           ProtectionDomain protectionDomain
-                       ) -> builder
-                .method(ElementMatchers.named("init"))
-                .intercept(MethodDelegation.to(NoOpMethod.class))
-            )
-            .installOn(ByteBuddyAgent.install());
-
-        final Class<?> dynamicType = new ByteBuddy()
-            .redefine(GameScene.class)
-            .method(ElementMatchers.named("init"))
-            .intercept(MethodDelegation.to(NoOpMethod.class))
-            .make()
-            .load(GameScene.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent())
-            .getLoaded();
-
-        gameScene = spy((GameScene) dynamicType.getConstructor().newInstance());
+        // TODO: test with private init() for final grading run
+        gameScene = spy(new GameScene(){
+            @Override
+            protected void init() {
+                // do nothing
+            }
+        });
 
         stage.setScene(gameScene);
         this.stage = stage;
