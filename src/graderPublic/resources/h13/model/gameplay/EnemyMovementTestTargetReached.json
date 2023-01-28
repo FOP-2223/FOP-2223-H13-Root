@@ -1,0 +1,118 @@
+[
+  {
+    "SHIP_SIZE": 10,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "enemyBounds": { "x": 200, "y": 0, "width": 56, "height": 70 },
+    "yTarget": 0,
+    "direction": "RIGHT",
+    "targetReached": true
+  },
+  {
+    "SHIP_SIZE": 10,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "enemyBounds": { "x": 199, "y": 0, "width": 56, "height": 70 },
+    "yTarget": 0,
+    "direction": "RIGHT",
+    "targetReached": false
+  },
+  {
+    "SHIP_SIZE": 10,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "enemyBounds": { "x": 200, "y": 10, "width": 56, "height": 70 },
+    "yTarget": 10,
+    "direction": "DOWN",
+    "targetReached":  true
+  },{
+    "SHIP_SIZE": 10,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "enemyBounds": { "x": 200, "y": 10, "width": 56, "height": 70 },
+    "yTarget": 11,
+    "direction": "DOWN",
+    "targetReached":  false
+  },
+  {
+    "SHIP_SIZE": 10,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "enemyBounds": { "x": 0, "y": 10, "width": 56, "height": 70 },
+    "yTarget": 10,
+    "direction": "DOWN",
+    "targetReached":  true
+  },
+  {
+    "SHIP_SIZE": 10,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "enemyBounds": { "x": 0, "y": 10, "width": 56, "height": 70 },
+    "yTarget": 11,
+    "direction": "DOWN",
+    "targetReached":  false
+  },
+  {
+    "SHIP_SIZE": 10,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "enemyBounds": { "x": 0, "y": 10, "width": 56, "height": 70 },
+    "yTarget": 10,
+    "direction": "LEFT",
+    "targetReached":  true
+  },
+  {
+    "SHIP_SIZE": 10,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "enemyBounds": { "x": 1, "y": 10, "width": 56, "height": 70 },
+    "yTarget": 10,
+    "direction": "LEFT",
+    "targetReached":  false
+  },
+  {
+    "SHIP_SIZE": 10,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 512,
+      "height": 512
+    },
+    "enemyBounds": { "x": 50, "y": 50, "width": 56, "height": 70 },
+    "yTarget": 400,
+    "direction": "DOWN",
+    "targetReached":  false
+  }
+]

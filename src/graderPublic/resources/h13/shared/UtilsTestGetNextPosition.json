@@ -1,0 +1,154 @@
+[
+  {
+    "sprite": {
+      "x": "0",
+      "y": "0",
+      "width": "0",
+      "height": "0"
+    },
+    "expected": {
+      "x": "10",
+      "y": "0",
+      "width": "0",
+      "height": "0"
+    },
+    "velocity": "1",
+    "elapsedTime": "10",
+    "direction": "RIGHT"
+  },
+  {
+    "sprite": {
+      "x": "0",
+      "y": "0",
+      "width": "0",
+      "height": "0"
+    },
+    "expected": {
+      "x": "-10",
+      "y": "0",
+      "width": "0",
+      "height": "0"
+    },
+    "velocity": "1",
+    "elapsedTime": "10",
+    "direction": "LEFT"
+  },
+  {
+  "sprite": {
+    "x": "0",
+    "y": "0",
+    "width": "0",
+    "height": "0"
+  },
+  "expected": {
+    "x": "10",
+    "y": "10",
+    "width": "0",
+    "height": "0"
+  },
+  "velocity": "1",
+  "elapsedTime": "10",
+  "direction": "DOWN_RIGHT"
+},
+  {
+  "sprite": {
+    "x": "0",
+    "y": "0",
+    "width": "0",
+    "height": "0"
+  },
+  "expected": {
+    "x": "0",
+    "y": "0",
+    "width": "0",
+    "height": "0"
+  },
+  "velocity": "0",
+  "elapsedTime": "10",
+  "direction": "RIGHT"
+},
+  {
+  "sprite": {
+    "x": "0",
+    "y": "0",
+    "width": "0",
+    "height": "0"
+  },
+  "expected": {
+    "x": "1000",
+    "y": "1000",
+    "width": "0",
+    "height": "0"
+  },
+  "velocity": "100",
+  "elapsedTime": "10",
+  "direction": "DOWN_RIGHT"
+},
+  {
+  "sprite": {
+    "x": "0",
+    "y": "0",
+    "width": "0",
+    "height": "0"
+  },
+  "expected": {
+    "x": "10",
+    "y": "0",
+    "width": "0",
+    "height": "0"
+  },
+  "velocity": "1",
+  "elapsedTime": "10",
+  "direction": "RIGHT"
+},
+  {
+    "sprite": {
+      "x": "0",
+      "y": "0",
+      "width": "0",
+      "height": "0"
+    },
+    "expected": {
+      "x": "10",
+      "y": "0",
+      "width": "0",
+      "height": "0"
+    },
+    "velocity": "1",
+    "elapsedTime": "10",
+    "direction": "RIGHT"
+  },{
+  "sprite": {
+    "x": "12",
+    "y": "8",
+    "width": "0",
+    "height": "0"
+  },
+  "expected": {
+    "x": "-879",
+    "y": "-883",
+    "width": "0",
+    "height": "0"
+  },
+  "velocity": "27",
+  "elapsedTime": "33",
+  "direction": "UP_LEFT"
+}
+,{
+  "sprite": {
+    "x": "9009",
+    "y": "25002",
+    "width": "0",
+    "height": "0"
+  },
+  "expected": {
+    "x": "9009",
+    "y": "25050",
+    "width": "0",
+    "height": "0"
+  },
+  "velocity": "8",
+  "elapsedTime": "6",
+  "direction": "DOWN"
+}
+]

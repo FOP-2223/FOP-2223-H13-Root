@@ -57,6 +57,17 @@ public class BattleShipTest {
         assertEquals(isFriend, ship1.isFriend(ship2), context, r -> "Ship was not correctly identified as Friend or Foe.");
     }
 
+    @CartesianTest
+    @CartesianTest.MethodFactory("provideIsFriend")
+    public void isFriend(final BattleShip ship1, final BattleShip ship2) {
+        final Context context = contextBuilder()
+            .add("Battleship 1", ship1)
+            .add("Battleship 2", ship2)
+            .build();
+
+        assertEquals(ship1.getClass().isInstance(ship2), ship1.isFriend(ship2), context, r -> "Ship was not correctly identified as Friend or Foe.");
+    }
+
     @ParameterizedTest
     @EnumSource(Direction.class)
     public void shoot_hasBullet(final Direction direction) {
@@ -115,5 +126,22 @@ public class BattleShipTest {
 
         assertEquals(ship.getBounds().getCenterX(), bullet.getBounds().getCenterX(), context, r -> "Bullet is not correctly centered on BattleShip. X coordinate is not Correct");
         assertEquals(ship.getBounds().getCenterY(), bullet.getBounds().getCenterY(), context, r -> "Bullet is not correctly centered on BattleShip. Y coordinate is not Correct");
+    }
+
+    /**
+     * Generates the Arguments used for the tests for isFriend.
+     *
+     * @return a ArgumentSets containing all arguments for the test
+     */
+    private static ArgumentSets provideIsFriend() {
+        final List<BattleShip> ships = List.of(
+            new BattleShip(0, 0, 0, Color.AQUA, 1, mock(GameState.class)),
+            new BattleShip(10, 10, 5, Color.AQUA, 1, mock(GameState.class)),
+            new Enemy(0, 0, 0, 0, mock(GameState.class)),
+            new Enemy(10, 10, 5, 0, mock(GameState.class)),
+            new Player(0, 0, 0, mock(GameState.class)),
+            new Player(10, 10, 5, mock(GameState.class))
+        );
+        return ArgumentSets.argumentsForFirstParameter(ships).argumentsForNextParameter(ships);
     }
 }
