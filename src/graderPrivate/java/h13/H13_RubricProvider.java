@@ -4,39 +4,23 @@ import h13.controller.gamelogic.EnemyControllerTest;
 import h13.controller.gamelogic.PlayerControllerTest;
 import h13.controller.scene.game.GameControllerTest;
 import h13.json.JsonParameterSet;
-import h13.model.gameplay.EnemyMovementTest;
-import h13.model.gameplay.sprites.EnemyTest;
-import h13.model.gameplay.sprites.PlayerTest;
-import h13.view.gui.GameSceneTest;
-import org.sourcegrade.jagr.api.rubric.*;
-import org.sourcegrade.jagr.api.testing.RubricConfiguration;
-import org.tudalgo.algoutils.transform.AccessTransformer;
-import h13.controller.gamelogic.EnemyControllerTest;
-import h13.controller.gamelogic.PlayerControllerTest;
-import h13.controller.scene.game.GameControllerTest;
-import h13.json.JsonParameterSet;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.EnemyMovementTest;
 import h13.model.gameplay.sprites.*;
 import h13.shared.UtilsTest;
-import h13.view.gui.GameSceneTest;
-import javafx.geometry.Bounds;
-import org.sourcegrade.jagr.api.rubric.*;
-import org.sourcegrade.jagr.api.testing.RubricConfiguration;
-import org.tudalgo.algoutils.transform.AccessTransformer;
-import h13.controller.scene.game.GameControllerTest;
-import h13.json.JsonParameterSet;
-import h13.model.gameplay.EnemyMovementTest;
-import h13.model.gameplay.sprites.EnemyTest;
-import h13.model.gameplay.sprites.PlayerTest;
 import h13.view.gui.GameBoardTest;
 import h13.view.gui.GameSceneTest;
 import h13.view.gui.SpriteRendererTest;
-import org.sourcegrade.jagr.api.rubric.*;
+import javafx.geometry.Bounds;
+import org.sourcegrade.jagr.api.rubric.Criterion;
+import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
+import org.sourcegrade.jagr.api.rubric.Rubric;
+import org.sourcegrade.jagr.api.rubric.RubricProvider;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
 import org.tudalgo.algoutils.transform.AccessTransformer;
 
-import static h13.rubric.RubricUtils.*;
+import static h13.rubric.RubricUtils.criterion;
+import static h13.rubric.RubricUtils.manualGrader;
 
 public class H13_RubricProvider implements RubricProvider {
     public static final Rubric RUBRIC = Rubric.builder()
@@ -75,12 +59,6 @@ public class H13_RubricProvider implements RubricProvider {
                                     JUnitTestRef.ofMethod(() -> SpriteTest.class.getDeclaredMethod("update_inside")),
                                     JUnitTestRef.ofMethod(() -> SpriteTest.class.getDeclaredMethod("update_outside"))
                                 )
-                            ),
-                            criterion(
-                                "Die Verbindliche Anforderung der Methode update() wurde verletzt.",
-                                //TODO
-                                null,
-                                -1
                             )
                         )
                         .minPoints(0)
@@ -114,14 +92,11 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Methode shoot() erzeugt korrekt eine neue Kugel.",
-                                null
+                                JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("shoot_hasNoBullet", Direction.class))
                             ),
                             criterion(
                                 "Die Methode shoot() ist vollständig korrekt.",
-                                JUnitTestRef.and(
-                                    JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("shoot_hasBullet", Direction.class)),
-                                    JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("shoot_hasNoBullet", Direction.class))
-                                )
+                                JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("shoot_hasBullet", Direction.class))
                             ),
                             criterion(
                                 "Die Methode isFriend() ist vollständig korrekt.",
