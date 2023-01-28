@@ -11,6 +11,19 @@ import h13.view.gui.GameSceneTest;
 import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
 import org.tudalgo.algoutils.transform.AccessTransformer;
+import h13.controller.gamelogic.EnemyControllerTest;
+import h13.controller.gamelogic.PlayerControllerTest;
+import h13.controller.scene.game.GameControllerTest;
+import h13.json.JsonParameterSet;
+import h13.model.gameplay.Direction;
+import h13.model.gameplay.EnemyMovementTest;
+import h13.model.gameplay.sprites.*;
+import h13.shared.UtilsTest;
+import h13.view.gui.GameSceneTest;
+import javafx.geometry.Bounds;
+import org.sourcegrade.jagr.api.rubric.*;
+import org.sourcegrade.jagr.api.testing.RubricConfiguration;
+import org.tudalgo.algoutils.transform.AccessTransformer;
 import h13.controller.scene.game.GameControllerTest;
 import h13.json.JsonParameterSet;
 import h13.model.gameplay.EnemyMovementTest;
@@ -37,22 +50,35 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Methoden damage(), die() und isDead() sind vollständig korrekt.",
-                                null
+                                JUnitTestRef.and(
+                                    JUnitTestRef.ofMethod(() -> SpriteTest.IsDead.class.getDeclaredMethod("isDead_alive", int.class)),
+                                    JUnitTestRef.ofMethod(() -> SpriteTest.IsDead.class.getDeclaredMethod("isDead_dead", int.class)),
+                                    JUnitTestRef.ofMethod(() -> SpriteTest.class.getDeclaredMethod("damage", int.class, int.class)),
+                                    JUnitTestRef.ofMethod(() -> SpriteTest.class.getDeclaredMethod("die", int.class))
+                                )
                             ),
                             criterion(
                                 "Die Methode clamp() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.and(
+                                    JUnitTestRef.ofMethod(() -> UtilsTest.class.getDeclaredMethod("clamp", JsonParameterSet.class)),
+                                    JUnitTestRef.ofMethod(() -> UtilsTest.class.getDeclaredMethod("clamp_generator", Bounds.class, Bounds.class, Direction.class, int.class))
+                                )
+
                             ),
                             criterion(
                                 "Die Methode getNewPosition() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.ofMethod(() -> UtilsTest.class.getDeclaredMethod("getNextPosition", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die Methode update() führt die Bewegung des Sprites korrekt durch.",
-                                null
+                                JUnitTestRef.and(
+                                    JUnitTestRef.ofMethod(() -> SpriteTest.class.getDeclaredMethod("update_inside")),
+                                    JUnitTestRef.ofMethod(() -> SpriteTest.class.getDeclaredMethod("update_outside"))
+                                )
                             ),
                             criterion(
                                 "Die Verbindliche Anforderung der Methode update() wurde verletzt.",
+                                //TODO
                                 null,
                                 -1
                             )
@@ -64,15 +90,22 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Methode canHit() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.and(
+                                    JUnitTestRef.ofMethod(() -> BulletTest.class.getDeclaredMethod("canHit", boolean.class, boolean.class, int.class, int.class)),
+                                    JUnitTestRef.ofMethod(() -> BulletTest.class.getDeclaredMethod("canHit_MultiHit", int.class))
+                                )
                             ),
                             criterion(
                                 "Die Methode hit() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.ofMethod(() -> BulletTest.class.getDeclaredMethod("hit"))
                             ),
                             criterion(
                                 "Die Methode update() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.and(
+                                    JUnitTestRef.ofMethod(() -> BulletTest.class.getDeclaredMethod("update", int.class)),
+                                    JUnitTestRef.ofMethod(() -> BulletTest.class.getDeclaredMethod("updateBasic"))
+                                )
+
                             )
                         )
                         .build(),
@@ -85,11 +118,17 @@ public class H13_RubricProvider implements RubricProvider {
                             ),
                             criterion(
                                 "Die Methode shoot() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.and(
+                                    JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("shoot_hasBullet", Direction.class)),
+                                    JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("shoot_hasNoBullet", Direction.class))
+                                )
                             ),
                             criterion(
                                 "Die Methode isFriend() ist vollständig korrekt.",
-                                null
+                                JUnitTestRef.and(
+                                    JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("isFriend", JsonParameterSet.class)),
+                                    JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("isFriend", BattleShip.class, BattleShip.class))
+                                )
                             )
                         )
                         .build(),

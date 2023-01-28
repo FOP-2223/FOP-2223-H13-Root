@@ -1,0 +1,47 @@
+[
+  {
+    "ship1": {
+      "x": "654",
+      "y": "354",
+      "texture": "null",
+      "type": "enemy"
+    },
+    "ship2": {
+      "x": "694",
+      "y": "354",
+      "texture": "null",
+      "type": "enemy"
+    },
+    "isFriend": "true"
+  },
+  {
+    "ship1": {
+      "x": "654",
+      "y": "354",
+      "texture": "null",
+      "type": "player"
+    },
+    "ship2": {
+      "x": "694",
+      "y": "354",
+      "texture": "null",
+      "type": "player"
+    },
+    "isFriend": "true"
+  },
+  {
+    "ship1": {
+      "x": "654",
+      "y": "354",
+      "texture": "null",
+      "type": "enemy"
+    },
+    "ship2": {
+      "x": "694",
+      "y": "354",
+      "texture": "null",
+      "type": "player"
+    },
+    "isFriend": "false"
+  }
+]

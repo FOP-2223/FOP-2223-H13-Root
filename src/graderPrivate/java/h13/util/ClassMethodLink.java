@@ -126,6 +126,14 @@ public interface ClassMethodLink extends LinkHolder {
         verify(context, instance, Mockito.times(times).description(context.toString()), args);
     }
 
+    default void assertInvokedNTimes(
+        final @NotNull Context context,
+        final Object instance,
+        final int times
+    ) {
+        verify(context, instance, Mockito.times(times).description(context.toString()), getAnyArgumentMatchers());
+    }
+
     default void doReturn(final Context context, final Object instance, final Object value, final Object... args) {
         if (MOCK_STUDENT_CODE) {
             invoke(
