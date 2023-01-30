@@ -21,6 +21,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.tudalgo.algoutils.tutor.general.assertions.Assertions3;
 import org.tudalgo.algoutils.tutor.general.reflections.BasicMethodLink;
 import org.tudalgo.algoutils.tutor.general.reflections.BasicTypeLink;
 import org.tudalgo.algoutils.tutor.general.reflections.FieldLink;
@@ -206,12 +207,20 @@ public class StudentLinks {
             SHOOT_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
                 () -> Enemy.class.getDeclaredMethod("shoot")
             ))),
-            GETX_INDEX_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
-                () -> Enemy.class.getDeclaredMethod("getxIndex")
-            ))),
-            GETY_INDEX_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
-                () -> Enemy.class.getDeclaredMethod("getyIndex")
-            ))),
+            GET_X_INDEX_METHOD(Assertions3.assertMethodExists(
+                BasicTypeLink.of(Enemy.class),
+                MatcherUtils.or(
+                    identical("getXIndex"),
+                    identical("getxIndex")
+                )
+            )),
+            GET_Y_INDEX_METHOD(Assertions3.assertMethodExists(
+                BasicTypeLink.of(Enemy.class),
+                MatcherUtils.or(
+                    identical("getYIndex"),
+                    identical("getyIndex")
+                )
+            )),
             GET_POINTS_WORTH_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
                 () -> Enemy.class.getDeclaredMethod("getPointsWorth")
             ))),
