@@ -1,0 +1,119 @@
+package h13.model.gameplay.sprites;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import h13.controller.ApplicationSettings;
+import h13.json.JsonConverter;
+import h13.json.JsonParameterSet;
+import h13.json.JsonParameterSetTest;
+import h13.model.gameplay.Direction;
+import h13.model.gameplay.GameState;
+import javafx.scene.paint.Color;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junitpioneer.jupiter.cartesian.ArgumentSets;
+import org.junitpioneer.jupiter.cartesian.CartesianTest;
+import org.sourcegrade.jagr.api.rubric.TestForSubmission;
+import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
+import org.tudalgo.algoutils.tutor.general.assertions.Context;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
+import static h13.util.StudentLinks.SpriteLinks.SpriteMethodLink.DIE_METHOD;
+import static org.mockito.Mockito.*;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
+
+@TestForSubmission
+public class BattleShipTest {
+
+    @SuppressWarnings("unused")
+    public final static Map<String, Function<JsonNode, ?>> customConverters = new HashMap<>() {
+        {
+            put("ship1", JsonConverter::toSprite);
+            put("ship2", JsonConverter::toSprite);
+        }
+    };
+
+    @BeforeEach
+    public void initTests() {
+        ApplicationSettings.loadTexturesProperty().set(false);
+    }
+
+    @ParameterizedTest
+    @JsonParameterSetTest(value = "BattleShipTestIsFriend.json", customConverters = "customConverters")
+    public void isFriend(final JsonParameterSet params) {
+        final BattleShip ship1 = params.get("ship1");
+        final BattleShip ship2 = params.get("ship2");
+        final boolean isFriend = params.getBoolean("isFriend");
+
+        final Context context = contextBuilder()
+            .add("Battleship 1", ship1)
+            .add("Battleship 2", ship2)
+            .build();
+
+        assertEquals(isFriend, ship1.isFriend(ship2), context, r -> "Ship was not correctly identified as Friend or Foe.");
+    }
+
+    @ParameterizedTest
+    @EnumSource(Direction.class)
+    public void shoot_hasBullet(final Direction direction) {
+        final GameState state = new GameState();
+        final BattleShip ship = spy(new BattleShip(0, 0, 0, mock(Color.class), 1, state));
+
+        final Context context = contextBuilder()
+            .add("Ship has Bullet", false)
+            .add("Direction", direction)
+            .build();
+
+        ApplicationSettings.instantShooting.setValue(false);
+        final Bullet firstBullet = spy(new Bullet(0, 0, mock(GameState.class), ship, Direction.UP));
+        state.getSprites().add(firstBullet);
+        state.getToAdd().add(firstBullet);
+
+        ship.setBullet(firstBullet);
+        ship.shoot(direction);
+
+        Assertions2.call(
+            () -> verify(ship, atMostOnce()).setBullet(any()),
+            context,
+            r -> "Ship.setBullet() was called more than once"
+        );
+        ApplicationSettings.instantShooting.setValue(true);
+        ship.shoot(direction);
+
+
+        Assertions2.call(
+            () -> verify(ship, times(2)).setBullet(any()),
+            context,
+            r -> "Ship.setBullet() was not called twice"
+        );
+        assertTrue(state.getToAdd().contains(firstBullet), context, r -> "Orignal Bullet was removed but should not have been");
+        assertTrue(state.getSprites().contains(firstBullet), context, r -> "Orignal Bullet was removed but should not have been");
+        DIE_METHOD.verify(context, firstBullet, never());
+    }
+
+    @ParameterizedTest
+    @EnumSource(Direction.class)
+    public void shoot_hasNoBullet(final Direction direction) {
+        final GameState state = new GameState();
+        final BattleShip ship = spy(new BattleShip(0, 0, 0, mock(Color.class), 1, state));
+
+        final Context context = contextBuilder()
+            .add("Ship has Bullet", true)
+            .add("Direction", direction)
+            .build();
+
+        ship.shoot(direction);
+        final Bullet bullet = ship.getBullet();
+
+        assertNotNull(bullet, context, r -> "Bullet was not created or not added to Ship");
+        assertEquals(direction, bullet.getDirection(), context, r -> "Bullet Direction did not match expected");
+        assertTrue(state.getToAdd().contains(bullet), context, r -> "GameState toAdd list does not contain created Bullet");
+
+        assertEquals(ship.getBounds().getCenterX(), bullet.getBounds().getCenterX(), context, r -> "Bullet is not correctly centered on BattleShip. X coordinate is not Correct");
+        assertEquals(ship.getBounds().getCenterY(), bullet.getBounds().getCenterY(), context, r -> "Bullet is not correctly centered on BattleShip. Y coordinate is not Correct");
+    }
+}

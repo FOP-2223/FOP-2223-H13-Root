@@ -1,0 +1,72 @@
+[
+  {
+    "SHIP_SIZE": 10,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 224
+    },
+    "enemies": [
+      { "xIndex": 0, "yIndex": 0, "x": 0, "y": 0, "velocity": 0, "health": 1 },
+      { "xIndex": 1, "yIndex": 0, "x": 20, "y": 0, "velocity": 0, "health": 1 },
+      { "xIndex": 0, "yIndex": 1, "x": 0, "y": 20, "velocity": 0, "health": 1 },
+      { "xIndex": 1, "yIndex": 1, "x": 20, "y": 20, "velocity": 0, "health": 1 },
+      { "xIndex": -1, "yIndex": 0, "x": -20, "y": 10, "velocity": 0, "health": 1 },
+      { "xIndex": 0, "yIndex": 2, "x": 10, "y": 40, "velocity": 0, "health": 1 },
+      { "xIndex": 2, "yIndex": 1, "x": 40, "y": 10, "velocity": 0, "health": 1 },
+      { "xIndex": 1, "yIndex": -1, "x": 10, "y": -20, "velocity": 0, "health": 1 }
+    ],
+    "enemyBounds": { "x": -20, "y": -20, "width": 70, "height": 70 },
+    "bottomWasReached": false
+  },
+  {
+    "SHIP_SIZE": 10,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 50,
+      "height": 50
+    },
+    "enemies": [
+      { "xIndex": 0, "yIndex": 0, "x": 0, "y": 0, "velocity": 0, "health": 1 },
+      { "xIndex": 1, "yIndex": 0, "x": 20, "y": 0, "velocity": 0, "health": 1 },
+      { "xIndex": 0, "yIndex": 1, "x": 0, "y": 20, "velocity": 0, "health": 1 },
+      { "xIndex": 1, "yIndex": 1, "x": 20, "y": 20, "velocity": 0, "health": 1 },
+      { "xIndex": -1, "yIndex": 0, "x": -20, "y": 10, "velocity": 0, "health": 1 },
+      { "xIndex": 0, "yIndex": 2, "x": 10, "y": 40, "velocity": 0, "health": 1 },
+      { "xIndex": 2, "yIndex": 1, "x": 40, "y": 10, "velocity": 0, "health": 1 },
+      { "xIndex": 1, "yIndex": -1, "x": 10, "y": -20, "velocity": 0, "health": 1 }
+    ],
+    "enemyBounds": { "x": -20, "y": -20, "width": 70, "height": 70 },
+    "bottomWasReached": true
+  },
+  {
+    "SHIP_SIZE": 10,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 250,
+      "height": 250
+    },
+    "enemies": [
+      { "xIndex": 0, "yIndex": 0, "x": 512, "y": 512, "velocity": 0, "health": 1 }
+    ],
+    "enemyBounds": { "x": 512, "y": 512, "width": 10, "height": 10 },
+    "bottomWasReached": true
+  },
+  {
+    "SHIP_SIZE": 1000,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 250,
+      "height": 250
+    },
+    "enemies": [
+      { "xIndex": 0, "yIndex": 0, "x": 0, "y": 0, "velocity": 0, "health": 1 }
+    ],
+    "enemyBounds": { "x": 0, "y": 0, "width": 1000, "height": 1000 },
+    "bottomWasReached": true
+  }
+]

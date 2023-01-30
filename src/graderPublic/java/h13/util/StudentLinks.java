@@ -16,14 +16,12 @@ import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Scene;
 import h13.view.gui.GameBoard;
-import h13.view.gui.GameScene;
-import javafx.geometry.Bounds;
-import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.tudalgo.algoutils.tutor.general.assertions.Assertions3;
 import org.tudalgo.algoutils.tutor.general.reflections.BasicMethodLink;
 import org.tudalgo.algoutils.tutor.general.reflections.BasicTypeLink;
 import org.tudalgo.algoutils.tutor.general.reflections.FieldLink;
@@ -209,12 +207,20 @@ public class StudentLinks {
             SHOOT_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
                 () -> Enemy.class.getDeclaredMethod("shoot")
             ))),
-            GETX_INDEX_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
-                () -> Enemy.class.getDeclaredMethod("getxIndex")
-            ))),
-            GETY_INDEX_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
-                () -> Enemy.class.getDeclaredMethod("getyIndex")
-            ))),
+            GET_X_INDEX_METHOD(Assertions3.assertMethodExists(
+                BasicTypeLink.of(Enemy.class),
+                MatcherUtils.or(
+                    identical("getXIndex"),
+                    identical("getxIndex")
+                )
+            )),
+            GET_Y_INDEX_METHOD(Assertions3.assertMethodExists(
+                BasicTypeLink.of(Enemy.class),
+                MatcherUtils.or(
+                    identical("getYIndex"),
+                    identical("getyIndex")
+                )
+            )),
             GET_POINTS_WORTH_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
                 () -> Enemy.class.getDeclaredMethod("getPointsWorth")
             ))),
@@ -354,7 +360,11 @@ public class StudentLinks {
             INITIAL_ENEMY_MOVEMENT_DIRECTION_FIELD(BasicTypeLink.of(GameConstants.class).getField(identical("INITIAL_ENEMY_MOVEMENT_DIRECTION"))),
             INITIAL_ENEMY_MOVEMENT_VELOCITY_FIELD(BasicTypeLink.of(GameConstants.class).getField(identical("INITIAL_ENEMY_MOVEMENT_VELOCITY"))),
             ENEMY_MOVEMENT_SPEED_INCREASE_FIELD(BasicTypeLink.of(GameConstants.class).getField(identical("ENEMY_MOVEMENT_SPEED_INCREASE"))),
-            SHIP_PADING_FIELD(BasicTypeLink.of(GameConstants.class).getField(identical("SHIP_PADING"))),
+            SHIP_PADDING_FIELD(BasicTypeLink.of(GameConstants.class).getField(MatcherUtils.or(
+                identical("SHIP_PADDING"),
+                // Typo in initial student template
+                identical("SHIP_PADING")
+            ))),
             HORIZONTAL_ENEMY_MOVE_DISTANCE_FIELD(BasicTypeLink.of(GameConstants.class).getField(identical("HORIZONTAL_ENEMY_MOVE_DISTANCE"))),
             VERTICAL_ENEMY_MOVE_DISTANCE_FIELD(BasicTypeLink.of(GameConstants.class).getField(identical("VERTICAL_ENEMY_MOVE_DISTANCE"))),
             HORIZONTAL_ENEMY_MOVE_SPACE_FIELD(BasicTypeLink.of(GameConstants.class).getField(identical("HORIZONTAL_ENEMY_MOVE_SPACE"))),
@@ -697,14 +707,17 @@ public class StudentLinks {
             ON_KEY_TYPED_FIELD(BasicTypeLink.of(GameInputHandler.class).getField(identical("onKeyTyped"))),
             ;
             private final FieldLink link;
+
             GameInputHandlerFieldLink(final FieldLink link) {
                 this.link = link;
             }
+
             @Override
             public FieldLink getLink() {
                 return link;
             }
         }
+
         public enum GameInputHandlerMethodLink implements ClassMethodLink {
             HANDLE_KEYBOARD_INPUTS_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
                 () -> GameInputHandler.class.getDeclaredMethod("handleKeyboardInputs", GameScene.class)
@@ -723,9 +736,11 @@ public class StudentLinks {
             ))),
             ;
             private final MethodLink link;
+
             GameInputHandlerMethodLink(final MethodLink link) {
                 this.link = link;
             }
+
             @Override
             public MethodLink getLink() {
                 return link;
@@ -739,14 +754,17 @@ public class StudentLinks {
             BACKGROUND_IMAGE_FIELD(BasicTypeLink.of(GameBoard.class).getField(identical("backgroundImage"))),
             ;
             private final FieldLink link;
+
             GameBoardFieldLink(final FieldLink link) {
                 this.link = link;
             }
+
             @Override
             public FieldLink getLink() {
                 return link;
             }
         }
+
         public enum GameBoardMethodLink implements ClassMethodLink {
             UPDATE_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
                 () -> GameBoard.class.getDeclaredMethod("update", double.class)
@@ -771,9 +789,11 @@ public class StudentLinks {
             ))),
             ;
             private final MethodLink link;
+
             GameBoardMethodLink(final MethodLink link) {
                 this.link = link;
             }
+
             @Override
             public MethodLink getLink() {
                 return link;
@@ -788,14 +808,17 @@ public class StudentLinks {
             ENEMY_MOVEMENT_FIELD(BasicTypeLink.of(GameState.class).getField(identical("enemyMovement"))),
             ;
             private final FieldLink link;
+
             GameStateFieldLink(final FieldLink link) {
                 this.link = link;
             }
+
             @Override
             public FieldLink getLink() {
                 return link;
             }
         }
+
         public enum GameStateMethodLink implements ClassMethodLink {
             GET_SPRITES_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
                 () -> GameState.class.getDeclaredMethod("getSprites")
@@ -814,9 +837,11 @@ public class StudentLinks {
             ))),
             ;
             private final MethodLink link;
+
             GameStateMethodLink(final MethodLink link) {
                 this.link = link;
             }
+
             @Override
             public MethodLink getLink() {
                 return link;

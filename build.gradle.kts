@@ -1,3 +1,6 @@
+import org.sourcegrade.jagr.launcher.env.Config
+import org.sourcegrade.jagr.launcher.env.Executor
+
 @Suppress("DSL_SCOPE_VIOLATION") // https://youtrack.jetbrains.com/issue/KTIJ-19369
 plugins {
     java
@@ -27,17 +30,22 @@ jagr {
         val graderPublic by creating {
             graderName.set("FOP-2223-H13-Public")
             rubricProviderName.set("h13.H13_RubricProvider")
+            config.set(Config(
+                executor = Executor(jvmArgs = listOf("-Dprism.order=sw")),
+                transformers = org.sourcegrade.jagr.launcher.env.Transformers(
+                    timeout = org.sourcegrade.jagr.launcher.env.Transformers.TimeoutTransformer(enabled = false)
+                )
+            ))
             configureDependencies {
                 implementation(libs.algoutils.tutor)
-                implementation("org.mockito:mockito-inline:5.0.0")
-                implementation("org.testfx:testfx-core:4.0.16-alpha")
-                implementation("org.testfx:testfx-junit5:4.0.16-alpha")
-                implementation("org.mockito:mockito-junit-jupiter:4.9.0")
-                implementation("org.junit-pioneer:junit-pioneer:1.7.1")
-                implementation("com.fasterxml.jackson.core:jackson-databind:2.13.3")
-                compileOnly("org.testfx:openjfx-monocle:jdk-12.0.1+2")
+                implementation(libs.mockito.inline)
+                implementation(libs.testfx.core)
+                implementation(libs.testfx.junit5)
+                implementation(libs.mockito.junit.jupiter)
+                implementation(libs.junit.pioneer)
+                implementation(libs.jackson.databind)
+                compileOnly(libs.openjfx.monocle)
             }
-            disableTimeouts()
         }
         val graderPrivate by creating {
             parent(graderPublic)

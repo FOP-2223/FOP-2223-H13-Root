@@ -70,4 +70,32 @@ public class RubricUtils {
     public static Grader manualGrader(final int points) {
         return (testCycle, criterion) -> GradeResult.of(Math.min(points, 0), Math.max(points, 0), "This criterion will be graded manually.");
     }
+
+    /**
+     * Creates a {@link Grader} for manual tutor grading with a maximum of 1 point.
+     *
+     * @return The newly created grader.
+     */
+    public static Grader manualGrader() {
+        return manualGrader(1);
+    }
+
+    /**
+     * Creates a {@link Grader} for manual tutor grading.
+     *
+     * @param points The maximum points to be awarded.
+     * @return The newly created grader.
+     */
+    public static Grader graderPrivateOnly(final int points) {
+        return (testCycle, criterion) -> GradeResult.of(Math.min(points, 0), Math.max(points, 0), "This criterion is not graded by the public Tests.");
+    }
+
+    /**
+     * Creates a {@link Grader} for manual tutor grading with a maximum of 1 point.
+     *
+     * @return The newly created grader.
+     */
+    public static Grader graderPrivateOnly() {
+        return graderPrivateOnly(1);
+    }
 }
