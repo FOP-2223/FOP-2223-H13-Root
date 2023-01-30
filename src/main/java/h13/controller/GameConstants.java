@@ -52,7 +52,7 @@ public final class GameConstants {
     /**
      * The relative Amount of padding between the enemies.
      */
-    public static double SHIP_PADING = 0.01;
+    public static double SHIP_PADDING = 0.01;
 
     /**
      * The relative horizontal movement distance.
@@ -77,7 +77,7 @@ public final class GameConstants {
     /**
      * The relative ship width.
      */
-    public static double RELATIVE_SHIP_SIZE = (1d - HORIZONTAL_ENEMY_MOVE_DISTANCE) / ENEMY_COLS - 2 * SHIP_PADING;
+    public static double RELATIVE_SHIP_SIZE = (1d - HORIZONTAL_ENEMY_MOVE_DISTANCE) / ENEMY_COLS - 2 * SHIP_PADDING;
 
     /**
      * The ship width.
