@@ -15,5 +15,5 @@ jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", ver
 openjfx-monocle = { module = "org.testfx:openjfx-monocle", version = "jdk-12.0.1+2" }
 [plugins]
 style = { id = "org.sourcegrade.style", version = "2.1.0" }
-jagr-gradle = { id = "org.sourcegrade.jagr-gradle", version = "0.7.1-SNAPSHOT" }
+jagr-gradle = { id = "org.sourcegrade.jagr-gradle", version = "0.8.0" }
 javafxplugin = { id = "org.openjfx.javafxplugin", version = "0.0.13" }
