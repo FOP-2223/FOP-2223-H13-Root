@@ -30,12 +30,22 @@ jagr {
         val graderPublic by creating {
             graderName.set("FOP-2223-H13-Public")
             rubricProviderName.set("h13.H13_RubricProvider")
-            config.set(Config(
-                executor = Executor(jvmArgs = listOf("-Dprism.order=sw")),
-                transformers = org.sourcegrade.jagr.launcher.env.Transformers(
-                    timeout = org.sourcegrade.jagr.launcher.env.Transformers.TimeoutTransformer(enabled = false)
+            config.set(
+                org.sourcegrade.jagr.launcher.env.Config(
+                    executor = org.sourcegrade.jagr.launcher.env.Executor(
+                        jvmArgs = listOf(
+                            "-Djava.awt.headless=true",
+                            "-Dtestfx.robot=glass",
+                            "-Dtestfx.headless=true",
+                            "-Dprism.order=sw",
+                            "-Djdk.attach.allowAttachSelf=true"
+                        )
+                    ),
+                    transformers = org.sourcegrade.jagr.launcher.env.Transformers(
+                        timeout = org.sourcegrade.jagr.launcher.env.Transformers.TimeoutTransformer(enabled = false)
+                    )
                 )
-            ))
+            )
             configureDependencies {
                 implementation(libs.algoutils.tutor)
                 implementation(libs.mockito.inline)

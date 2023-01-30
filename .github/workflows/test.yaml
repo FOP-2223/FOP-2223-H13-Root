@@ -11,7 +11,7 @@ on:
 jobs:
     test:
         runs-on: ubuntu-latest
-        timeout-minutes: 5
+        timeout-minutes: 8
         steps:
             - uses: actions/checkout@v3
             - name: Set up JDK 17
@@ -23,8 +23,5 @@ jobs:
               uses: gradle/wrapper-validation-action@v1
             - name: Build with Gradle
               uses: gradle/gradle-build-action@v2
-              env:
-                  GRADLE_OPTS: -Dorg.gradle.daemon=false
-                  _JAVA_OPTIONS: "-Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Djdk.attach.allowAttachSelf=true"
               with:
                   arguments: graderPrivateRun
