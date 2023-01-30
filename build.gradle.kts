@@ -19,9 +19,6 @@ javafx {
 
 jagr {
     assignmentId.set("h13")
-    download {
-        jagrVersion.set("0.8.0")
-    }
     submissions {
         val main by creating {
             studentId.set("ab12cdef")
