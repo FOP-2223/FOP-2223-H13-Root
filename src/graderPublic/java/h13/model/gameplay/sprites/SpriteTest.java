@@ -15,6 +15,7 @@ import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 
 import static h13.util.StudentLinks.GameConstantsLinks.GameConstantsFieldLink.ORIGINAL_GAME_BOUNDS_FIELD;
+import static h13.util.StudentLinks.SpriteLinks.SpriteMethodLink.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.*;
@@ -24,7 +25,7 @@ import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
 public class SpriteTest {
 
     @Nested
-    public class IsDead{
+    public class IsDead {
 
         @ParameterizedTest
         @ValueSource(ints = {1, 2, 3, 763, Integer.MAX_VALUE})
@@ -34,7 +35,7 @@ public class SpriteTest {
                 .add("Sprite Health", health)
                 .build();
 
-            assertTrue(s.isAlive(), context, r -> String.format("Sprite is wrongly marked as dead with %d health", health));
+            assertTrue(IS_ALIVE_METHOD.invoke(context, s), context, r -> String.format("Sprite is wrongly marked as dead with %d health", health));
         }
 
         @ParameterizedTest
@@ -45,7 +46,7 @@ public class SpriteTest {
                 .add("Sprite Health", health)
                 .build();
 
-            assertTrue(s.isDead(), context, r -> String.format("Sprite is wrongly marked as not dead with %d health", health));
+            assertTrue(IS_DEAD_METHOD.invoke(context, s), context, r -> String.format("Sprite is wrongly marked as not dead with %d health", health));
         }
     }
 
@@ -58,7 +59,7 @@ public class SpriteTest {
             .add("Applied Damage", health)
             .build();
 
-        s.damage(damage);
+        DAMAGE_METHOD_WITH_AMOUNT.invoke(context, s, damage);
 
         final int expected = health - damage;
         final int actual = s.getHealth();
@@ -73,7 +74,7 @@ public class SpriteTest {
             .add("Sprite Health", health)
             .build();
 
-        s.die();
+        DIE_METHOD.invoke(context, s);
 
         assertEquals(0, s.getHealth(), context, r -> String.format("The Sprite should have had 0 health but actually had %d health", health));
     }
@@ -88,7 +89,7 @@ public class SpriteTest {
             .add("Next Position", destination)
             .build();
 
-        try (final var utilsMock = mockStatic(Utils.class)){
+        try (final var utilsMock = mockStatic(Utils.class)) {
             utilsMock.when(() -> Utils.getNextPosition(
                     any(Bounds.class),
                     anyDouble(),
@@ -102,7 +103,7 @@ public class SpriteTest {
                 .thenReturn(destination);
 
             final Sprite sprite = createSprite(1);
-            sprite.update(0);
+            UPDATE_METHOD.invoke(context, sprite, 0);
 
             utilsMock.verify(() -> Utils.getNextPosition(
                 any(Bounds.class),
@@ -120,8 +121,8 @@ public class SpriteTest {
             assertTrue(argumentSetX.getAllValues().stream().noneMatch(d -> isOutOfBounds(sprite, d, true)), context, r -> String.format("SetX was called with out of bounds coordinates. Called Values: %s", argumentSetX.getAllValues()));
             assertTrue(argumentSetY.getAllValues().stream().noneMatch(d -> isOutOfBounds(sprite, d, false)), context, r -> String.format("SetY was called with out of bounds coordinates. Called Values: %s", argumentSetY.getAllValues()));
 
-            assertEquals(destination.getMinX(), sprite.getX(), context, r-> "Sprite was not clamped to the correct X-Coordinate");
-            assertEquals(destination.getMinY(), sprite.getY(), context, r-> "Sprite was not clamped to the correct Y-Coordinate");
+            assertEquals(destination.getMinX(), sprite.getX(), context, r -> "Sprite was not clamped to the correct X-Coordinate");
+            assertEquals(destination.getMinY(), sprite.getY(), context, r -> "Sprite was not clamped to the correct Y-Coordinate");
         }
     }
 
@@ -136,7 +137,7 @@ public class SpriteTest {
             .add("Next Position", destination)
             .build();
 
-        try (final var utilsMock = mockStatic(Utils.class)){
+        try (final var utilsMock = mockStatic(Utils.class)) {
             utilsMock.when(() -> Utils.getNextPosition(
                     any(Bounds.class),
                     anyDouble(),
@@ -151,8 +152,8 @@ public class SpriteTest {
                 .thenReturn(new BoundingBox(50, 50, 1, 1));
 
             final Sprite sprite = createSprite(1);
-            sprite.update(0);
-
+            UPDATE_METHOD.invoke(context, sprite, 0);
+            
             utilsMock.verify(() -> Utils.getNextPosition(
                 any(Bounds.class),
                 anyDouble(),
@@ -173,23 +174,24 @@ public class SpriteTest {
             assertTrue(argumentSetX.getAllValues().stream().noneMatch(d -> isOutOfBounds(sprite, d, true)), context, r -> String.format("SetX was called with out of bounds coordinates. Called Values: %s", argumentSetX.getAllValues()));
             assertTrue(argumentSetY.getAllValues().stream().noneMatch(d -> isOutOfBounds(sprite, d, false)), context, r -> String.format("SetY was called with out of bounds coordinates. Called Values: %s", argumentSetY.getAllValues()));
 
-            assertEquals(clampedDestination.getMinX(), sprite.getX(), context, r-> "Sprite was not clamped to the correct X-Coordinate");
-            assertEquals(clampedDestination.getMinY(), sprite.getY(), context, r-> "Sprite was not clamped to the correct Y-Coordinate");
+            assertEquals(clampedDestination.getMinX(), sprite.getX(), context, r -> "Sprite was not clamped to the correct X-Coordinate");
+            assertEquals(clampedDestination.getMinY(), sprite.getY(), context, r -> "Sprite was not clamped to the correct Y-Coordinate");
         }
     }
 
     /**
      * Checks whether a coordinate is out of bounds or not
-     * @param sprite the sprite to check the coordinate for
+     *
+     * @param sprite     the sprite to check the coordinate for
      * @param coordinate the coordinate the sprite is placed at
-     * @param isX if the coordinate is the x coordinate of the sprite. false otherwise
+     * @param isX        if the coordinate is the x coordinate of the sprite. false otherwise
      * @return true if the sprite is out of bounds
      */
-    private static boolean isOutOfBounds(final Sprite sprite, final double coordinate, final boolean isX){
-        if (coordinate < 0){
+    private static boolean isOutOfBounds(final Sprite sprite, final double coordinate, final boolean isX) {
+        if (coordinate < 0) {
             return true;
         }
-        if (isX){
+        if (isX) {
             return coordinate > GameConstants.ORIGINAL_GAME_BOUNDS.getWidth() - sprite.getWidth();
         } else {
             return coordinate > GameConstants.ORIGINAL_GAME_BOUNDS.getHeight() - sprite.getHeight();
@@ -198,10 +200,11 @@ public class SpriteTest {
 
     /**
      * Creates a Sprite with the given heath
+     *
      * @param health the health the Sprite should have after creation
      * @return the newly created sprite
      */
-    public static Sprite createSprite(final int health){
+    public static Sprite createSprite(final int health) {
         final Sprite s = mock(Sprite.class, Mockito.CALLS_REAL_METHODS);
         s.setHealth(health);
         return s;

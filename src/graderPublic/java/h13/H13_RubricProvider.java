@@ -87,7 +87,10 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Methode shoot() erzeugt korrekt eine neue Kugel.",
-                                JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("shoot_hasNoBullet", Direction.class))
+                                JUnitTestRef.and(
+                                    JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("shoot_hasNoBullet", Direction.class)),
+                                    JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("shoot_hasBullet", Direction.class))
+                                )
                             ),
                             Criterion.builder()
                                 .shortDescription("Die Methode shoot() ist vollständig korrekt.")
@@ -97,7 +100,10 @@ public class H13_RubricProvider implements RubricProvider {
                                 .build(),
                             criterion(
                                 "Die Methode isFriend() ist vollständig korrekt. [public]",
-                                JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("isFriend", JsonParameterSet.class))
+                                JUnitTestRef.and(
+                                    JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("isFriend", JsonParameterSet.class)),
+                                    JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("isFriend", BattleShip.class, BattleShip.class))
+                                )
                             )
                         )
                         .build(),

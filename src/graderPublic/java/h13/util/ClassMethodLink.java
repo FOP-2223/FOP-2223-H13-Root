@@ -7,6 +7,7 @@ import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
 import org.tudalgo.algoutils.tutor.general.reflections.MethodLink;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.stream.IntStream;
 
@@ -40,6 +41,26 @@ public interface ClassMethodLink extends LinkHolder {
             context,
             result -> "The method " + getLink().name() + " should not throw any exceptions"
         );
+    }
+
+    /**
+     * Invokes the method represented by this {@link MethodLink} on the specified instance with the specified arguments.
+     * Instead of catching any exceptions thrown by the method, this method will forward them as a {@link RuntimeException}.
+     * @param context The {@link Context} to use for the assertion.
+     * @param instance The instance on which to invoke the method.
+     * @param args The arguments to pass to the method.
+     * @return The result of the method invocation.
+     * @param <T> The type of the result of the method invocation.
+     */
+    @SuppressWarnings("unchecked")
+    default <T> T invokeWithoutCatching(final @NotNull Context context, final Object instance, final Object... args) {
+        try {
+            return (T) getLink().reflection().invoke(instance, args);
+        }catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e.getCause());
+        }
     }
 
     default Method getReflection() {
@@ -83,7 +104,7 @@ public interface ClassMethodLink extends LinkHolder {
         final Object... args
     ) {
         assertIsSpy(context, instance);
-        invoke(
+        invokeWithoutCatching(
             context,
             Mockito.verify(
                 instance,

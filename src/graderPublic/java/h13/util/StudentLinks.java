@@ -331,9 +331,6 @@ public class StudentLinks {
             GET_HITS_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
                 () -> Bullet.class.getDeclaredMethod("getHits")
             ))),
-            ON_OUT_OF_BOUNDS_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
-                () -> Bullet.class.getDeclaredMethod("onOutOfBounds", Bounds.class)
-            ))),
             CAN_HIT_METHOD(BasicMethodLink.of(Assertions.assertDoesNotThrow(
                 () -> Bullet.class.getDeclaredMethod("canHit", BattleShip.class)
             ))),
