@@ -7,6 +7,7 @@ import h13.json.JsonParameterSet;
 import h13.json.JsonParameterSetTest;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
+import h13.util.PrettyPrinter;
 import javafx.scene.paint.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -119,19 +120,26 @@ public class BattleShipTest {
         final BattleShip ship = spy(new BattleShip(0, 0, 0, mock(Color.class), 1, state));
 
         final Context context = contextBuilder()
+            .add("Ship bounds", PrettyPrinter.prettyPrint(ship.getBounds()))
             .add("Ship has Bullet", true)
             .add("Direction", direction)
             .build();
 
         SHOOT_METHOD.invoke(context, ship, direction);
         final Bullet bullet = ship.getBullet();
-
         assertNotNull(bullet, context, r -> "Bullet was not created or not added to Ship");
-        assertEquals(direction, Objects.requireNonNull(bullet).getDirection(), context, r -> "Bullet Direction did not match expected");
-        assertTrue(state.getToAdd().contains(bullet), context, r -> "GameState toAdd list does not contain created Bullet");
 
-        assertEquals(ship.getBounds().getCenterX(), bullet.getBounds().getCenterX(), context, r -> "Bullet is not correctly centered on BattleShip. X coordinate is not Correct");
-        assertEquals(ship.getBounds().getCenterY(), bullet.getBounds().getCenterY(), context, r -> "Bullet is not correctly centered on BattleShip. Y coordinate is not Correct");
+        final Context context2 = contextBuilder()
+            .add(context)
+            .add("Bullet bounds", PrettyPrinter.prettyPrint(Objects.requireNonNull(bullet).getBounds()))
+            .build();
+
+
+        assertEquals(direction, Objects.requireNonNull(bullet).getDirection(), context2, r -> "Bullet Direction did not match expected");
+        assertTrue(state.getToAdd().contains(bullet), context2, r -> "GameState toAdd list does not contain created Bullet");
+
+        assertEquals(ship.getBounds().getCenterX(), bullet.getBounds().getCenterX(), context2, r -> "Bullet is not correctly centered on BattleShip. X coordinate is not Correct");
+        assertEquals(ship.getBounds().getCenterY(), bullet.getBounds().getCenterY(), context2, r -> "Bullet is not correctly centered on BattleShip. Y coordinate is not Correct");
     }
 
     /**

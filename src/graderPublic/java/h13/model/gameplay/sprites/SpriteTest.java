@@ -56,7 +56,7 @@ public class SpriteTest {
         final Sprite s = createSprite(health);
         final Context context = contextBuilder()
             .add("Sprite Health", health)
-            .add("Applied Damage", health)
+            .add("Applied Damage", damage)
             .build();
 
         DAMAGE_METHOD_WITH_AMOUNT.invoke(context, s, damage);
@@ -116,7 +116,7 @@ public class SpriteTest {
             verify(sprite).setX(argumentSetX.capture());
 
             final ArgumentCaptor<Double> argumentSetY = ArgumentCaptor.forClass(Double.class);
-            verify(sprite).setX(argumentSetY.capture());
+            verify(sprite).setY(argumentSetY.capture());
 
             assertTrue(argumentSetX.getAllValues().stream().noneMatch(d -> isOutOfBounds(sprite, d, true)), context, r -> String.format("SetX was called with out of bounds coordinates. Called Values: %s", argumentSetX.getAllValues()));
             assertTrue(argumentSetY.getAllValues().stream().noneMatch(d -> isOutOfBounds(sprite, d, false)), context, r -> String.format("SetY was called with out of bounds coordinates. Called Values: %s", argumentSetY.getAllValues()));
@@ -153,7 +153,7 @@ public class SpriteTest {
 
             final Sprite sprite = createSprite(1);
             UPDATE_METHOD.invoke(context, sprite, 0);
-            
+
             utilsMock.verify(() -> Utils.getNextPosition(
                 any(Bounds.class),
                 anyDouble(),

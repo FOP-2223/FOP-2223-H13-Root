@@ -10,6 +10,7 @@ import javafx.geometry.Bounds;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static h13.controller.GameConstants.ORIGINAL_GAME_BOUNDS;
 
@@ -63,7 +64,7 @@ public abstract class Sprite implements Updatable {
     /**
      * The texture of the sprite.
      */
-    private Image texture;
+    private @Nullable Image texture;
 
     /**
      * The {@link GameState} that stores all models.
@@ -242,7 +243,7 @@ public abstract class Sprite implements Updatable {
      * @return the value of the {@link #texture} field.
      * @see #texture
      */
-    public Image getTexture() {
+    public @Nullable Image getTexture() {
         return texture;
     }
 
@@ -252,7 +253,7 @@ public abstract class Sprite implements Updatable {
      * @param texture the new value of the {@link #texture} field.
      * @see #texture
      */
-    public void setTexture(final Image texture) {
+    public void setTexture(final @Nullable Image texture) {
         this.texture = texture;
     }
 

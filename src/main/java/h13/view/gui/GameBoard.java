@@ -11,6 +11,7 @@ import h13.model.gameplay.sprites.Sprite;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Scale;
@@ -97,7 +98,7 @@ public class GameBoard extends Canvas implements Updatable {
         drawSprites(gc);
 
         // Draw hitboxes
-//        var eb = getGameController().getEnemyController().getEnemyMovement().getEnemyBounds();
+//        final var eb = getGameController().getGameState().getEnemyMovement().getEnemyBounds();
 //        gc.setStroke(Color.RED);
 //        gc.strokeRect(eb.getMinX(), eb.getMinY(), eb.getWidth(), eb.getHeight());
 
