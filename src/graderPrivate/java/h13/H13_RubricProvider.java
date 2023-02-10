@@ -298,7 +298,7 @@ public class H13_RubricProvider implements RubricProvider {
                         )
                         .build(),
                     Criterion.builder()
-                        .shortDescription("H3.2 | Klasse EnemyController")
+                        .shortDescription("H3.3 | Klasse EnemyController")
                         .addChildCriteria(
                             criterion(
                                 "Die Methode isDefeated() ist vollständig korrekt.",

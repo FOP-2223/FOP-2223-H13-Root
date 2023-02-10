@@ -1,6 +1,5 @@
 package h13;
 
-import h13.controller.gamelogic.EnemyControllerTest;
 import h13.controller.gamelogic.PlayerControllerTest;
 import h13.controller.scene.game.GameControllerTest;
 import h13.json.JsonParameterSet;
@@ -11,7 +10,6 @@ import h13.shared.UtilsTest;
 import h13.view.gui.GameBoardTest;
 import h13.view.gui.GameSceneTest;
 import h13.view.gui.SpriteRendererTest;
-import javafx.geometry.Bounds;
 import org.sourcegrade.jagr.api.rubric.Criterion;
 import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
 import org.sourcegrade.jagr.api.rubric.Rubric;
@@ -193,7 +191,7 @@ public class H13_RubricProvider implements RubricProvider {
                                 JUnitTestRef.ofMethod(() -> GameSceneTest.class.getDeclaredMethod("testCentering", JsonParameterSet.class))
                             ),
                             Criterion.builder()
-                                .shortDescription("Die Methode initGameboard() ist vollständig korrekt.")
+                                .shortDescription("Die Methode initGameBoard() ist vollständig korrekt.")
                                 .grader(graderPrivateOnly())
                                 .minPoints(0)
                                 .maxPoints(1)
@@ -227,10 +225,17 @@ public class H13_RubricProvider implements RubricProvider {
                                 "Die Methode drawSprites() ist vollständig korrekt.",
                                 JUnitTestRef.ofMethod(() -> GameBoardTest.class.getDeclaredMethod("testDrawSprites", JsonParameterSet.class))
                             ),
-                            criterion(
-                                "Die Methode drawHUD() ist vollständig korrekt.",
-                                JUnitTestRef.ofMethod(() -> GameBoardTest.class.getDeclaredMethod("testDrawHUD", int.class, int.class))
-                            ),
+                            // This test is Platform-Dependant. If it works, you can be sure that it will work for the Private tests as well
+//                            criterion(
+//                                "Die Methode drawHUD() ist vollständig korrekt.",
+//                                JUnitTestRef.ofMethod(() -> GameBoardTest.class.getDeclaredMethod("testDrawHUD", int.class, int.class))
+//                            ),
+                            Criterion.builder()
+                                .shortDescription("Die Methode drawHUD() ist vollständig korrekt.")
+                                .grader(graderPrivateOnly())
+                                .minPoints(0)
+                                .maxPoints(1)
+                                .build(),
                             criterion(
                                 "Die Methode drawBorder() ist vollständig korrekt.",
                                 JUnitTestRef.ofMethod(() -> GameBoardTest.class.getDeclaredMethod("testDrawBorder", String.class, int.class))
@@ -295,7 +300,7 @@ public class H13_RubricProvider implements RubricProvider {
                         )
                         .build(),
                     Criterion.builder()
-                        .shortDescription("H3.2 | Klasse EnemyController")
+                        .shortDescription("H3.3 | Klasse EnemyController")
                         .addChildCriteria(
                             Criterion.builder()
                                 .shortDescription("Die Methode isDefeated() ist vollständig korrekt.")

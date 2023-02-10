@@ -16,6 +16,7 @@ import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.text.FontSmoothingType;
 import org.junit.jupiter.api.BeforeEach;
 
 import static org.mockito.Mockito.mock;
@@ -69,25 +70,27 @@ public class SpriteRendererTest extends FxTest {
     }
 
     private void runTest(final JsonParameterSet params){
-            final String fileName = params.getString("image");
-            final Bounds bounds = params.get("GAME_BOUNDS");
-            final List<Sprite> sprites = params.get("sprites");
+        final String fileName = params.getString("image");
+        final Bounds bounds = params.get("GAME_BOUNDS");
+        final List<Sprite> sprites = params.get("sprites");
 
-            final BufferedImage generatedImage = SwingFXUtils.fromFXImage(generateImage(bounds, sprites), null);
-            final BufferedImage expectedImage = FxTest.loadImage(fileName);
+        final BufferedImage generatedImage = SwingFXUtils.fromFXImage(generateImage(bounds, sprites), null);
+        final BufferedImage expectedImage = FxTest.loadImage(fileName);
 
-            final Context context = contextBuilder()
-                .add("Loaded Image", fileName)
-                .add("Sprites", PrettyPrinter.prettyPrint(sprites))
-                .add("bounds", bounds)
-                .build();
+        final Context context = contextBuilder()
+            .add("Loaded Image", fileName)
+            .add("Sprites", PrettyPrinter.prettyPrint(sprites))
+            .add("bounds", bounds)
+            .build();
 
-            assertEqualsImage(expectedImage, generatedImage, context);
+        assertEqualsImage(expectedImage, generatedImage, context);
     }
 
     private static Image generateImage(final Bounds bounds, final List<Sprite> spritesToRender){
         final Canvas canvas = new Canvas(bounds.getWidth(), bounds.getHeight());
         final var gc = canvas.getGraphicsContext2D();
+        gc.setImageSmoothing(true);
+        gc.setFontSmoothingType(FontSmoothingType.GRAY);
 
         gc.setFill(Color.BLACK);
         gc.fillRect(0,0, bounds.getWidth(), bounds.getHeight());
