@@ -19,11 +19,7 @@ jobs:
               with:
                   java-version: "17"
                   distribution: "temurin"
-            - name: Validate Gradle wrapper
-              uses: gradle/wrapper-validation-action@v1
-            - name: Build with Gradle
-              uses: gradle/gradle-build-action@v2
+            - name : Run Grader Tests
+              run: ./gradlew graderPrivateRun
               env:
                 _JAVA_OPTIONS: -Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.lcdtext=false -Dprism.subpixeltext=false -Dglass.win.uiScale=100% -Dprism.text=t2k
-              with:
-                  arguments: graderPrivateRun
