@@ -12,7 +12,6 @@ import h13.model.gameplay.sprites.*;
 import h13.util.StudentLinks;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.mockito.Answers;
 import org.mockito.Mockito;
@@ -170,9 +169,7 @@ public class GameControllerTest {
         });
 
         // verify no other calls to hit
-        bullets.forEach(b -> {
-            Mockito.verify(b, Mockito.atMost(hits.containsKey(b) ? 1 : 0)).hit(Mockito.any());
-        });
+        bullets.forEach(b -> Mockito.verify(b, Mockito.atMost(hits.containsKey(b) ? 1 : 0).description(context.toString())).hit(Mockito.any()));
     }
 
     @ParameterizedTest
@@ -187,21 +184,19 @@ public class GameControllerTest {
             .entrySet()
             .stream()
             .map(d -> Map.entry(
-                     gameState.getSprites()
-                         .stream()
-                         .filter(s -> s instanceof WithID sid && sid.getId() == d.getKey())
-                         .findFirst()
-                         .orElseThrow(() -> new RuntimeException("Invalid Test: Bullet not found")),
-                     d.getValue()
-                 )
+                    gameState.getSprites()
+                        .stream()
+                        .filter(s -> s instanceof WithID sid && sid.getId() == d.getKey())
+                        .findFirst()
+                        .orElseThrow(() -> new RuntimeException("Invalid Test: Bullet not found")),
+                    d.getValue()
+                )
             )
             .collect(Collectors.toMap(
                 Map.Entry::getKey,
                 Map.Entry::getValue
             ));
-        damaged.forEach((sprite, isDead) -> {
-            IS_DEAD_METHOD.doReturnAlways(context, sprite, isDead);
-        });
+        damaged.forEach((sprite, isDead) -> IS_DEAD_METHOD.doReturnAlways(context, sprite, isDead));
 
         // test
         UPDATE_POINTS_METHOD.invoke(context, gameController, damaged.keySet().stream().toList());
