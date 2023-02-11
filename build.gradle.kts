@@ -57,7 +57,7 @@ jagr {
                 implementation(libs.mockito.junit.jupiter)
                 implementation(libs.junit.pioneer)
                 implementation(libs.jackson.databind)
-                compileOnly(libs.openjfx.monocle)
+                implementation(libs.openjfx.monocle)
             }
         }
         val graderPrivate by creating {
