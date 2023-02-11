@@ -79,7 +79,7 @@ public class BattleShipTest {
             .add("Direction", direction)
             .build();
 
-        ApplicationSettings.instantShooting.setValue(false);
+        ApplicationSettings.instantShootingProperty().setValue(false);
         final Bullet firstBullet = spy(new Bullet(0, 0, mock(GameState.class), ship, Direction.UP));
         state.getSprites().add(firstBullet);
         state.getToAdd().add(firstBullet);
@@ -92,7 +92,7 @@ public class BattleShipTest {
             context,
             r -> "Ship.setBullet() was called more than once"
         );
-        ApplicationSettings.instantShooting.setValue(true);
+        ApplicationSettings.instantShootingProperty().setValue(true);
         ship.shoot(direction);
 
 
