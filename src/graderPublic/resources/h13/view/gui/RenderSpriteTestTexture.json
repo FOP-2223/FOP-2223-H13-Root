@@ -4,7 +4,7 @@
       {
         "x": "0",
         "y": "0",
-        "texture": "null",
+        "texture": "/h13/images/sprites/enemy2.png",
         "type": "enemy"
       }
   
@@ -12,17 +12,17 @@
     "GAME_BOUNDS": {
       "x": "0",
       "y": "0",
-      "width": "328",
-      "height": "391"
+      "width": "449",
+      "height": "417"
     },
     "image": "/h13/view/gui/image/TextureDrawSingle0.png"
   },
   {
     "sprites": [
       {
-        "x": "0",
-        "y": "0",
-        "texture": "null",
+        "x": "103",
+        "y": "100",
+        "texture": "/h13/images/sprites/enemy2.png",
         "type": "enemy"
       }
   
@@ -30,35 +30,17 @@
     "GAME_BOUNDS": {
       "x": "0",
       "y": "0",
-      "width": "450",
-      "height": "402"
+      "width": "451",
+      "height": "423"
     },
     "image": "/h13/view/gui/image/TextureDrawSingle1.png"
   },
   {
     "sprites": [
       {
-        "x": "0",
-        "y": "0",
-        "texture": "null",
-        "type": "enemy"
-      }
-  
-    ],
-    "GAME_BOUNDS": {
-      "x": "0",
-      "y": "0",
-      "width": "372",
-      "height": "346"
-    },
-    "image": "/h13/view/gui/image/TextureDrawSingle2.png"
-  },
-  {
-    "sprites": [
-      {
-        "x": "0",
-        "y": "0",
-        "texture": "null",
+        "x": "200",
+        "y": "209",
+        "texture": "/h13/images/sprites/enemy2.png",
         "type": "enemy"
       }
   
@@ -67,16 +49,16 @@
       "x": "0",
       "y": "0",
       "width": "441",
-      "height": "443"
+      "height": "468"
     },
-    "image": "/h13/view/gui/image/TextureDrawSingle3.png"
+    "image": "/h13/view/gui/image/TextureDrawSingle2.png"
   },
   {
     "sprites": [
       {
-        "x": "0",
+        "x": "205",
         "y": "0",
-        "texture": "null",
+        "texture": "/h13/images/sprites/enemy1.png",
         "type": "enemy"
       }
   
@@ -84,8 +66,26 @@
     "GAME_BOUNDS": {
       "x": "0",
       "y": "0",
-      "width": "383",
-      "height": "454"
+      "width": "482",
+      "height": "320"
+    },
+    "image": "/h13/view/gui/image/TextureDrawSingle3.png"
+  },
+  {
+    "sprites": [
+      {
+        "x": "307",
+        "y": "0",
+        "texture": "/h13/images/sprites/enemy2.png",
+        "type": "enemy"
+      }
+  
+    ],
+    "GAME_BOUNDS": {
+      "x": "0",
+      "y": "0",
+      "width": "483",
+      "height": "407"
     },
     "image": "/h13/view/gui/image/TextureDrawSingle4.png"
   },
@@ -94,7 +94,7 @@
       {
         "x": "57",
         "y": "50",
-        "texture": "null",
+        "texture": "/h13/images/sprites/player.png",
         "type": "player"
       }
   
@@ -102,8 +102,8 @@
     "GAME_BOUNDS": {
       "x": "0",
       "y": "0",
-      "width": "433",
-      "height": "499"
+      "width": "493",
+      "height": "359"
     },
     "image": "/h13/view/gui/image/TextureDrawSingle5.png"
   },
@@ -112,7 +112,7 @@
       {
         "x": "152",
         "y": "150",
-        "texture": "null",
+        "texture": "/h13/images/sprites/player.png",
         "type": "player"
       }
   
@@ -120,8 +120,8 @@
     "GAME_BOUNDS": {
       "x": "0",
       "y": "0",
-      "width": "415",
-      "height": "352"
+      "width": "496",
+      "height": "326"
     },
     "image": "/h13/view/gui/image/TextureDrawSingle6.png"
   },
@@ -130,7 +130,7 @@
       {
         "x": "250",
         "y": "259",
-        "texture": "null",
+        "texture": "/h13/images/sprites/player.png",
         "type": "player"
       }
   
@@ -138,8 +138,8 @@
     "GAME_BOUNDS": {
       "x": "0",
       "y": "0",
-      "width": "335",
-      "height": "333"
+      "width": "432",
+      "height": "434"
     },
     "image": "/h13/view/gui/image/TextureDrawSingle7.png"
   },
@@ -148,7 +148,7 @@
       {
         "x": "250",
         "y": "203",
-        "texture": "null",
+        "texture": "/h13/images/sprites/player.png",
         "type": "player"
       }
   
@@ -156,8 +156,8 @@
     "GAME_BOUNDS": {
       "x": "0",
       "y": "0",
-      "width": "333",
-      "height": "439"
+      "width": "477",
+      "height": "463"
     },
     "image": "/h13/view/gui/image/TextureDrawSingle8.png"
   },
@@ -174,8 +174,8 @@
     "GAME_BOUNDS": {
       "x": "0",
       "y": "0",
-      "width": "325",
-      "height": "459"
+      "width": "480",
+      "height": "458"
     },
     "image": "/h13/view/gui/image/TextureDrawSingle9.png"
   },
@@ -192,8 +192,8 @@
     "GAME_BOUNDS": {
       "x": "0",
       "y": "0",
-      "width": "367",
-      "height": "412"
+      "width": "467",
+      "height": "416"
     },
     "image": "/h13/view/gui/image/TextureDrawSingle10.png"
   },
@@ -210,8 +210,8 @@
     "GAME_BOUNDS": {
       "x": "0",
       "y": "0",
-      "width": "479",
-      "height": "408"
+      "width": "348",
+      "height": "463"
     },
     "image": "/h13/view/gui/image/TextureDrawSingle11.png"
   },
@@ -228,17 +228,83 @@
     "GAME_BOUNDS": {
       "x": "0",
       "y": "0",
-      "width": "461",
-      "height": "386"
+      "width": "350",
+      "height": "393"
     },
     "image": "/h13/view/gui/image/TextureDrawSingle12.png"
   },
   {
     "sprites": [
       {
+        "x": "5",
+        "y": "47",
+        "texture": "null",
+        "type": "bullet"
+      },
+      {
+        "x": "307",
+        "y": "0",
+        "texture": "/h13/images/sprites/enemy2.png",
+        "type": "enemy"
+      },
+      {
         "x": "0",
         "y": "0",
+        "texture": "/h13/images/sprites/enemy2.png",
+        "type": "enemy"
+      }
+  
+    ],
+    "GAME_BOUNDS": {
+      "x": "0",
+      "y": "0",
+      "width": "374",
+      "height": "398"
+    },
+    "image": "/h13/view/gui/image/TextureDrawMultiple0.png"
+  },
+  {
+    "sprites": [
+      {
+        "x": "250",
+        "y": "259",
+        "texture": "/h13/images/sprites/player.png",
+        "type": "player"
+      },
+      {
+        "x": "250",
+        "y": "203",
+        "texture": "/h13/images/sprites/player.png",
+        "type": "player"
+      },
+      {
+        "x": "100",
+        "y": "5",
         "texture": "null",
+        "type": "bullet"
+      }
+  
+    ],
+    "GAME_BOUNDS": {
+      "x": "0",
+      "y": "0",
+      "width": "387",
+      "height": "494"
+    },
+    "image": "/h13/view/gui/image/TextureDrawMultiple1.png"
+  },
+  {
+    "sprites": [
+      {
+        "x": "5",
+        "y": "47",
+        "texture": "null",
+        "type": "bullet"
+      },
+      {
+        "x": "200",
+        "y": "209",
+        "texture": "/h13/images/sprites/enemy2.png",
         "type": "enemy"
       },
       {
@@ -246,6 +312,90 @@
         "y": "200",
         "texture": "null",
         "type": "bullet"
+      }
+  
+    ],
+    "GAME_BOUNDS": {
+      "x": "0",
+      "y": "0",
+      "width": "355",
+      "height": "499"
+    },
+    "image": "/h13/view/gui/image/TextureDrawMultiple2.png"
+  },
+  {
+    "sprites": [
+      {
+        "x": "100",
+        "y": "5",
+        "texture": "null",
+        "type": "bullet"
+      },
+      {
+        "x": "152",
+        "y": "150",
+        "texture": "/h13/images/sprites/player.png",
+        "type": "player"
+      },
+      {
+        "x": "103",
+        "y": "100",
+        "texture": "/h13/images/sprites/enemy2.png",
+        "type": "enemy"
+      }
+  
+    ],
+    "GAME_BOUNDS": {
+      "x": "0",
+      "y": "0",
+      "width": "386",
+      "height": "360"
+    },
+    "image": "/h13/view/gui/image/TextureDrawMultiple3.png"
+  },
+  {
+    "sprites": [
+      {
+        "x": "250",
+        "y": "259",
+        "texture": "/h13/images/sprites/player.png",
+        "type": "player"
+      },
+      {
+        "x": "57",
+        "y": "50",
+        "texture": "/h13/images/sprites/player.png",
+        "type": "player"
+      },
+      {
+        "x": "152",
+        "y": "150",
+        "texture": "/h13/images/sprites/player.png",
+        "type": "player"
+      }
+  
+    ],
+    "GAME_BOUNDS": {
+      "x": "0",
+      "y": "0",
+      "width": "456",
+      "height": "455"
+    },
+    "image": "/h13/view/gui/image/TextureDrawMultiple4.png"
+  },
+  {
+    "sprites": [
+      {
+        "x": "100",
+        "y": "5",
+        "texture": "null",
+        "type": "bullet"
+      },
+      {
+        "x": "205",
+        "y": "0",
+        "texture": "/h13/images/sprites/enemy1.png",
+        "type": "enemy"
       },
       {
         "x": "5",
@@ -258,197 +408,77 @@
     "GAME_BOUNDS": {
       "x": "0",
       "y": "0",
-      "width": "401",
-      "height": "456"
-    },
-    "image": "/h13/view/gui/image/TextureDrawMultiple0.png"
-  },
-  {
-    "sprites": [
-      {
-        "x": "57",
-        "y": "50",
-        "texture": "null",
-        "type": "player"
-      },
-      {
-        "x": "250",
-        "y": "259",
-        "texture": "null",
-        "type": "player"
-      },
-      {
-        "x": "152",
-        "y": "150",
-        "texture": "null",
-        "type": "player"
-      }
-  
-    ],
-    "GAME_BOUNDS": {
-      "x": "0",
-      "y": "0",
-      "width": "321",
-      "height": "317"
-    },
-    "image": "/h13/view/gui/image/TextureDrawMultiple1.png"
-  },
-  {
-    "sprites": [
-      {
-        "x": "100",
-        "y": "200",
-        "texture": "null",
-        "type": "bullet"
-      },
-      {
-        "x": "0",
-        "y": "0",
-        "texture": "null",
-        "type": "enemy"
-      },
-      {
-        "x": "250",
-        "y": "203",
-        "texture": "null",
-        "type": "player"
-      }
-  
-    ],
-    "GAME_BOUNDS": {
-      "x": "0",
-      "y": "0",
-      "width": "459",
-      "height": "363"
-    },
-    "image": "/h13/view/gui/image/TextureDrawMultiple2.png"
-  },
-  {
-    "sprites": [
-      {
-        "x": "0",
-        "y": "0",
-        "texture": "null",
-        "type": "enemy"
-      },
-      {
-        "x": "0",
-        "y": "0",
-        "texture": "null",
-        "type": "enemy"
-      },
-      {
-        "x": "100",
-        "y": "200",
-        "texture": "null",
-        "type": "bullet"
-      }
-  
-    ],
-    "GAME_BOUNDS": {
-      "x": "0",
-      "y": "0",
-      "width": "350",
-      "height": "465"
-    },
-    "image": "/h13/view/gui/image/TextureDrawMultiple3.png"
-  },
-  {
-    "sprites": [
-      {
-        "x": "152",
-        "y": "150",
-        "texture": "null",
-        "type": "player"
-      },
-      {
-        "x": "0",
-        "y": "0",
-        "texture": "null",
-        "type": "enemy"
-      },
-      {
-        "x": "250",
-        "y": "203",
-        "texture": "null",
-        "type": "player"
-      }
-  
-    ],
-    "GAME_BOUNDS": {
-      "x": "0",
-      "y": "0",
-      "width": "403",
-      "height": "416"
-    },
-    "image": "/h13/view/gui/image/TextureDrawMultiple4.png"
-  },
-  {
-    "sprites": [
-      {
-        "x": "0",
-        "y": "0",
-        "texture": "null",
-        "type": "enemy"
-      },
-      {
-        "x": "100",
-        "y": "200",
-        "texture": "null",
-        "type": "bullet"
-      },
-      {
-        "x": "57",
-        "y": "50",
-        "texture": "null",
-        "type": "player"
-      }
-  
-    ],
-    "GAME_BOUNDS": {
-      "x": "0",
-      "y": "0",
-      "width": "485",
-      "height": "317"
+      "width": "400",
+      "height": "464"
     },
     "image": "/h13/view/gui/image/TextureDrawMultiple5.png"
   },
   {
     "sprites": [
       {
-        "x": "0",
-        "y": "0",
-        "texture": "null",
-        "type": "enemy"
-      },
-      {
-        "x": "250",
-        "y": "203",
-        "texture": "null",
+        "x": "152",
+        "y": "150",
+        "texture": "/h13/images/sprites/player.png",
         "type": "player"
       },
       {
-        "x": "0",
-        "y": "0",
+        "x": "100",
+        "y": "200",
         "texture": "null",
-        "type": "enemy"
+        "type": "bullet"
+      },
+      {
+        "x": "250",
+        "y": "259",
+        "texture": "/h13/images/sprites/player.png",
+        "type": "player"
       }
   
     ],
     "GAME_BOUNDS": {
       "x": "0",
       "y": "0",
-      "width": "396",
-      "height": "488"
+      "width": "303",
+      "height": "393"
     },
     "image": "/h13/view/gui/image/TextureDrawMultiple6.png"
   },
   {
     "sprites": [
       {
-        "x": "57",
-        "y": "50",
+        "x": "5",
+        "y": "47",
         "texture": "null",
+        "type": "bullet"
+      },
+      {
+        "x": "200",
+        "y": "5",
+        "texture": "null",
+        "type": "bullet"
+      },
+      {
+        "x": "100",
+        "y": "5",
+        "texture": "null",
+        "type": "bullet"
+      }
+  
+    ],
+    "GAME_BOUNDS": {
+      "x": "0",
+      "y": "0",
+      "width": "451",
+      "height": "365"
+    },
+    "image": "/h13/view/gui/image/TextureDrawMultiple7.png"
+  },
+  {
+    "sprites": [
+      {
+        "x": "152",
+        "y": "150",
+        "texture": "/h13/images/sprites/player.png",
         "type": "player"
       },
       {
@@ -458,9 +488,9 @@
         "type": "bullet"
       },
       {
-        "x": "0",
+        "x": "205",
         "y": "0",
-        "texture": "null",
+        "texture": "/h13/images/sprites/enemy1.png",
         "type": "enemy"
       }
   
@@ -468,59 +498,29 @@
     "GAME_BOUNDS": {
       "x": "0",
       "y": "0",
-      "width": "318",
-      "height": "402"
-    },
-    "image": "/h13/view/gui/image/TextureDrawMultiple7.png"
-  },
-  {
-    "sprites": [
-      {
-        "x": "0",
-        "y": "0",
-        "texture": "null",
-        "type": "enemy"
-      },
-      {
-        "x": "0",
-        "y": "0",
-        "texture": "null",
-        "type": "enemy"
-      },
-      {
-        "x": "250",
-        "y": "259",
-        "texture": "null",
-        "type": "player"
-      }
-  
-    ],
-    "GAME_BOUNDS": {
-      "x": "0",
-      "y": "0",
-      "width": "419",
-      "height": "327"
+      "width": "498",
+      "height": "358"
     },
     "image": "/h13/view/gui/image/TextureDrawMultiple8.png"
   },
   {
     "sprites": [
       {
-        "x": "152",
-        "y": "150",
+        "x": "100",
+        "y": "200",
         "texture": "null",
-        "type": "player"
+        "type": "bullet"
       },
       {
-        "x": "250",
-        "y": "203",
-        "texture": "null",
-        "type": "player"
+        "x": "200",
+        "y": "209",
+        "texture": "/h13/images/sprites/enemy2.png",
+        "type": "enemy"
       },
       {
         "x": "57",
         "y": "50",
-        "texture": "null",
+        "texture": "/h13/images/sprites/player.png",
         "type": "player"
       }
   
@@ -528,8 +528,8 @@
     "GAME_BOUNDS": {
       "x": "0",
       "y": "0",
-      "width": "430",
-      "height": "311"
+      "width": "366",
+      "height": "360"
     },
     "image": "/h13/view/gui/image/TextureDrawMultiple9.png"
   }

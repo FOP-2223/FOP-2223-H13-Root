@@ -27,6 +27,22 @@ public interface ClassMethodLink extends LinkHolder {
     @Override
     MethodLink getLink();
 
+    default <T> T invokeStatic(final Object... args) {
+        return Assertions2.callObject(
+            () -> getLink().invoke(null, args),
+            Assertions2.emptyContext(),
+            result -> "The method " + getLink().name() + " should not throw any exceptions"
+        );
+    }
+
+    default <T> T invokeStatic(final @NotNull Context context, final Object... args) {
+        return Assertions2.callObject(
+            () -> getLink().invoke(null, args),
+            context,
+            result -> "The method " + getLink().name() + " should not throw any exceptions"
+        );
+    }
+
     default <T> T invoke(final Object instance, final Object... args) {
         return Assertions2.callObject(
             () -> getLink().invoke(instance, args),

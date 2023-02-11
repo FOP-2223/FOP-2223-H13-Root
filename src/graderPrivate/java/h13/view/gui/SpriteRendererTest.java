@@ -7,7 +7,10 @@ import h13.json.JsonParameterSet;
 import h13.json.JsonParameterSetTest;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
-import h13.model.gameplay.sprites.*;
+import h13.model.gameplay.sprites.Bullet;
+import h13.model.gameplay.sprites.EnemyC;
+import h13.model.gameplay.sprites.Player;
+import h13.model.gameplay.sprites.Sprite;
 import h13.util.PrettyPrinter;
 import h13.util.StudentLinks;
 import javafx.embed.swing.SwingFXUtils;
@@ -16,11 +19,8 @@ import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.text.FontSmoothingType;
 import org.junit.jupiter.api.BeforeEach;
-
-import static org.mockito.Mockito.mock;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Context;
@@ -28,10 +28,16 @@ import org.tudalgo.algoutils.tutor.general.assertions.Context;
 import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static org.mockito.Mockito.mock;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.contextBuilder;
 
 @TestForSubmission
 public class SpriteRendererTest extends FxTest {
@@ -69,25 +75,27 @@ public class SpriteRendererTest extends FxTest {
     }
 
     private void runTest(final JsonParameterSet params){
-            final String fileName = params.getString("image");
-            final Bounds bounds = params.get("GAME_BOUNDS");
-            final List<Sprite> sprites = params.get("sprites");
+        final String fileName = params.getString("image");
+        final Bounds bounds = params.get("GAME_BOUNDS");
+        final List<Sprite> sprites = params.get("sprites");
 
-            final BufferedImage generatedImage = SwingFXUtils.fromFXImage(generateImage(bounds, sprites), null);
-            final BufferedImage expectedImage = FxTest.loadImage(fileName);
+        final BufferedImage generatedImage = SwingFXUtils.fromFXImage(generateImage(bounds, sprites), null);
+        final BufferedImage expectedImage = FxTest.loadImage(fileName);
 
-            final Context context = contextBuilder()
-                .add("Loaded Image", fileName)
-                .add("Sprites", PrettyPrinter.prettyPrint(sprites))
-                .add("bounds", bounds)
-                .build();
+        final Context context = contextBuilder()
+            .add("Loaded Image", fileName)
+            .add("Sprites", PrettyPrinter.prettyPrint(sprites))
+            .add("bounds", bounds)
+            .build();
 
-            assertEqualsImage(expectedImage, generatedImage, context);
+        assertEqualsImage(expectedImage, generatedImage, context);
     }
 
     private static Image generateImage(final Bounds bounds, final List<Sprite> spritesToRender){
         final Canvas canvas = new Canvas(bounds.getWidth(), bounds.getHeight());
         final var gc = canvas.getGraphicsContext2D();
+        gc.setImageSmoothing(true);
+        gc.setFontSmoothingType(FontSmoothingType.GRAY);
 
         gc.setFill(Color.BLACK);
         gc.fillRect(0,0, bounds.getWidth(), bounds.getHeight());

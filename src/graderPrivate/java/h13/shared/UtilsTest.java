@@ -1,12 +1,11 @@
 package h13.shared;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import h13.controller.GameConstants;
+import h13.json.JsonConverter;
 import h13.json.JsonParameterSet;
 import h13.json.JsonParameterSetTest;
 import h13.model.gameplay.Direction;
 import h13.util.StudentLinks;
-import h13.json.JsonConverter;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -22,7 +21,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static h13.controller.GameConstants.ORIGINAL_GAME_BOUNDS;
-import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
+import static h13.util.StudentLinks.UtilsLinks.UtilsMethodLink.CLAMP_METHOD;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.assertEquals;
+import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.contextBuilder;
 
 @TestForSubmission
 public class UtilsTest {
@@ -47,13 +48,13 @@ public class UtilsTest {
         StudentLinks.GameConstantsLinks.GameConstantsFieldLink.ORIGINAL_GAME_BOUNDS_FIELD.setStatic(worldBounds);
 
         final Context context = contextBuilder()
-            .add("World Bounds", GameConstants.ORIGINAL_GAME_BOUNDS)
+            .add("World Bounds", ORIGINAL_GAME_BOUNDS)
             .add("Sprite Bounds", spriteBounds)
             .add("Expected Bounds", spriteBounds)
             .build();
 
 
-        final Bounds clampedBounds = Utils.clamp(spriteBounds);
+        final Bounds clampedBounds = CLAMP_METHOD.invokeStatic(context, null, spriteBounds);
 
         assertEquals(expectedBounds.getMinX(), clampedBounds.getMinX(), context,
             r -> String.format("Sprite wrongly clamped inside Bounding Box. Expected x: %f. But got %f", expectedBounds.getMinX(), clampedBounds.getMinX())
@@ -72,18 +73,18 @@ public class UtilsTest {
     @CartesianTest
     @CartesianTest.MethodFactory("provideClamp")
     public void clamp_generator(final Bounds world, final Bounds sprite, final Direction direction, final int distance){
-        GameConstants.ORIGINAL_GAME_BOUNDS = world;
+        ORIGINAL_GAME_BOUNDS = world;
 
         final Bounds spriteBounds = move(sprite, direction.getX() * distance, direction.getY() * distance);
 
         final Context context = contextBuilder()
-            .add("World Bounds", GameConstants.ORIGINAL_GAME_BOUNDS)
+            .add("World Bounds", ORIGINAL_GAME_BOUNDS)
             .add("Sprite Bounds", spriteBounds)
             .add("Direction", direction)
             .add("Distance", distance)
             .build();
 
-        final Bounds clampedBounds = Utils.clamp(spriteBounds);
+        final Bounds clampedBounds = CLAMP_METHOD.invokeStatic(context, null, spriteBounds);
         final Bounds expected = new BoundingBox(
             Math.max(0, Math.min(ORIGINAL_GAME_BOUNDS.getWidth() - spriteBounds.getWidth(), spriteBounds.getMinX())),
             Math.max(0, Math.min(ORIGINAL_GAME_BOUNDS.getHeight() - spriteBounds.getHeight(), spriteBounds.getMinY())),
