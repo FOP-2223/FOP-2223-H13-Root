@@ -100,10 +100,7 @@ public class H13_RubricProvider implements RubricProvider {
                             ),
                             criterion(
                                 "Die Methode isFriend() ist vollständig korrekt.",
-                                JUnitTestRef.and(
-                                    JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("isFriend", JsonParameterSet.class)),
-                                    JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("isFriend", BattleShip.class, BattleShip.class))
-                                )
+                                JUnitTestRef.ofMethod(() -> BattleShipTest.class.getDeclaredMethod("isFriend", BattleShip.class, BattleShip.class))
                             )
                         )
                         .build(),

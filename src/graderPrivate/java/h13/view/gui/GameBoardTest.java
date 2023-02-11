@@ -18,6 +18,7 @@ import javafx.geometry.BoundingBox;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.FontSmoothingType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -74,6 +75,8 @@ public class GameBoardTest extends FxTest {
         //setup graphics Context
         final Canvas canvas = new Canvas(GameConstants.ORIGINAL_GAME_BOUNDS.getWidth(), GameConstants.ORIGINAL_GAME_BOUNDS.getHeight());
         graphicsContext = canvas.getGraphicsContext2D();
+        graphicsContext.setImageSmoothing(true);
+        graphicsContext.setFontSmoothingType(FontSmoothingType.GRAY);
 
         //mock needed Objects
         player = spy(mock(Player.class, CALLS_REAL_METHODS));

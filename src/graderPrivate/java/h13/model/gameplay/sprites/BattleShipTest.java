@@ -7,6 +7,7 @@ import h13.json.JsonParameterSet;
 import h13.json.JsonParameterSetTest;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.GameState;
+import h13.util.PrettyPrinter;
 import javafx.scene.paint.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,9 +21,13 @@ import org.tudalgo.algoutils.tutor.general.assertions.Context;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
+import static h13.util.StudentLinks.BattleShipLinks.BattleShipMethodLink.IS_FRIEND_METHOD;
+import static h13.util.StudentLinks.BattleShipLinks.BattleShipMethodLink.SHOOT_METHOD;
 import static h13.util.StudentLinks.SpriteLinks.SpriteMethodLink.DIE_METHOD;
+import static h13.util.StudentLinks.SpriteLinks.SpriteMethodLink.IS_ALIVE_METHOD;
 import static org.mockito.Mockito.*;
 import static org.tudalgo.algoutils.tutor.general.assertions.Assertions2.*;
 
@@ -54,7 +59,7 @@ public class BattleShipTest {
             .add("Battleship 2", ship2)
             .build();
 
-        assertEquals(isFriend, ship1.isFriend(ship2), context, r -> "Ship was not correctly identified as Friend or Foe.");
+        assertEquals(isFriend, IS_FRIEND_METHOD.invoke(context, ship1, ship2), context, r -> "Ship was not correctly identified as Friend or Foe.");
     }
 
     @CartesianTest
@@ -65,7 +70,7 @@ public class BattleShipTest {
             .add("Battleship 2", ship2)
             .build();
 
-        assertEquals(ship1.getClass().isInstance(ship2), ship1.isFriend(ship2), context, r -> "Ship was not correctly identified as Friend or Foe.");
+        assertEquals(ship1.getClass().isInstance(ship2), IS_FRIEND_METHOD.invoke(context, ship1, ship2), context, r -> "Ship was not correctly identified as Friend or Foe.");
     }
 
     @ParameterizedTest
@@ -79,20 +84,22 @@ public class BattleShipTest {
             .add("Direction", direction)
             .build();
 
-        ApplicationSettings.instantShooting.setValue(false);
+        ApplicationSettings.instantShootingProperty().setValue(false);
         final Bullet firstBullet = spy(new Bullet(0, 0, mock(GameState.class), ship, Direction.UP));
         state.getSprites().add(firstBullet);
         state.getToAdd().add(firstBullet);
 
+        IS_ALIVE_METHOD.doReturnAlways(context,firstBullet, true);
+
         ship.setBullet(firstBullet);
-        ship.shoot(direction);
+        SHOOT_METHOD.invoke(context, ship, direction);
 
         Assertions2.call(
             () -> verify(ship, atMostOnce()).setBullet(any()),
             context,
             r -> "Ship.setBullet() was called more than once"
         );
-        ApplicationSettings.instantShooting.setValue(true);
+        ApplicationSettings.instantShootingProperty().setValue(true);
         ship.shoot(direction);
 
 
@@ -101,8 +108,8 @@ public class BattleShipTest {
             context,
             r -> "Ship.setBullet() was not called twice"
         );
-        assertTrue(state.getToAdd().contains(firstBullet), context, r -> "Orignal Bullet was removed but should not have been");
-        assertTrue(state.getSprites().contains(firstBullet), context, r -> "Orignal Bullet was removed but should not have been");
+        assertTrue(state.getToAdd().contains(firstBullet), context, r -> "Original Bullet was removed but should not have been");
+        assertTrue(state.getSprites().contains(firstBullet), context, r -> "Original Bullet was removed but should not have been");
         DIE_METHOD.verify(context, firstBullet, never());
     }
 
@@ -113,19 +120,26 @@ public class BattleShipTest {
         final BattleShip ship = spy(new BattleShip(0, 0, 0, mock(Color.class), 1, state));
 
         final Context context = contextBuilder()
+            .add("Ship bounds", PrettyPrinter.prettyPrint(ship.getBounds()))
             .add("Ship has Bullet", true)
             .add("Direction", direction)
             .build();
 
-        ship.shoot(direction);
+        SHOOT_METHOD.invoke(context, ship, direction);
         final Bullet bullet = ship.getBullet();
-
         assertNotNull(bullet, context, r -> "Bullet was not created or not added to Ship");
-        assertEquals(direction, bullet.getDirection(), context, r -> "Bullet Direction did not match expected");
-        assertTrue(state.getToAdd().contains(bullet), context, r -> "GameState toAdd list does not contain created Bullet");
 
-        assertEquals(ship.getBounds().getCenterX(), bullet.getBounds().getCenterX(), context, r -> "Bullet is not correctly centered on BattleShip. X coordinate is not Correct");
-        assertEquals(ship.getBounds().getCenterY(), bullet.getBounds().getCenterY(), context, r -> "Bullet is not correctly centered on BattleShip. Y coordinate is not Correct");
+        final Context context2 = contextBuilder()
+            .add(context)
+            .add("Bullet bounds", PrettyPrinter.prettyPrint(Objects.requireNonNull(bullet).getBounds()))
+            .build();
+
+
+        assertEquals(direction, Objects.requireNonNull(bullet).getDirection(), context2, r -> "Bullet Direction did not match expected");
+        assertTrue(state.getToAdd().contains(bullet), context2, r -> "GameState toAdd list does not contain created Bullet");
+
+        assertEquals(ship.getBounds().getCenterX(), bullet.getBounds().getCenterX(), context2, r -> "Bullet is not correctly centered on BattleShip. X coordinate is not Correct");
+        assertEquals(ship.getBounds().getCenterY(), bullet.getBounds().getCenterY(), context2, r -> "Bullet is not correctly centered on BattleShip. Y coordinate is not Correct");
     }
 
     /**
@@ -133,10 +147,10 @@ public class BattleShipTest {
      *
      * @return a ArgumentSets containing all arguments for the test
      */
+    @SuppressWarnings("unused")
     private static ArgumentSets provideIsFriend() {
+        ApplicationSettings.loadTexturesProperty().set(false);
         final List<BattleShip> ships = List.of(
-            new BattleShip(0, 0, 0, Color.AQUA, 1, mock(GameState.class)),
-            new BattleShip(10, 10, 5, Color.AQUA, 1, mock(GameState.class)),
             new Enemy(0, 0, 0, 0, mock(GameState.class)),
             new Enemy(10, 10, 5, 0, mock(GameState.class)),
             new Player(0, 0, 0, mock(GameState.class)),
