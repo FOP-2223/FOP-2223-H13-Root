@@ -54,7 +54,7 @@ public class UtilsTest {
             .build();
 
 
-        final Bounds clampedBounds = CLAMP_METHOD.invokeStatic(context, null, spriteBounds);
+        final Bounds clampedBounds = CLAMP_METHOD.invokeStatic(context, spriteBounds);
 
         assertEquals(expectedBounds.getMinX(), clampedBounds.getMinX(), context,
             r -> String.format("Sprite wrongly clamped inside Bounding Box. Expected x: %f. But got %f", expectedBounds.getMinX(), clampedBounds.getMinX())
@@ -84,7 +84,7 @@ public class UtilsTest {
             .add("Distance", distance)
             .build();
 
-        final Bounds clampedBounds = CLAMP_METHOD.invokeStatic(context, null, spriteBounds);
+        final Bounds clampedBounds = CLAMP_METHOD.invokeStatic(context, spriteBounds);
         final Bounds expected = new BoundingBox(
             Math.max(0, Math.min(ORIGINAL_GAME_BOUNDS.getWidth() - spriteBounds.getWidth(), spriteBounds.getMinX())),
             Math.max(0, Math.min(ORIGINAL_GAME_BOUNDS.getHeight() - spriteBounds.getHeight(), spriteBounds.getMinY())),
