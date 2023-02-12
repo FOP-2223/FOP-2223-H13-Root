@@ -232,12 +232,8 @@ public class EnemyMovementTest {
                 atLeast(1),
                 newEnemyBounds
             );
-            NEXT_MOVEMENT_METHOD.verify(
-                context,
-                enemyMovement,
-                params.getBoolean("expectsNextMovementCall") ? atLeast(1) : never(),
-                enemyBounds
-            );
+            verify(enemyMovement, params.get("expectsNextMovementCall") ? atLeast(1).description(context.toString()) : never().description(context.toString()))
+                .nextMovement(argThat(b -> b.equals(clampedEnemyBounds) || b.equals(newEnemyBounds)));
             UPDATE_POSITIONS_METHOD.verify(
                 context,
                 enemyMovement,
