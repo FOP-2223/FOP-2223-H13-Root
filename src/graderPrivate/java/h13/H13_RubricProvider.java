@@ -167,7 +167,10 @@ public class H13_RubricProvider implements RubricProvider {
                             ),
                             criterion(
                                 "Die Methode update() ist vollständig korrekt.",
-                                JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testUpdateCompletelyCorrect", JsonParameterSet.class))
+                                JUnitTestRef.and(
+                                    JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testUpdateRegular", JsonParameterSet.class)),
+                                    JUnitTestRef.ofMethod(() -> EnemyMovementTest.class.getDeclaredMethod("testUpdateCompletelyCorrect", JsonParameterSet.class))
+                                )
                             )
                         )
                         .build()
