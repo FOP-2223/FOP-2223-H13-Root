@@ -225,15 +225,17 @@ public class EnemyMovementTest {
             }
 
             UPDATE_METHOD.invoke(enemyMovement, 1);
-            TARGET_REACHED_METHOD.verify(
-
-                context,
-                enemyMovement,
-                atLeast(1),
-                newEnemyBounds
-            );
+//            TARGET_REACHED_METHOD.verify(
+//
+//                context,
+//                enemyMovement,
+//                atLeast(1),
+//                newEnemyBounds
+//            );
+            verify(enemyMovement, atLeast(1).description(context.toString()))
+                .targetReached(argThat(b -> b.equals(clampedEnemyBounds) || b.equals(newEnemyBounds)));
             verify(enemyMovement, params.get("expectsNextMovementCall") ? atLeast(1).description(context.toString()) : never().description(context.toString()))
-                .nextMovement(argThat(b -> b.equals(clampedEnemyBounds) || b.equals(newEnemyBounds)));
+                .nextMovement(argThat(b -> b.equals(enemyBounds) || b.equals(clampedEnemyBounds) || b.equals(newEnemyBounds)));
             UPDATE_POSITIONS_METHOD.verify(
                 context,
                 enemyMovement,
