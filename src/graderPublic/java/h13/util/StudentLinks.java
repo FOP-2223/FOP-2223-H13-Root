@@ -5,6 +5,7 @@ import h13.controller.GameConstants;
 import h13.controller.gamelogic.EnemyController;
 import h13.controller.gamelogic.GameInputHandler;
 import h13.controller.gamelogic.PlayerController;
+import h13.controller.scene.SceneController;
 import h13.controller.scene.game.GameController;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.EnemyMovement;
@@ -507,6 +508,7 @@ public class StudentLinks {
         public enum GameControllerFieldLink implements ClassFieldLink {
             GAME_STATE_FIELD(BasicTypeLink.of(GameController.class).getField(identical("gameState"))),
             GAME_SCENE_FIELD(BasicTypeLink.of(GameController.class).getField(identical("gameScene"))),
+            STAGE_FIELD(BasicTypeLink.of(SceneController.class).getField(identical("stage"))),
             LAST_UPDATE_FIELD(BasicTypeLink.of(GameController.class).getField(identical("lastUpdate"))),
             PAUSED_FIELD(BasicTypeLink.of(GameController.class).getField(identical("paused"))),
             PLAYER_CONTROLLER_FIELD(BasicTypeLink.of(GameController.class).getField(identical("playerController"))),

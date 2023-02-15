@@ -1,0 +1,28 @@
+[
+  {
+    "SHIP_SIZE": 1,
+    "GAME_BOUNDS": {
+      "x": 0,
+      "y": 0,
+      "width": 10,
+      "height": 10
+    },
+    "player": {
+      "id": 0,
+      "x": 0,
+      "y": 0,
+      "velocity": 0,
+      "health": 0,
+      "score": 1337
+    },
+    "enemies": [
+    ],
+    "bullets": [
+    ],
+    "bulletOwners": {
+    },
+    "damaged": {
+    },
+    "expectedPoints": 0
+  }
+]

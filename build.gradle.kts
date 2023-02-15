@@ -64,6 +64,10 @@ jagr {
             parent(graderPublic)
             graderName.set("FOP-2223-H13-Private")
         }
+        val graderManual by creating {
+            parent(graderPublic)
+            graderName.set("FOP-2223-H13-Manual")
+        }
     }
 }
 
