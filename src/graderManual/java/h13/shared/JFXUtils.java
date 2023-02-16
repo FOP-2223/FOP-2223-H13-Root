@@ -59,8 +59,24 @@ public class JFXUtils {
             );
             alert.setTitle("TUTOR Manual Grader");
             alert.setHeaderText("TUTOR Manual Grader");
-            alert.getDialogPane().setStyle("-fx-background-color: #11131d;");
-            alert.getDialogPane().getStylesheets().add("/h13/controller/scene/game/darkMode.css");
+            alert.getDialogPane().lookup(".root")
+                .setStyle("""
+                                  -fx-base: #0c0e14;
+                                  -fx-accent: #e7eff7;
+                                  -fx-default-button: #7f878f ;
+                                  -fx-focus-color: #efefef;
+                                  -fx-faint-focus-color: rgba(239, 239, 239, 0.13);
+                                  -fx-focused-text-base-color : ladder(
+                                      -fx-selection-bar,
+                                      -fx-light-text-color 45%,
+                                      -fx-dark-text-color 46%,
+                                      -fx-dark-text-color 59%,
+                                      -fx-mid-text-color 60%
+                                  );
+                                  -fx-focused-mark-color : -fx-focused-text-base-color ;
+                                  -fx-background-color: #11131d;
+                              """
+                );
             alert.setWidth(500);
             alert.getDialogPane().lookup(".header-panel").setStyle("-fx-background-color: #2a3145; "
                                                                        + "-fx-font-weight: bold;"
