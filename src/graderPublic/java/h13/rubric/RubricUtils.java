@@ -31,6 +31,37 @@ public class RubricUtils {
     }
 
     /**
+     * Creates a new {@link Criterion.Builder} with the given description and test.
+     *
+     * @param description The description of the criterion.
+     * @param testRefs     The test references of the criterion.
+     * @return The newly created criterion builder.
+     */
+    public static Criterion.Builder defaultCriterionBuilder(final String description, final JUnitTestRef... testRefs) {
+        final var grader = Grader.testAwareBuilder();
+        if (testRefs != null) {
+            for (final JUnitTestRef testRef : testRefs) {
+                grader.requirePass(testRef);
+            }
+        }
+        grader.pointsFailedMin();
+        grader.pointsPassedMax();
+        return Criterion.builder()
+            .shortDescription(description)
+            .grader(grader.build());
+    }
+
+    public static Grader testAwareGrader(final JUnitTestRef testRef) {
+        final var grader = Grader.testAwareBuilder();
+        if (testRef != null) {
+            grader.requirePass(testRef);
+        }
+        grader.pointsFailedMin();
+        grader.pointsPassedMax();
+        return grader.build();
+    }
+
+    /**
      * Creates a new {@link Criterion} with the given description and test.
      *
      * @param description The description of the criterion.
@@ -39,6 +70,10 @@ public class RubricUtils {
      */
     public static Criterion criterion(final String description, final JUnitTestRef testRef) {
         return defaultCriterionBuilder(description, testRef).build();
+    }
+
+    public static Criterion criterion(final String description, final JUnitTestRef... testRefs) {
+        return defaultCriterionBuilder(description, testRefs).build();
     }
 
     /**
@@ -51,6 +86,26 @@ public class RubricUtils {
      */
     public static Criterion criterion(final String description, final JUnitTestRef testRef, final int points) {
         final var cb = defaultCriterionBuilder(description, testRef);
+        if (points >= 0) {
+            cb.minPoints(0);
+            cb.maxPoints(points);
+        } else {
+            cb.maxPoints(0);
+            cb.minPoints(points);
+        }
+        return cb.build();
+    }
+
+    /**
+     * Creates a new {@link Criterion} with the given description and test.
+     *
+     * @param description The description of the criterion.
+     * @param testRefs     The test references of the criterion that need to pass.
+     * @param points      The points of the criterion.
+     * @return The newly created criterion.
+     */
+    public static Criterion criterion(final String description, final int points, final JUnitTestRef... testRefs) {
+        final var cb = defaultCriterionBuilder(description, testRefs);
         if (points >= 0) {
             cb.minPoints(0);
             cb.maxPoints(points);

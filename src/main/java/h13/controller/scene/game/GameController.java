@@ -282,7 +282,7 @@ public class GameController extends SceneController implements Updatable {
     /**
      * Handles what happens when the {@linkplain Player player} is Defeated.
      */
-    private void lose() {
+    public void lose() {
         pause();
         final TextInputDialog dialog = new TextInputDialog("<CoolPlayerName>");
         dialog.setTitle("Game Over");
@@ -334,7 +334,7 @@ public class GameController extends SceneController implements Updatable {
         getGameInputHandler().addOnKeyReleased(k -> {
             // escape
             switch (k.getCode()) {
-                case ESCAPE -> Platform.runLater(() -> {
+                case ESCAPE -> {
                     pause();
                     final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Give Up?", ButtonType.YES, ButtonType.NO);
                     alert.showAndWait();
@@ -344,13 +344,10 @@ public class GameController extends SceneController implements Updatable {
                     } else {
                         resume();
                     }
-                });
+                }
 
                 // F11
-                case F11 -> Platform.runLater(() -> {
-                    getStage().setFullScreen(!getStage().isFullScreen());
-                    System.out.println("Fullscreen: " + getStage().isFullScreen());
-                });
+                case F11 -> getStage().setFullScreen(!getStage().isFullScreen());
             }
         });
     }
