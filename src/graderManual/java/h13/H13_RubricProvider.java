@@ -7,6 +7,7 @@ import h13.json.JsonParameterSet;
 import h13.model.gameplay.Direction;
 import h13.model.gameplay.EnemyMovementTest;
 import h13.model.gameplay.sprites.*;
+import h13.shared.JFXUtils;
 import h13.shared.UtilsTest;
 import h13.view.gui.GameBoardTest;
 import h13.view.gui.GameSceneTest;
@@ -16,6 +17,10 @@ import javafx.geometry.Bounds;
 import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
 import org.tudalgo.algoutils.transform.AccessTransformer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static h13.rubric.RubricUtils.*;
 
@@ -59,21 +64,31 @@ public class H13_RubricProvider implements RubricProvider {
                 .addChildCriteria(
                     Criterion.builder()
                         .shortDescription("Die geforderten Einstellungen sind vollständig korrekt implementiert.")
-                        .minPoints(0)
+                        .minPoints(null)
                         .maxPoints(3)
                         .grader((cycle, criterion) -> {
-                                    final var innerCriterion = Grader.testAwareBuilder()
-                                        .requirePass(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneInstantShooting")))
-                                        .requirePass(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneEnemyShootingDelay")))
-                                        .requirePass(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneEnemyShootingProbability")))
-                                        .requirePass(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneEnemyShootingProbability")))
-                                        .requirePass(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneFullscreen")))
-                                        .requirePass(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneLoadTextures")))
-                                        .requirePass(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneLoadBackground")))
-                                        .pointsPassedMax()
-                                        .pointsFailedMin()
+                                    final var fakeCriterion = Criterion.builder()
+                                        .shortDescription("egal")
+                                        .minPoints(0)
+                                        .maxPoints(1)
                                         .build();
-                                    final var result = innerCriterion.grade(cycle, criterion);
+                                    var graders = List.of(
+                                        testAwareGrader(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneInstantShooting"))),
+                                        testAwareGrader(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneEnemyShootingDelay"))),
+                                        testAwareGrader(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneEnemyShootingProbability"))),
+                                        testAwareGrader(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneFullscreen"))),
+                                        testAwareGrader(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneLoadTextures"))),
+                                        testAwareGrader(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneLoadBackground")))
+                                    );
+//                                    final var result = innerGrader.grade(cycle, fakeCriterion);
+                                    final var result = graders.stream()
+                                        .map(grader -> grader.grade(cycle, fakeCriterion))
+                                        .peek(x -> JFXUtils.messageTutor("result: " + x.getMaxPoints()))
+                                        .reduce((a, b) -> GradeResult.withComments(GradeResult.of(
+                                            a.getMaxPoints() + b.getMaxPoints(),
+                                            a.getMinPoints() + b.getMinPoints()
+                                        ), Stream.of(a.getComments(), b.getComments()).flatMap(List::stream).toList()))
+                                        .orElse(GradeResult.of(0, 6));
                                     return GradeResult.withComments(GradeResult.of(
                                         result.getMaxPoints() / 2,
                                         result.getMinPoints() / 2

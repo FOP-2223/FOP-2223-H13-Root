@@ -109,22 +109,22 @@ public class SettingsSceneTest extends ApplicationTest {
             // add the settings to the list of correct settings
             confirmButton.setOnAction(event -> {
                 if (instantShootingCheckBox.isSelected()) {
-                    correctPropertyValues.add(ApplicationSettings.instantShootingProperty().getValue());
+                    correctPropertyValues.add(ApplicationSettings.instantShootingProperty());
                 }
                 if (enemyShootingDelayCheckBox.isSelected()) {
-                    correctPropertyValues.add(ApplicationSettings.enemyShootingDelayProperty().getValue());
+                    correctPropertyValues.add(ApplicationSettings.enemyShootingDelayProperty());
                 }
                 if (enemyShootingProbabilityCheckBox.isSelected()) {
-                    correctPropertyValues.add(ApplicationSettings.enemyShootingProbabilityProperty().getValue());
+                    correctPropertyValues.add(ApplicationSettings.enemyShootingProbabilityProperty());
                 }
                 if (fullscreenCheckBox.isSelected()) {
-                    correctPropertyValues.add(ApplicationSettings.fullscreenProperty().getValue());
+                    correctPropertyValues.add(ApplicationSettings.fullscreenProperty());
                 }
                 if (loadTexturesCheckBox.isSelected()) {
-                    correctPropertyValues.add(ApplicationSettings.loadTexturesProperty().getValue());
+                    correctPropertyValues.add(ApplicationSettings.loadTexturesProperty());
                 }
                 if (loadBackgroundCheckBox.isSelected()) {
-                    correctPropertyValues.add(ApplicationSettings.loadBackgroundProperty().getValue());
+                    correctPropertyValues.add(ApplicationSettings.loadBackgroundProperty());
                 }
                 JFXUtils.messageTutor("Settings confirmed");
                 // close settings stage
@@ -153,7 +153,7 @@ public class SettingsSceneTest extends ApplicationTest {
 
     public <T> void testSettingsSceneProperty(Property<T> property, String propertyName) {
         Assertions2.assertTrue(
-            correctPropertyValues.contains(ApplicationSettings.instantShootingProperty().getValue()),
+            correctPropertyValues.contains(property),
             Assertions2.emptyContext(),
             r -> String.format("The %s Property could not be modified.", propertyName)
         );
