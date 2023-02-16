@@ -16,29 +16,18 @@ import h13.model.gameplay.sprites.WithID;
 import h13.shared.JFXUtils;
 import h13.util.StudentLinks;
 import h13.view.gui.GameScene;
-import h13.view.gui.GameSceneTest;
 import javafx.animation.AnimationTimer;
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.agent.ByteBuddyAgent;
-import net.bytebuddy.agent.builder.AgentBuilder;
-import net.bytebuddy.description.type.TypeDescription;
-import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.matcher.ElementMatchers;
-import net.bytebuddy.utility.JavaModule;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.mockito.Answers;
 import org.mockito.Mockito;
@@ -46,21 +35,17 @@ import org.sourcegrade.jagr.api.rubric.TestForSubmission;
 import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
 
 import java.io.IOException;
-import java.security.ProtectionDomain;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import static h13.util.StudentLinks.BulletLinks.BulletFieldLink.OWNER_FIELD;
 import static h13.util.StudentLinks.GameConstantsLinks.GameConstantsFieldLink.*;
 import static h13.util.StudentLinks.GameControllerLinks.GameControllerFieldLink.*;
 import static h13.util.StudentLinks.GameControllerLinks.GameControllerMethodLink.HANDLE_KEYBOARD_INPUTS_METHOD;
-import static h13.util.StudentLinks.GameControllerLinks.GameControllerMethodLink.LOSE_METHOD;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
 @TestForSubmission
 public class GameControllerTest {
@@ -212,17 +197,6 @@ public class GameControllerTest {
         });
     }
 
-    @Test
-    public void testAlertInJunitVisible() throws InterruptedException {
-        AtomicReference<Alert> alert = new AtomicReference<>();
-        JFXUtils.onJFXThread(() -> {
-            alert.set(new Alert(Alert.AlertType.CONFIRMATION, "Give Up?", ButtonType.YES, ButtonType.NO));
-            alert.get().showAndWait();
-            Assertions2.assertEquals(ButtonType.YES, alert.get().getResult(), Assertions2.emptyContext(), r -> "NO");
-        });
-    }
-
-
     private void testHandleKeyboardInputsEscape(JsonParameterSet params, boolean hitLose) throws InterruptedException, IOException {
         // setup
         final var gameController = setupGameController(params);
@@ -243,7 +217,7 @@ public class GameControllerTest {
         gameController.getGameLoop().start();
 
         final var crs = ClassReloadingStrategy.fromInstalledAgent();
-        final class loseMethodSpy {
+        final class LoseMethodSpy {
             static int invocations = 0;
 
             public static void lose() {
@@ -251,12 +225,14 @@ public class GameControllerTest {
             }
         }
 
+        LoseMethodSpy.invocations = 0;
+
         try {
             // use bytebuddy to intercept GameController.lose() call to check if it was called
             new ByteBuddy()
                 .redefine(GameController.class)
                 .method(ElementMatchers.named("lose"))
-                .intercept(MethodDelegation.to(loseMethodSpy.class))
+                .intercept(MethodDelegation.to(LoseMethodSpy.class))
                 .make()
                 .load(GameController.class.getClassLoader(), crs);
 
@@ -309,14 +285,14 @@ public class GameControllerTest {
 
             if (hitLose) {
                 // assert that the lose method was called
-                System.out.println("lose() Method was called " + loseMethodSpy.invocations + " times.");
-                Assertions2.assertEquals(1, loseMethodSpy.invocations, context, r -> "Lose could not be selected or lose() Method was not called.");
+                System.out.println("lose() Method was called " + LoseMethodSpy.invocations + " times.");
+                Assertions2.assertEquals(1, LoseMethodSpy.invocations, context, r -> "Lose could not be selected or lose() Method was not called.");
             } else {
                 // assert that the game was resumed
                 Assertions2.assertFalse(gameController.isPaused(), context, r -> "Game should be resumed after choosing resume. Either resume() was not called or it was not possible to select the resume button.");
 
                 // assert that the lose method was not called
-                Assertions2.assertEquals(0, loseMethodSpy.invocations, context, r -> "The lose() Method was called even though the resume button was selected or the resume button could not be selected.");
+                Assertions2.assertEquals(0, LoseMethodSpy.invocations, context, r -> "The lose() Method was called even though the resume button was selected or the resume button could not be selected.");
             }
         }
     }
