@@ -16,6 +16,7 @@ import h13.model.gameplay.sprites.WithID;
 import h13.shared.JFXUtils;
 import h13.util.StudentLinks;
 import h13.view.gui.GameScene;
+import h13.view.gui.MainMenuScene;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
@@ -27,14 +28,15 @@ import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.matcher.ElementMatchers;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.mockito.Answers;
 import org.mockito.Mockito;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
+import org.testfx.framework.junit5.ApplicationTest;
 import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -43,12 +45,12 @@ import java.util.function.Function;
 import static h13.util.StudentLinks.BulletLinks.BulletFieldLink.OWNER_FIELD;
 import static h13.util.StudentLinks.GameConstantsLinks.GameConstantsFieldLink.*;
 import static h13.util.StudentLinks.GameControllerLinks.GameControllerFieldLink.*;
-import static h13.util.StudentLinks.GameControllerLinks.GameControllerMethodLink.HANDLE_KEYBOARD_INPUTS_METHOD;
+import static h13.util.StudentLinks.GameControllerLinks.GameControllerMethodLink.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
 @TestForSubmission
-public class GameControllerTest {
+public class GameControllerTest extends ApplicationTest {
 
     private Stage stage;
     private GameScene gameScene;
@@ -124,30 +126,25 @@ public class GameControllerTest {
         return gameController;
     }
 
-    //    @Override
-    @BeforeEach
-    public void start() throws Exception {
-//        super.start(stage);
-        JFXUtils.initFX();
-        JFXUtils.onJFXThread(() -> {
-            var stage = new Stage();
-            stage.initStyle(StageStyle.UNDECORATED);
-            final var origGameBounds = new BoundingBox(0, 0, 256, 224);
-            ORIGINAL_GAME_BOUNDS_FIELD.setStatic(origGameBounds);
-            ASPECT_RATIO_FIELD.setStatic(origGameBounds.getWidth() / origGameBounds.getHeight());
-            ApplicationSettings.loadBackgroundProperty().set(false);
+    @Override
+    //@BeforeEach
+    public void start(Stage stage) {
+        stage.initStyle(StageStyle.UNDECORATED);
+        final var origGameBounds = new BoundingBox(0, 0, 256, 224);
+        ORIGINAL_GAME_BOUNDS_FIELD.setStatic(origGameBounds);
+        ASPECT_RATIO_FIELD.setStatic(origGameBounds.getWidth() / origGameBounds.getHeight());
+        ApplicationSettings.loadBackgroundProperty().set(false);
 
-            // TODO: test with private init() for final grading run
-            gameScene = spy(new GameScene() {
-                @Override
-                protected void init() {
-                    // do nothing
-                }
-            });
-
-            stage.setScene(gameScene);
-            this.stage = stage;
+        // TODO: test with private init() for final grading run
+        gameScene = spy(new GameScene() {
+            @Override
+            protected void init() {
+                // do nothing
+            }
         });
+
+        stage.setScene(gameScene);
+        this.stage = stage;
     }
 
     @ParameterizedTest
@@ -155,7 +152,6 @@ public class GameControllerTest {
     public void testHandleKeyboardInputsFullScreenF11(final JsonParameterSet params) throws InterruptedException {
         // setup
         final var gameController = setupGameController(params);
-        final var gameState = gameController.getGameState();
         final var context = params.toContext();
 
 
@@ -200,10 +196,9 @@ public class GameControllerTest {
     private void testHandleKeyboardInputsEscape(JsonParameterSet params, boolean hitLose) throws InterruptedException, IOException {
         // setup
         final var gameController = setupGameController(params);
-        final var gameState = gameController.getGameState();
         final var context = params.toContext();
-        AtomicBoolean pausedWasOnceTrue = new AtomicBoolean(false);
-        AtomicBoolean pausedWasOnceFalse = new AtomicBoolean(false);
+        final AtomicBoolean pausedWasOnceTrue = new AtomicBoolean(false);
+        final AtomicBoolean pausedWasOnceFalse = new AtomicBoolean(false);
         GAME_LOOP_FIELD.set(gameController, new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -220,6 +215,7 @@ public class GameControllerTest {
         final class LoseMethodSpy {
             static int invocations = 0;
 
+            @SuppressWarnings("unused")
             public static void lose() {
                 invocations++;
             }
@@ -240,7 +236,7 @@ public class GameControllerTest {
             HANDLE_KEYBOARD_INPUTS_METHOD.invoke(context, gameController);
 
             JFXUtils.onJFXThread(() -> {
-                stage.show();
+                //stage.show();
                 // send Escape key press
                 final var keyEvent = new KeyEvent(
                     KeyEvent.KEY_PRESSED,
@@ -307,6 +303,100 @@ public class GameControllerTest {
     @JsonParameterSetTest(value = "GameControllerDummyState.json", customConverters = "customConverters")
     public void testHandleKeyboardInputsEscapeResume(final JsonParameterSet params) throws InterruptedException, IOException {
         testHandleKeyboardInputsEscape(params, false);
+    }
+
+    @ParameterizedTest
+    @JsonParameterSetTest(value = "GameControllerDummyState.json", customConverters = "customConverters")
+    public void testLoseHighscore(final JsonParameterSet params) throws InterruptedException, IOException {
+        // setup
+        final var gameController = setupGameController(params);
+        final var context = params.toContext();
+        final var player = gameController.getPlayer();
+        GAME_LOOP_FIELD.set(gameController, mock(AnimationTimer.class));
+        RESET_METHOD.doNothing(gameController);
+        RESUME_METHOD.doNothing(gameController);
+        JFXUtils.onJFXThread(() -> {
+            // instruct tutor to press the correct button
+            System.out.println("Enter the name \"FOP-2223-Test\" and press the submit button.\n(you can press either continue or return to main menu afterwards)");
+
+            // invoke lose method
+            LOSE_METHOD.invoke(context, gameController);
+
+            // close if main menu is shown
+            if (gameController.getStage().getScene() instanceof MainMenuScene) {
+                gameController.getStage().close();
+            }
+        });
+        // assert that the Highscore was saved
+        var candidate = ApplicationSettings.getHighscores().stream().filter(h -> h.getPlayerName().equals("FOP-2223-Test")).findFirst();
+        Assertions2.assertTrue(candidate.isPresent(), context, r -> "Highscore was not saved.");
+        var highscore = candidate.get();
+        Assertions2.assertEquals(player.getScore(), highscore.getScore(), context, r -> "Highscore was not saved correctly, incorrect score.");
+        System.out.println("Check the date of the highscore");
+        Assertions2.assertTrue(
+            JFXUtils.TutorAskYesNo(String.format(
+                """
+                    Is the date "%s" correct?
+                    (Current system time is "%s")
+                    // Note: If it slightly differs or is not as exact as the system time, that is fine.
+                    """
+                ,
+                highscore.getDate(),
+                new Date().toString()
+            )),
+            context,
+            r -> "Highscore was not saved correctly, incorrect date."
+        );
+    }
+
+    @ParameterizedTest
+    @JsonParameterSetTest(value = "GameControllerDummyState.json", customConverters = "customConverters")
+    public void testLoseMainMenu(final JsonParameterSet params) throws InterruptedException {
+        // setup
+        final var gameController = setupGameController(params);
+        final var context = params.toContext();
+        GAME_LOOP_FIELD.set(gameController, mock(AnimationTimer.class));
+        RESET_METHOD.doNothing(gameController);
+        RESUME_METHOD.doNothing(gameController);
+        AtomicBoolean mainMenuWasShown = new AtomicBoolean(false);
+        JFXUtils.onJFXThread(() -> {
+            // instruct tutor to press the correct button
+            System.out.println("Do whatever with the highscore and then press the return to main menu button.");
+
+            // invoke lose method
+            LOSE_METHOD.invoke(context, gameController);
+
+            // close if main menu is shown
+            if (gameController.getStage().getScene() instanceof MainMenuScene) {
+                mainMenuWasShown.set(true);
+                gameController.getStage().close();
+            }
+        });
+        Assertions2.assertTrue(mainMenuWasShown.get(), context, r -> "Main menu was not shown after pressing the return to main menu button.");
+    }
+
+    @ParameterizedTest
+    @JsonParameterSetTest(value = "GameControllerDummyState.json", customConverters = "customConverters")
+    public void testLoseReset(final JsonParameterSet params) throws InterruptedException {
+        // setup
+        final var gameController = setupGameController(params);
+        final var context = params.toContext();
+        GAME_LOOP_FIELD.set(gameController, mock(AnimationTimer.class));
+        RESET_METHOD.doNothing(gameController);
+        JFXUtils.onJFXThread(() -> {
+            // instruct tutor to press the correct button
+            System.out.println("Do whatever with the highscore and then press the reset button.");
+
+            // invoke lose method
+            LOSE_METHOD.invoke(context, gameController);
+
+            // close if main menu is shown
+            if (gameController.getStage().getScene() instanceof MainMenuScene) {
+                gameController.getStage().close();
+            }
+        });
+        RESET_METHOD.assertInvokedNTimes(context, gameController, 1);
+        Assertions2.assertFalse(gameController.isPaused(), context, r -> "Game should be resumed after choosing reset. Either reset() was not called or it was not possible to select the reset button.");
     }
 }
 //    @ExtendWith(JagrExecutionCondition.class)
