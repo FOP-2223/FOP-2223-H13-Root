@@ -4,6 +4,9 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import org.apache.logging.log4j.Logger;
+import org.sourcegrade.jagr.api.testing.extension.TestCycleResolver;
+import org.sourcegrade.jagr.launcher.env.Jagr;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
@@ -68,5 +71,16 @@ public class JFXUtils {
             }
         });
         return answer.get();
+    }
+
+    public static void messageTutor(String message) {
+        // check if Jagr Run
+        if (TestCycleResolver.getTestCycle() != null) {
+            var logger = Jagr.Default.getInjector().getInstance(org.apache.logging.log4j.Logger.class);
+            logger.info(message);
+//
+        } else {
+            System.out.println(message);
+        }
     }
 }

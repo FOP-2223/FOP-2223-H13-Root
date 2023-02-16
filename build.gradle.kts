@@ -67,6 +67,23 @@ jagr {
         val graderManual by creating {
             parent(graderPublic)
             graderName.set("FOP-2223-H13-Manual")
+            config.set(
+                org.sourcegrade.jagr.launcher.env.Config(
+                    executor = org.sourcegrade.jagr.launcher.env.Executor(
+                        jvmArgs = listOf(
+                            "-Dtestfx.robot=glass",
+                            "-Dprism.order=sw",
+                            "-Dprism.lcdtext=false",
+                            "-Dprism.subpixeltext=false",
+                            "-Dglass.win.uiScale=100%",
+                            "-Dprism.text=t2k"
+                        )
+                    ),
+                    transformers = org.sourcegrade.jagr.launcher.env.Transformers(
+                        timeout = org.sourcegrade.jagr.launcher.env.Transformers.TimeoutTransformer(enabled = false)
+                    )
+                )
+            )
         }
     }
 }

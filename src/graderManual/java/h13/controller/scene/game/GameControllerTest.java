@@ -235,6 +235,10 @@ public class GameControllerTest extends ApplicationTest {
             // test setup
             HANDLE_KEYBOARD_INPUTS_METHOD.invoke(context, gameController);
 
+
+            // instruct tutor to press the correct button
+            JFXUtils.messageTutor(hitLose ? "Press the lose button" : "Press the resume button");
+
             JFXUtils.onJFXThread(() -> {
                 //stage.show();
                 // send Escape key press
@@ -261,13 +265,6 @@ public class GameControllerTest extends ApplicationTest {
                     false,
                     false
                 );
-                // instruct tutor to press the correct button
-                if (hitLose) {
-                    System.out.println("Press the lose button");
-                } else {
-                    System.out.println("Press the resume button");
-                }
-
                 gameScene.getOnKeyReleased().handle(keyEvent2);
 
             });
@@ -281,7 +278,6 @@ public class GameControllerTest extends ApplicationTest {
 
             if (hitLose) {
                 // assert that the lose method was called
-                System.out.println("lose() Method was called " + LoseMethodSpy.invocations + " times.");
                 Assertions2.assertEquals(1, LoseMethodSpy.invocations, context, r -> "Lose could not be selected or lose() Method was not called.");
             } else {
                 // assert that the game was resumed
@@ -315,10 +311,9 @@ public class GameControllerTest extends ApplicationTest {
         GAME_LOOP_FIELD.set(gameController, mock(AnimationTimer.class));
         RESET_METHOD.doNothing(gameController);
         RESUME_METHOD.doNothing(gameController);
+        // instruct tutor to press the correct button
+        JFXUtils.messageTutor("Enter the name \"FOP-2223-Test\" and press the submit button.\n(you can press either continue or return to main menu afterwards)");
         JFXUtils.onJFXThread(() -> {
-            // instruct tutor to press the correct button
-            System.out.println("Enter the name \"FOP-2223-Test\" and press the submit button.\n(you can press either continue or return to main menu afterwards)");
-
             // invoke lose method
             LOSE_METHOD.invoke(context, gameController);
 
@@ -332,7 +327,7 @@ public class GameControllerTest extends ApplicationTest {
         Assertions2.assertTrue(candidate.isPresent(), context, r -> "Highscore was not saved.");
         var highscore = candidate.get();
         Assertions2.assertEquals(player.getScore(), highscore.getScore(), context, r -> "Highscore was not saved correctly, incorrect score.");
-        System.out.println("Check the date of the highscore");
+        JFXUtils.messageTutor("Check the date of the highscore");
         Assertions2.assertTrue(
             JFXUtils.TutorAskYesNo(String.format(
                 """
@@ -359,9 +354,9 @@ public class GameControllerTest extends ApplicationTest {
         RESET_METHOD.doNothing(gameController);
         RESUME_METHOD.doNothing(gameController);
         AtomicBoolean mainMenuWasShown = new AtomicBoolean(false);
+        // instruct tutor to press the correct button
+        JFXUtils.messageTutor("Do whatever with the highscore and then press the return to main menu button.");
         JFXUtils.onJFXThread(() -> {
-            // instruct tutor to press the correct button
-            System.out.println("Do whatever with the highscore and then press the return to main menu button.");
 
             // invoke lose method
             LOSE_METHOD.invoke(context, gameController);
@@ -383,9 +378,9 @@ public class GameControllerTest extends ApplicationTest {
         final var context = params.toContext();
         GAME_LOOP_FIELD.set(gameController, mock(AnimationTimer.class));
         RESET_METHOD.doNothing(gameController);
+        // instruct tutor to press the correct button
+        JFXUtils.messageTutor("Do whatever with the highscore and then press the reset button.");
         JFXUtils.onJFXThread(() -> {
-            // instruct tutor to press the correct button
-            System.out.println("Do whatever with the highscore and then press the reset button.");
 
             // invoke lose method
             LOSE_METHOD.invoke(context, gameController);
