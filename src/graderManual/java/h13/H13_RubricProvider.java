@@ -10,17 +10,14 @@ import h13.model.gameplay.sprites.*;
 import h13.shared.UtilsTest;
 import h13.view.gui.GameBoardTest;
 import h13.view.gui.GameSceneTest;
+import h13.view.gui.SettingsSceneTest;
 import h13.view.gui.SpriteRendererTest;
 import javafx.geometry.Bounds;
-import org.sourcegrade.jagr.api.rubric.Criterion;
-import org.sourcegrade.jagr.api.rubric.JUnitTestRef;
-import org.sourcegrade.jagr.api.rubric.Rubric;
-import org.sourcegrade.jagr.api.rubric.RubricProvider;
+import org.sourcegrade.jagr.api.rubric.*;
 import org.sourcegrade.jagr.api.testing.RubricConfiguration;
 import org.tudalgo.algoutils.transform.AccessTransformer;
 
-import static h13.rubric.RubricUtils.criterion;
-import static h13.rubric.RubricUtils.manualGrader;
+import static h13.rubric.RubricUtils.*;
 
 public class H13_RubricProvider implements RubricProvider {
     public static final Rubric RUBRIC = Rubric.builder()
@@ -34,30 +31,24 @@ public class H13_RubricProvider implements RubricProvider {
                         .addChildCriteria(
                             criterion(
                                 "Die Methode handleKeyboardInputs() ist vollständig korrekt.",
-                                JUnitTestRef.and(
-                                    JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testHandleKeyboardInputsFullScreenF11", JsonParameterSet.class)),
-                                    JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testHandleKeyboardInputsEscapeLose", JsonParameterSet.class)),
-                                    JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testHandleKeyboardInputsEscapeResume", JsonParameterSet.class))
-                                )
+                                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testHandleKeyboardInputsFullScreenF11", JsonParameterSet.class)),
+                                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testHandleKeyboardInputsEscapeLose", JsonParameterSet.class)),
+                                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testHandleKeyboardInputsEscapeResume", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die Methode lose() ist vollständig korrekt.",
-                                JUnitTestRef.and(
-                                    JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testLoseHighscore", JsonParameterSet.class)),
-                                    JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testLoseReset", JsonParameterSet.class)),
-                                    JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testLoseMainMenu", JsonParameterSet.class))
-                                )
+                                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testLoseHighscore", JsonParameterSet.class)),
+                                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testLoseReset", JsonParameterSet.class)),
+                                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testLoseMainMenu", JsonParameterSet.class))
                             ),
                             criterion(
                                 "Die getesteten Methoden sind vollständig korrekt.",
-                                JUnitTestRef.and(
-                                    JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testHandleKeyboardInputsFullScreenF11", JsonParameterSet.class)),
-                                    JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testHandleKeyboardInputsEscapeLose", JsonParameterSet.class)),
-                                    JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testHandleKeyboardInputsEscapeResume", JsonParameterSet.class)),
-                                    JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testLoseHighscore", JsonParameterSet.class)),
-                                    JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testLoseReset", JsonParameterSet.class)),
-                                    JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testLoseMainMenu", JsonParameterSet.class))
-                                )
+                                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testHandleKeyboardInputsFullScreenF11", JsonParameterSet.class)),
+                                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testHandleKeyboardInputsEscapeLose", JsonParameterSet.class)),
+                                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testHandleKeyboardInputsEscapeResume", JsonParameterSet.class)),
+                                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testLoseHighscore", JsonParameterSet.class)),
+                                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testLoseReset", JsonParameterSet.class)),
+                                JUnitTestRef.ofMethod(() -> GameControllerTest.class.getDeclaredMethod("testLoseMainMenu", JsonParameterSet.class))
                             )
                         )
                         .build()
@@ -70,8 +61,24 @@ public class H13_RubricProvider implements RubricProvider {
                         .shortDescription("Die geforderten Einstellungen sind vollständig korrekt implementiert.")
                         .minPoints(0)
                         .maxPoints(3)
-                        .grader(
-                            manualGrader(3)
+                        .grader((cycle, criterion) -> {
+                                    final var innerCriterion = Grader.testAwareBuilder()
+                                        .requirePass(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneInstantShooting")))
+                                        .requirePass(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneEnemyShootingDelay")))
+                                        .requirePass(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneEnemyShootingProbability")))
+                                        .requirePass(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneEnemyShootingProbability")))
+                                        .requirePass(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneFullscreen")))
+                                        .requirePass(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneLoadTextures")))
+                                        .requirePass(JUnitTestRef.ofMethod(() -> SettingsSceneTest.class.getDeclaredMethod("testSettingsSceneLoadBackground")))
+                                        .pointsPassedMax()
+                                        .pointsFailedMin()
+                                        .build();
+                                    final var result = innerCriterion.grade(cycle, criterion);
+                                    return GradeResult.withComments(GradeResult.of(
+                                        result.getMaxPoints() / 2,
+                                        result.getMinPoints() / 2
+                                    ), result.getComments());
+                                }
                         )
                         .build()
                 )
