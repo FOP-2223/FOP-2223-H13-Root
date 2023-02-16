@@ -14,6 +14,7 @@ import h13.model.gameplay.sprites.IDEnemy;
 import h13.model.gameplay.sprites.IDPlayer;
 import h13.model.gameplay.sprites.WithID;
 import h13.shared.JFXUtils;
+import h13.shared.ManualGraderConstants;
 import h13.util.StudentLinks;
 import h13.view.gui.GameScene;
 import h13.view.gui.MainMenuScene;
@@ -276,15 +277,17 @@ public class GameControllerTest extends ApplicationTest {
             // assert that the game was paused
             Assertions2.assertTrue(pausedWasOnceTrue.get(), context, r -> "Game should be paused after pressing Escape");
 
-            if (hitLose) {
-                // assert that the lose method was called
-                Assertions2.assertEquals(1, LoseMethodSpy.invocations, context, r -> "Lose could not be selected or lose() Method was not called.");
-            } else {
-                // assert that the game was resumed
-                Assertions2.assertFalse(gameController.isPaused(), context, r -> "Game should be resumed after choosing resume. Either resume() was not called or it was not possible to select the resume button.");
+            if (ManualGraderConstants.testImplementation) {
+                if (hitLose) {
+                    // assert that the lose method was called
+                    Assertions2.assertEquals(1, LoseMethodSpy.invocations, context, r -> "Lose could not be selected or lose() Method was not called.");
+                } else {
+                    // assert that the game was resumed
+                    Assertions2.assertFalse(gameController.isPaused(), context, r -> "Game should be resumed after choosing resume. Either resume() was not called or it was not possible to select the resume button.");
 
-                // assert that the lose method was not called
-                Assertions2.assertEquals(0, LoseMethodSpy.invocations, context, r -> "The lose() Method was called even though the resume button was selected or the resume button could not be selected.");
+                    // assert that the lose method was not called
+                    Assertions2.assertEquals(0, LoseMethodSpy.invocations, context, r -> "The lose() Method was called even though the resume button was selected or the resume button could not be selected.");
+                }
             }
         }
     }
@@ -304,6 +307,7 @@ public class GameControllerTest extends ApplicationTest {
     @ParameterizedTest
     @JsonParameterSetTest(value = "GameControllerDummyState.json", customConverters = "customConverters")
     public void testLoseHighscore(final JsonParameterSet params) throws InterruptedException, IOException {
+        if(!ManualGraderConstants.testImplementation) return;
         // setup
         final var gameController = setupGameController(params);
         final var context = params.toContext();
@@ -322,26 +326,29 @@ public class GameControllerTest extends ApplicationTest {
                 gameController.getStage().close();
             }
         });
+        if(!ManualGraderConstants.testImplementation) return;
         // assert that the Highscore was saved
         var candidate = ApplicationSettings.getHighscores().stream().filter(h -> h.getPlayerName().equals("FOP-2223-Test")).findFirst();
         Assertions2.assertTrue(candidate.isPresent(), context, r -> "Highscore was not saved.");
         var highscore = candidate.get();
         Assertions2.assertEquals(player.getScore(), highscore.getScore(), context, r -> "Highscore was not saved correctly, incorrect score.");
         JFXUtils.messageTutor("Check the date of the highscore");
-        Assertions2.assertTrue(
-            JFXUtils.TutorAskYesNo(String.format(
-                """
-                    Is the date "%s" correct?
-                    (Current system time is "%s")
-                    // Note: If it slightly differs or is not as exact as the system time, that is fine.
+        if (ManualGraderConstants.testImplementation) {
+            Assertions2.assertTrue(
+                JFXUtils.TutorAskYesNo(String.format(
                     """
-                ,
-                highscore.getDate(),
-                new Date().toString()
-            )),
-            context,
-            r -> "Highscore was not saved correctly, incorrect date."
-        );
+                        Is the date "%s" correct?
+                        (Current system time is "%s")
+                        // Note: If it slightly differs or is not as exact as the system time, that is fine.
+                        """
+                    ,
+                    highscore.getDate(),
+                    new Date().toString()
+                )),
+                context,
+                r -> "Highscore was not saved correctly, incorrect date."
+            );
+        }
     }
 
     @ParameterizedTest
@@ -367,7 +374,9 @@ public class GameControllerTest extends ApplicationTest {
                 gameController.getStage().close();
             }
         });
-        Assertions2.assertTrue(mainMenuWasShown.get(), context, r -> "Main menu was not shown after pressing the return to main menu button.");
+        if (ManualGraderConstants.testImplementation) {
+            Assertions2.assertTrue(mainMenuWasShown.get(), context, r -> "Main menu was not shown after pressing the return to main menu button.");
+        }
     }
 
     @ParameterizedTest
@@ -390,8 +399,10 @@ public class GameControllerTest extends ApplicationTest {
                 gameController.getStage().close();
             }
         });
-        RESET_METHOD.assertInvokedNTimes(context, gameController, 1);
-        Assertions2.assertFalse(gameController.isPaused(), context, r -> "Game should be resumed after choosing reset. Either reset() was not called or it was not possible to select the reset button.");
+        if (ManualGraderConstants.testImplementation) {
+            RESET_METHOD.assertInvokedNTimes(context, gameController, 1);
+            Assertions2.assertFalse(gameController.isPaused(), context, r -> "Game should be resumed after choosing reset. Either reset() was not called or it was not possible to select the reset button.");
+        }
     }
 }
 //    @ExtendWith(JagrExecutionCondition.class)

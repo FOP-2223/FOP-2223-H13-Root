@@ -31,14 +31,17 @@ public class JFXUtils {
                 semaphore.release();
             }
         });
-        if (!semaphore.tryAcquire(timeout, unit)) {
+        if (!semaphore.tryAcquire(timeout, unit) && ManualGraderConstants.testImplementation) {
             throw new RuntimeException("Timeout waiting for FX task to complete");
         }
 //        }
     }
 
     public static void onJFXThread(Runnable r) throws InterruptedException {
-        onJFXThread(r, 60, TimeUnit.SECONDS);
+        if(ManualGraderConstants.testImplementation)
+            onJFXThread(r, 60, TimeUnit.SECONDS);
+        else
+            onJFXThread(r, 400, TimeUnit.MILLISECONDS);
     }
 
     public static void waitOnJavaFxPlatformEventsDone() throws InterruptedException {

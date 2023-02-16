@@ -3,6 +3,7 @@ package h13.view.gui;
 import h13.controller.ApplicationSettings;
 import h13.controller.scene.SceneSwitcher;
 import h13.shared.JFXUtils;
+import h13.shared.ManualGraderConstants;
 import javafx.beans.property.Property;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
@@ -48,7 +49,7 @@ public class SettingsSceneTest extends ApplicationTest {
 
     @BeforeEach
     public void settingsSceneManualGrading() throws InterruptedException {
-        if (graded) return;
+        if (graded || !ManualGraderConstants.testImplementation) return;
         JFXUtils.messageTutor("Change The Settings in the Settings Scene, you will get log messages for each change.");
         JFXUtils.messageTutor("When you are done, check the correctly modifiable settings in the Grading Panel and press OK.");
         Map.ofEntries(
@@ -152,6 +153,7 @@ public class SettingsSceneTest extends ApplicationTest {
     }
 
     public <T> void testSettingsSceneProperty(Property<T> property, String propertyName) {
+        if (!ManualGraderConstants.testImplementation) return;
         Assertions2.assertTrue(
             correctPropertyValues.contains(property),
             Assertions2.emptyContext(),
