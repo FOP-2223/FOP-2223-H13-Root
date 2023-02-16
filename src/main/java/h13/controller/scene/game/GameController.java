@@ -282,7 +282,7 @@ public class GameController extends SceneController implements Updatable {
     /**
      * Handles what happens when the {@linkplain Player player} is Defeated.
      */
-    private void lose() {
+    public void lose() {
         pause();
         final TextInputDialog dialog = new TextInputDialog("<CoolPlayerName>");
         dialog.setTitle("Game Over");

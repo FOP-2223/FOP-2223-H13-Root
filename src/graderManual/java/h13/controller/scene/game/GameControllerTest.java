@@ -9,40 +9,61 @@ import h13.json.JsonConverter;
 import h13.json.JsonParameterSet;
 import h13.json.JsonParameterSetTest;
 import h13.model.gameplay.GameState;
-import h13.model.gameplay.sprites.*;
+import h13.model.gameplay.sprites.IDBullet;
+import h13.model.gameplay.sprites.IDEnemy;
+import h13.model.gameplay.sprites.IDPlayer;
+import h13.model.gameplay.sprites.WithID;
+import h13.shared.JFXUtils;
 import h13.util.StudentLinks;
 import h13.view.gui.GameScene;
+import h13.view.gui.GameSceneTest;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.agent.ByteBuddyAgent;
+import net.bytebuddy.agent.builder.AgentBuilder;
+import net.bytebuddy.description.type.TypeDescription;
+import net.bytebuddy.dynamic.DynamicType;
+import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
+import net.bytebuddy.implementation.MethodDelegation;
+import net.bytebuddy.matcher.ElementMatchers;
+import net.bytebuddy.utility.JavaModule;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.mockito.Answers;
 import org.mockito.Mockito;
 import org.sourcegrade.jagr.api.rubric.TestForSubmission;
-import org.testfx.framework.junit5.ApplicationTest;
 import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
 
+import java.io.IOException;
+import java.security.ProtectionDomain;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static h13.util.StudentLinks.BulletLinks.BulletFieldLink.OWNER_FIELD;
-import static h13.util.StudentLinks.BulletLinks.BulletMethodLink.HIT_METHOD;
 import static h13.util.StudentLinks.GameConstantsLinks.GameConstantsFieldLink.*;
 import static h13.util.StudentLinks.GameControllerLinks.GameControllerFieldLink.*;
-import static h13.util.StudentLinks.GameControllerLinks.GameControllerMethodLink.*;
-import static h13.util.StudentLinks.SpriteLinks.SpriteMethodLink.IS_DEAD_METHOD;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
+import static h13.util.StudentLinks.GameControllerLinks.GameControllerMethodLink.HANDLE_KEYBOARD_INPUTS_METHOD;
+import static h13.util.StudentLinks.GameControllerLinks.GameControllerMethodLink.LOSE_METHOD;
+import static org.mockito.Mockito.*;
 
 @TestForSubmission
-public class GameControllerTest extends ApplicationTest {
+public class GameControllerTest {
 
     private Stage stage;
     private GameScene gameScene;
@@ -118,30 +139,35 @@ public class GameControllerTest extends ApplicationTest {
         return gameController;
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        super.start(stage);
-        stage.initStyle(StageStyle.UNDECORATED);
-        final var origGameBounds = new BoundingBox(0, 0, 256, 224);
-        ORIGINAL_GAME_BOUNDS_FIELD.setStatic(origGameBounds);
-        ASPECT_RATIO_FIELD.setStatic(origGameBounds.getWidth() / origGameBounds.getHeight());
-        ApplicationSettings.loadBackgroundProperty().set(false);
+    //    @Override
+    @BeforeEach
+    public void start() throws Exception {
+//        super.start(stage);
+        JFXUtils.initFX();
+        JFXUtils.onJFXThread(() -> {
+            var stage = new Stage();
+            stage.initStyle(StageStyle.UNDECORATED);
+            final var origGameBounds = new BoundingBox(0, 0, 256, 224);
+            ORIGINAL_GAME_BOUNDS_FIELD.setStatic(origGameBounds);
+            ASPECT_RATIO_FIELD.setStatic(origGameBounds.getWidth() / origGameBounds.getHeight());
+            ApplicationSettings.loadBackgroundProperty().set(false);
 
-        // TODO: test with private init() for final grading run
-        gameScene = spy(new GameScene() {
-            @Override
-            protected void init() {
-                // do nothing
-            }
+            // TODO: test with private init() for final grading run
+            gameScene = spy(new GameScene() {
+                @Override
+                protected void init() {
+                    // do nothing
+                }
+            });
+
+            stage.setScene(gameScene);
+            this.stage = stage;
         });
-
-        stage.setScene(gameScene);
-        this.stage = stage;
     }
 
     @ParameterizedTest
     @JsonParameterSetTest(value = "GameControllerDummyState.json", customConverters = "customConverters")
-    public void testHandleKeyboardInputsFullScreenF11(final JsonParameterSet params) {
+    public void testHandleKeyboardInputsFullScreenF11(final JsonParameterSet params) throws InterruptedException {
         // setup
         final var gameController = setupGameController(params);
         final var gameState = gameController.getGameState();
@@ -152,7 +178,7 @@ public class GameControllerTest extends ApplicationTest {
         HANDLE_KEYBOARD_INPUTS_METHOD.invoke(context, gameController);
 
         // make sure the game is not in full screen mode
-        Platform.runLater(() -> {
+        JFXUtils.onJFXThread(() -> {
             stage.setFullScreen(false);
 
             // send F11 key press
@@ -186,51 +212,126 @@ public class GameControllerTest extends ApplicationTest {
         });
     }
 
-//    @ParameterizedTest
-//    @JsonParameterSetTest(value = "GameControllerDummyState.json", customConverters = "customConverters")
-//    public void testHandleKeyboardInputsFullScreenEscape(final JsonParameterSet params) {
-//        // setup
-//        final var gameController = setupGameController(params);
-//        final var gameState = gameController.getGameState();
-//        final var context = params.toContext();
-//        GAME_LOOP_FIELD.set(gameController, spy(AnimationTimer.class));
-//
-//
-//        // test setup
-//        HANDLE_KEYBOARD_INPUTS_METHOD.invoke(context, gameController);
-//
-//        Platform.runLater(() -> {
-//            stage.show();
-//            // send Escape key press
-//            final var keyEvent = new KeyEvent(
-//                KeyEvent.KEY_PRESSED,
-//                "",
-//                "",
-//                KeyCode.ESCAPE,
-//                false,
-//                false,
-//                false,
-//                false
-//            );
-//            gameScene.getOnKeyPressed().handle(keyEvent);
-//
-//            // release Escape key press
-//            final var keyEvent2 = new KeyEvent(
-//                KeyEvent.KEY_RELEASED,
-//                "",
-//                "",
-//                KeyCode.ESCAPE,
-//                false,
-//                false,
-//                false,
-//                false
-//            );
-//            gameScene.getOnKeyReleased().handle(keyEvent2);
-//
-//            // assert that the game is now in full screen mode
-////            Assertions2.assertTrue(stage.isFullScreen(), context, r -> "Game should be in full screen mode after pressing F11");
-//        });
-//    }
+    @Test
+    public void testAlertInJunitVisible() throws InterruptedException {
+        AtomicReference<Alert> alert = new AtomicReference<>();
+        JFXUtils.onJFXThread(() -> {
+            alert.set(new Alert(Alert.AlertType.CONFIRMATION, "Give Up?", ButtonType.YES, ButtonType.NO));
+            alert.get().showAndWait();
+            Assertions2.assertEquals(ButtonType.YES, alert.get().getResult(), Assertions2.emptyContext(), r -> "NO");
+        });
+    }
+
+
+    private void testHandleKeyboardInputsEscape(JsonParameterSet params, boolean hitLose) throws InterruptedException, IOException {
+        // setup
+        final var gameController = setupGameController(params);
+        final var gameState = gameController.getGameState();
+        final var context = params.toContext();
+        AtomicBoolean pausedWasOnceTrue = new AtomicBoolean(false);
+        AtomicBoolean pausedWasOnceFalse = new AtomicBoolean(false);
+        GAME_LOOP_FIELD.set(gameController, new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (gameController.isPaused()) {
+                    pausedWasOnceTrue.set(true);
+                } else {
+                    pausedWasOnceFalse.set(true);
+                }
+            }
+        });
+        gameController.getGameLoop().start();
+
+        final var crs = ClassReloadingStrategy.fromInstalledAgent();
+        final class loseMethodSpy {
+            static int invocations = 0;
+
+            public static void lose() {
+                invocations++;
+            }
+        }
+
+        try {
+            // use bytebuddy to intercept GameController.lose() call to check if it was called
+            new ByteBuddy()
+                .redefine(GameController.class)
+                .method(ElementMatchers.named("lose"))
+                .intercept(MethodDelegation.to(loseMethodSpy.class))
+                .make()
+                .load(GameController.class.getClassLoader(), crs);
+
+            // test setup
+            HANDLE_KEYBOARD_INPUTS_METHOD.invoke(context, gameController);
+
+            JFXUtils.onJFXThread(() -> {
+                stage.show();
+                // send Escape key press
+                final var keyEvent = new KeyEvent(
+                    KeyEvent.KEY_PRESSED,
+                    "",
+                    "",
+                    KeyCode.ESCAPE,
+                    false,
+                    false,
+                    false,
+                    false
+                );
+                gameScene.getOnKeyPressed().handle(keyEvent);
+
+                // release Escape key press
+                final var keyEvent2 = new KeyEvent(
+                    KeyEvent.KEY_RELEASED,
+                    "",
+                    "",
+                    KeyCode.ESCAPE,
+                    false,
+                    false,
+                    false,
+                    false
+                );
+                // instruct tutor to press the correct button
+                if (hitLose) {
+                    System.out.println("Press the lose button");
+                } else {
+                    System.out.println("Press the resume button");
+                }
+
+                gameScene.getOnKeyReleased().handle(keyEvent2);
+
+            });
+        } finally {
+            // reset the class loader
+            crs.reset(GameController.class);
+            gameController.getGameLoop().stop();
+
+            // assert that the game was paused
+            Assertions2.assertTrue(pausedWasOnceTrue.get(), context, r -> "Game should be paused after pressing Escape");
+
+            if (hitLose) {
+                // assert that the lose method was called
+                System.out.println("lose() Method was called " + loseMethodSpy.invocations + " times.");
+                Assertions2.assertEquals(1, loseMethodSpy.invocations, context, r -> "Lose could not be selected or lose() Method was not called.");
+            } else {
+                // assert that the game was resumed
+                Assertions2.assertFalse(gameController.isPaused(), context, r -> "Game should be resumed after choosing resume. Either resume() was not called or it was not possible to select the resume button.");
+
+                // assert that the lose method was not called
+                Assertions2.assertEquals(0, loseMethodSpy.invocations, context, r -> "The lose() Method was called even though the resume button was selected or the resume button could not be selected.");
+            }
+        }
+    }
+
+    @ParameterizedTest
+    @JsonParameterSetTest(value = "GameControllerDummyState.json", customConverters = "customConverters")
+    public void testHandleKeyboardInputsEscapeLose(final JsonParameterSet params) throws InterruptedException, IOException {
+        testHandleKeyboardInputsEscape(params, true);
+    }
+
+    @ParameterizedTest
+    @JsonParameterSetTest(value = "GameControllerDummyState.json", customConverters = "customConverters")
+    public void testHandleKeyboardInputsEscapeResume(final JsonParameterSet params) throws InterruptedException, IOException {
+        testHandleKeyboardInputsEscape(params, false);
+    }
 }
 //    @ExtendWith(JagrExecutionCondition.class)
 //        TestCycleResolver.getTestCycle().getClassLoader().l
