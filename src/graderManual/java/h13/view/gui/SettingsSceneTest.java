@@ -50,6 +50,8 @@ public class SettingsSceneTest extends ApplicationTest {
     @BeforeEach
     public void settingsSceneManualGrading() throws InterruptedException {
         if (graded || !ManualGraderConstants.testImplementation) return;
+        JFXUtils.messageTutor("--testSettings--");
+        JFXUtils.messageTutor("You will see two windows, the settings scene and the tutor grading panel.");
         JFXUtils.messageTutor("Change The Settings in the Settings Scene, you will get log messages for each change.");
         JFXUtils.messageTutor("When you are done, check the correctly modifiable settings in the Grading Panel and press OK.");
         Map.ofEntries(

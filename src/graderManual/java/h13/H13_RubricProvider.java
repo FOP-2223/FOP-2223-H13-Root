@@ -83,7 +83,7 @@ public class H13_RubricProvider implements RubricProvider {
 //                                    final var result = innerGrader.grade(cycle, fakeCriterion);
                                     final var result = graders.stream()
                                         .map(grader -> grader.grade(cycle, fakeCriterion))
-                                        .peek(x -> JFXUtils.messageTutor("result: " + x.getMaxPoints()))
+//                                        .peek(x -> JFXUtils.messageTutor("result: " + x.getMaxPoints()))
                                         .reduce((a, b) -> GradeResult.withComments(GradeResult.of(
                                             a.getMaxPoints() + b.getMaxPoints(),
                                             a.getMinPoints() + b.getMinPoints()

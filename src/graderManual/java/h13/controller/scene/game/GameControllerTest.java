@@ -37,8 +37,11 @@ import org.testfx.framework.junit5.ApplicationTest;
 import org.tudalgo.algoutils.tutor.general.assertions.Assertions2;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
@@ -238,6 +241,8 @@ public class GameControllerTest extends ApplicationTest {
 
 
             // instruct tutor to press the correct button
+            JFXUtils.messageTutor("--testHandleKeyboardInputsEscape--");
+            JFXUtils.messageTutor("You should be prompted to resume or lose the game.");
             JFXUtils.messageTutor(hitLose ? "Press the lose button" : "Press the resume button");
 
             JFXUtils.onJFXThread(() -> {
@@ -306,8 +311,8 @@ public class GameControllerTest extends ApplicationTest {
 
     @ParameterizedTest
     @JsonParameterSetTest(value = "GameControllerDummyState.json", customConverters = "customConverters")
-    public void testLoseHighscore(final JsonParameterSet params) throws InterruptedException, IOException {
-        if(!ManualGraderConstants.testImplementation) return;
+    public void testLoseHighscore(final JsonParameterSet params) throws InterruptedException, IOException, ParseException {
+        if (!ManualGraderConstants.testImplementation) return;
         // setup
         final var gameController = setupGameController(params);
         final var context = params.toContext();
@@ -315,8 +320,12 @@ public class GameControllerTest extends ApplicationTest {
         GAME_LOOP_FIELD.set(gameController, mock(AnimationTimer.class));
         RESET_METHOD.doNothing(gameController);
         RESUME_METHOD.doNothing(gameController);
+        // clear highscores
+        ApplicationSettings.getHighscores().clear();
         // instruct tutor to press the correct button
-        JFXUtils.messageTutor("Enter the name \"FOP-2223-Test\" and press the submit button.\n(you can press either continue or return to main menu afterwards)");
+        JFXUtils.messageTutor("--testLose-Highscore--");
+        JFXUtils.messageTutor("You should be prompted to have lost the game.");
+        JFXUtils.messageTutor("Enter the name \"FOP-2223-Test\" and press the submit button.\n(you can choose either to retry or to return to main menu afterwards)");
         JFXUtils.onJFXThread(() -> {
             // invoke lose method
             LOSE_METHOD.invoke(context, gameController);
@@ -326,14 +335,29 @@ public class GameControllerTest extends ApplicationTest {
                 gameController.getStage().close();
             }
         });
-        if(!ManualGraderConstants.testImplementation) return;
+        if (!ManualGraderConstants.testImplementation) return;
         // assert that the Highscore was saved
         var candidate = ApplicationSettings.getHighscores().stream().filter(h -> h.getPlayerName().equals("FOP-2223-Test")).findFirst();
         Assertions2.assertTrue(candidate.isPresent(), context, r -> "Highscore was not saved.");
         var highscore = candidate.get();
         Assertions2.assertEquals(player.getScore(), highscore.getScore(), context, r -> "Highscore was not saved correctly, incorrect score.");
-        JFXUtils.messageTutor("Check the date of the highscore");
-        if (ManualGraderConstants.testImplementation) {
+        // Date Format: dow mon dd hh:mm:ss zzz yyyy
+        // tolerance: 10 seconds
+        // check if the date is within 10 seconds of the current system time
+        try {
+            var date = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH).parse(highscore.getDate());
+            var now = new Date();
+            Assertions2.assertTrue(
+                Math.abs(date.getTime() - now.getTime()) < 10000,
+                context,
+                r -> "Highscore was not saved correctly, incorrect date."
+            );
+        } catch (ParseException e) {
+            e.printStackTrace();
+            JFXUtils.messageTutor("--lose-Highscore--");
+            JFXUtils.messageTutor("Date could not be parsed automatically.");
+            JFXUtils.messageTutor("Check the date of the highscore, the format does not matter.");
+            JFXUtils.messageTutor("Due to test delays be tolerant, the date should be within 10 seconds of the expected date.");
             Assertions2.assertTrue(
                 JFXUtils.TutorAskYesNo(String.format(
                     """
@@ -362,7 +386,9 @@ public class GameControllerTest extends ApplicationTest {
         RESUME_METHOD.doNothing(gameController);
         AtomicBoolean mainMenuWasShown = new AtomicBoolean(false);
         // instruct tutor to press the correct button
-        JFXUtils.messageTutor("Do whatever with the highscore and then press the return to main menu button.");
+        JFXUtils.messageTutor("--testLoseMainMenu--");
+        JFXUtils.messageTutor("You should be prompted to have lost the game.");
+        JFXUtils.messageTutor("Do whatever with the highscore and then choose to return to the main menu.");
         JFXUtils.onJFXThread(() -> {
 
             // invoke lose method
@@ -388,7 +414,9 @@ public class GameControllerTest extends ApplicationTest {
         GAME_LOOP_FIELD.set(gameController, mock(AnimationTimer.class));
         RESET_METHOD.doNothing(gameController);
         // instruct tutor to press the correct button
-        JFXUtils.messageTutor("Do whatever with the highscore and then press the reset button.");
+        JFXUtils.messageTutor("--testLoseReset--");
+        JFXUtils.messageTutor("You should be prompted to have lost the game.");
+        JFXUtils.messageTutor("Do whatever with the highscore and then choose to retry.");
         JFXUtils.onJFXThread(() -> {
 
             // invoke lose method
